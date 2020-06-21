@@ -1,0 +1,38 @@
+{
+  "name": "sssp-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.15.0",
+    "apollo-server-express": "^2.15.0",
+    "bluebird": "^3.7.2",
+    "cross-env": "^7.0.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.19"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "**/node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
+  },
+  "scripts": {
+    "start": "npx ts-node src/server.ts",
+    "start:watch": "nodemon"
+  }
+}
