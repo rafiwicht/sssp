@@ -29,7 +29,7 @@
       "src"
     ],
     "exec": "npm start",
-    "ext": "ts"
+    "ext": "tsx"
   },
   "scripts": {
     "start": "npx ts-node src/server.ts",

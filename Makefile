@@ -35,7 +35,7 @@ server:
 	yarn
 	cd ..
 	podman run -dt \
-		-p 5000:5000/tcp \
+		-p 5000:8080/tcp \
 		--env DEV_MODE=true \
 		--env MONGO_USER=${MONGO_USER} \
 		--env MONGO_SECRET=${MONGO_SECRET} \
@@ -51,7 +51,7 @@ client:
 	yarn
 	cd ..
 	podman run -itd \
-		-p 3000:3000/tcp \
+		-p 3000:8080/tcp \
 		--env DEV_MODE=true \
 		-v ./sssp-client/:/opt/app-root/ \
 		--name ${CLIENT} \
