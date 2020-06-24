@@ -8,12 +8,13 @@ SERVER ?= sssp-server
 CLIENT ?= sssp-client
 MONGO ?= sssp-mongo
 PROXY ?= sssp-proxy
+IP := $(shell hostname -I | cut -d' ' -f1)
 
 ############## Local run ##############
 
-run: infos mongo server proxy
+run: mongo server client proxy
 
-remove: rm-proxy rm-server rm-mongo
+remove: rm-proxy rm-server rm-mongo rm-client
 
 refresh: remove run
 
@@ -22,16 +23,14 @@ clean:
 	-podman rm -a
 	-rm -rf /tmp/sssp-proxy/
 
-infos:
-	export IP="$(hostname -I | cut -d' ' -f1)"
-
-
 proxy:
+	sleep 20
 	mkdir /tmp/sssp-proxy/
 	sed s/IP/${IP}/g ./sssp-dev-proxy/sssp.conf >> /tmp/sssp-proxy/sssp.conf
 	podman run -dt -p 8080:8080/tcp -v /tmp/sssp-proxy/:/etc/nginx/conf.d/ --name ${PROXY} ${NGINX_IMG}
 
 server:
+	sleep 10
 	cd sssp-server
 	yarn
 	cd ..
@@ -46,24 +45,37 @@ server:
 		--name ${SERVER} \
 		${NODE_IMG} \
 		npx ts-node server.ts
-	sleep 10
 
+client:
+	cd sssp-client
+	yarn
+	cd ..
+	podman run -itd \
+		-p 3000:3000/tcp \
+		--env DEV_MODE=true \
+		-v ./sssp-client/:/opt/app-root/ \
+		--name ${CLIENT} \
+		${NODE_IMG} \
+		npm start
 mongo:
 	podman run -dt -p 27017:27017/tcp --env MONGO_INITDB_ROOT_USERNAME=${MONGO_USER} --env MONGO_INITDB_ROOT_PASSWORD=${MONGO_SECRET} --name ${MONGO} ${MONGO_IMG}
-	sleep 10
 
 rm-proxy:
-	podman kill ${PROXY}
-	podman rm ${PROXY}
-	rm -rf /tmp/sssp-proxy/
+	-podman kill ${PROXY}
+	-podman rm ${PROXY}
+	-rm -rf /tmp/sssp-proxy/
 
 rm-server:
-	podman kill ${SERVER}
-	podman rm ${SERVER}
+	-podman kill ${SERVER}
+	-podman rm ${SERVER}
 
 rm-mongo:
-	podman kill ${MONGO}
-	podman rm ${MONGO}
+	-podman kill ${MONGO}
+	-podman rm ${MONGO}
+
+rm-client:
+	-podman kill ${CLIENT}
+	-podman rm ${CLIENT}
 
 
 ############## Build images ##############l
