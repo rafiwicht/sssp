@@ -104,7 +104,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.entrypoints=websec"
-      - "traefik.http.routers.client.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/ui`)"
+      - "traefik.http.routers.client.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/ui`) || PathPrefix(`/sockjs-node`)"
       - "traefik.http.routers.client.tls=true"
       - "traefik.http.services.client.loadbalancer.server.port=8080"
     stdin_open: true

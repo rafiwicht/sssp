@@ -1,7 +1,6 @@
 {
   "name": "sssp-client",
   "version": "0.1.0",
-  "homepage": "/ui/",
   "private": true,
   "dependencies": {
     "@hot-loader/react-dom": "^16.10.2",
