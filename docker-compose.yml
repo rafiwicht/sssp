@@ -1,0 +1,109 @@
+version: "3.7"
+services:
+  traefik:
+    image: "traefik:v2.2"
+    container_name: traefik
+    command:
+      - --api
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websec
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --entrypoints.websec.address=:8080
+      - --providers.file.directory=/config/
+      - --providers.file.watch=true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.middlewares=authtraefik"
+      # create entry with: printf "username:`openssl passwd -apr1`\n" >> users.db
+      - "traefik.http.middlewares.authtraefik.basicauth.usersfile=/config/users.db"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/config:/config:ro"
+      - "./traefik/certs:/certs:ro"
+    ports:
+      - "80:80"
+      - "8080:8080"
+
+  keycloak:
+    image: "jboss/keycloak"
+    container_name: "keycloak"
+    restart: always
+    depends_on:
+      - traefik
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - PROXY_ADDRESS_FORWARDING=true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.entrypoints=websec"
+      - "traefik.http.routers.keycloak.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/auth`)"
+      - "traefik.http.routers.keycloak.tls=true"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_SECRET}
+
+  server:
+    image: registry.access.redhat.com/ubi8/nodejs-12
+    container_name: server
+    restart: always
+    depends_on:
+      - traefik
+      - mongo
+    environment:
+      - DEV_MODE=true
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_SECRET=${MONGO_SECRET}
+      - MONGO=mongo
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - "./sssp-server:/opt/app-root"
+    command: npx ts-node server.ts
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.entrypoints=websec"
+      - "traefik.http.routers.server.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/graphql`)"
+      - "traefik.http.routers.server.tls=true"
+      - "traefik.http.middlewares.server.forwardauth.address=https://sssp.rwicht.ch/auth"
+      - "traefik.http.middlewares.server.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.server.forwardauth.authResponseHeaders=X-Auth-User, X-Secret"
+      - "traefik.http.services.server.loadbalancer.server.port=8080"
+
+  client:
+    image: registry.access.redhat.com/ubi8/nodejs-12
+    container_name: client
+    restart: always
+    depends_on:
+      - traefik
+      - mongo
+      - server
+    environment:
+      - DEV_MODE=true
+      - PORT=3006
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.entrypoints=websec"
+      - "traefik.http.routers.client.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/ui`)"
+      - "traefik.http.routers.client.tls=true"
+      - "traefik.http.middlewares.client.forwardauth.address=https://sssp.rwicht.ch/auth"
+      - "traefik.http.middlewares.client.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.client.forwardauth.authResponseHeaders=X-Auth-User, X-Secret"
+      - "traefik.http.services.client.loadbalancer.server.port=8080"
+    stdin_open: true
+    tty: true
+    volumes:
+      - "./sssp-client:/opt/app-root"
+    command: npm start
+
