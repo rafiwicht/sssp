@@ -1,11 +1,11 @@
-tls:
-  certificates:
-    - certFile: "/certs/cert.pem"
-      keyFile: "/certs/privkey.pem"
-      stores:
-        - default
-  stores:
-    default:
-      defaultCertificate:
-        certFile: "/certs/cert.pem"
-        keyFile: "/certs/privkey.pem"
+#tls:
+#  certificates:
+#    - certFile: "/certs/cert.pem"
+#      keyFile: "/certs/privkey.pem"
+#      stores:
+#        - default
+#  stores:
+#    default:
+#      defaultCertificate:
+#        certFile: "/certs/cert.pem"
+#        keyFile: "/certs/privkey.pem"

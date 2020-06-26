@@ -30,6 +30,8 @@ services:
     ports:
       - "80:80"
       - "8080:8080"
+    networks:
+      - internal
 
   keycloak:
     image: "jboss/keycloak"
@@ -37,10 +39,12 @@ services:
     restart: always
     depends_on:
       - traefik
+    networks:
+      - internal
     environment:
-      - KEYCLOAK_USER=${KEYCLOAK_USER}
-      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
-      - PROXY_ADDRESS_FORWARDING=true
+      KEYCLOAK_USER: "${KEYCLOAK_USER}"
+      KEYCLOAK_PASSWORD: "${KEYCLOAK_PASSWORD}"
+      PROXY_ADDRESS_FORWARDING: "true"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.entrypoints=websec"
@@ -52,25 +56,30 @@ services:
     image: mongo
     container_name: mongo
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_SECRET}
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_USER}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_SECRET}"
+    networks:
+      - internal
 
   server:
-    image: registry.access.redhat.com/ubi8/nodejs-12
+    image: node
     container_name: server
     restart: always
     depends_on:
       - traefik
       - mongo
     environment:
-      - DEV_MODE=true
-      - MONGO_USER=${MONGO_USER}
-      - MONGO_SECRET=${MONGO_SECRET}
-      - MONGO=mongo
-      - JWT_SECRET=${JWT_SECRET}
+      DEV_MODE: "true"
+      MONGO_USER: "${MONGO_USER}"
+      MONGO_SECRET: "${MONGO_SECRET}"
+      MONGO: "mongo"
+      JWT_SECRET: "${JWT_SECRET}"
     volumes:
-      - "./sssp-server:/opt/app-root"
-    command: npx ts-node server.ts
+      - "./sssp-server:/sssp-server"
+    networks:
+      - internal
+    working_dir: /sssp-server
+    command: npx ts-node src/server.ts
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.server.entrypoints=websec"
@@ -82,7 +91,7 @@ services:
       - "traefik.http.services.server.loadbalancer.server.port=8080"
 
   client:
-    image: registry.access.redhat.com/ubi8/nodejs-12
+    image: node
     container_name: client
     restart: always
     depends_on:
@@ -90,8 +99,8 @@ services:
       - mongo
       - server
     environment:
-      - DEV_MODE=true
-      - PORT=3006
+      DEV_MODE: "true"
+      PORT: 8080
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.entrypoints=websec"
@@ -104,6 +113,15 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - "./sssp-client:/opt/app-root"
+      - "./sssp-client:/sssp-client"
+    networks:
+      - internal
+    working_dir: /sssp-client
     command: npm start
 
+networks:
+  internal:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.111.0/24"
