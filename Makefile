@@ -9,11 +9,10 @@ run: client server up
 stop: down
 
 up:
-	#sudo iptables -I INPUT -i docker0 -j ACCEPT
 	docker-compose up -d
 
 down:
-	docker-compose down
+	docker-compose down --remove-orphans
 
 client:
 	cd sssp-client

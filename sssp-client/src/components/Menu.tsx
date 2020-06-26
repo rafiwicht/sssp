@@ -37,7 +37,7 @@ type MenuProps = {
     handleDrawerClose: (value: boolean) => void
 }
 
-export const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}) => {
+export const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
 
     return (

@@ -52,7 +52,8 @@ export const Bar: React.FC = () => {
                 <Button color="inherit">Login</Button>
             </Toolbar>
             <Menu
-                open={open}/>
+                open={open}
+                handleDrawerClose={handleDrawerClose}/>
         </AppBar>
     );
 }

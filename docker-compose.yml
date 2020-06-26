@@ -45,6 +45,9 @@ services:
       KEYCLOAK_USER: "${KEYCLOAK_USER}"
       KEYCLOAK_PASSWORD: "${KEYCLOAK_PASSWORD}"
       PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_IMPORT: "keycloak/sssp-realm.json"
+    volumes:
+      - "./keycloak:/keycloak:ro"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.entrypoints=websec"
@@ -85,9 +88,6 @@ services:
       - "traefik.http.routers.server.entrypoints=websec"
       - "traefik.http.routers.server.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/graphql`)"
       - "traefik.http.routers.server.tls=true"
-      - "traefik.http.middlewares.server.forwardauth.address=https://sssp.rwicht.ch/auth"
-      - "traefik.http.middlewares.server.forwardauth.trustForwardHeader=true"
-      - "traefik.http.middlewares.server.forwardauth.authResponseHeaders=X-Auth-User, X-Secret"
       - "traefik.http.services.server.loadbalancer.server.port=8080"
 
   client:
@@ -106,9 +106,6 @@ services:
       - "traefik.http.routers.client.entrypoints=websec"
       - "traefik.http.routers.client.rule=Host(`sssp.rwicht.ch`) && PathPrefix(`/ui`)"
       - "traefik.http.routers.client.tls=true"
-      - "traefik.http.middlewares.client.forwardauth.address=https://sssp.rwicht.ch/auth"
-      - "traefik.http.middlewares.client.forwardauth.trustForwardHeader=true"
-      - "traefik.http.middlewares.client.forwardauth.authResponseHeaders=X-Auth-User, X-Secret"
       - "traefik.http.services.client.loadbalancer.server.port=8080"
     stdin_open: true
     tty: true
