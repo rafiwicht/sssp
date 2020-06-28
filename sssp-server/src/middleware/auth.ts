@@ -6,6 +6,8 @@
 import * as jwt from 'jsonwebtoken';
 import config from '../config';
 
+//const key = JSON.parse(data).keys[0].x5c[0]
+
 export default (req: any, res: any, next: any) => {
     const authHeader = req.get('Authorization');
     if (!authHeader) {

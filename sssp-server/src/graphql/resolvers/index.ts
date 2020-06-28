@@ -4,16 +4,13 @@
  */
 
 import {IdxQueries, IdxMutation, IdxSubscription} from './idx';
-import {UserQueries, UserMutation} from './user';
 
 const rootResolver = {
     Query: {
         ...IdxQueries,
-        ...UserQueries
     },
     Mutation: {
         ...IdxMutation,
-        ...UserMutation
     },
     Subscription: {
         ...IdxSubscription

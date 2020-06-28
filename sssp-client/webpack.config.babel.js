@@ -55,11 +55,13 @@ module.exports = {
         template: './public/index.html'
     })],
     devServer: {
-        publicPath: '/ui/',
         contentBase: path.join(__dirname, 'public'),
         compress: true,
         port: 8080,
         host: '0.0.0.0',
         disableHostCheck: true,
+        historyApiFallback: {
+            index: 'index.html'
+        },
     }
 };

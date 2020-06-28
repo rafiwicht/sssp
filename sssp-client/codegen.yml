@@ -1,6 +1,6 @@
 overwrite: true
-schema: "http://192.168.1.145:8080/graphql"
-documents: "src/**/*.graphql"
+schema: "https://sssp.rwicht.ch:8080/graphql/"
+#documents: "src/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
     plugins:

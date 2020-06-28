@@ -3,16 +3,14 @@
  */
 import React, {useState} from 'react';
 import clsx from 'clsx';
-import {AppBar, Button, IconButton, Theme, Toolbar, Typography} from '@material-ui/core';
+import {AppBar, IconButton, Theme, Toolbar, Typography} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import {makeStyles} from '@material-ui/core/styles';
 
-import {Menu} from './Menu';
+import Menu from './Menu';
+import visualization from "../config/visualization";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-    },
     menuButton: {
         marginRight: theme.spacing(2),
     },
@@ -22,38 +20,50 @@ const useStyles = makeStyles((theme: Theme) => ({
     title: {
         flexGrow: 1,
     },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        marginLeft: visualization.drawerWidth,
+        width: `calc(100% - ${visualization.drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
 }));
 
-export const Bar: React.FC = () => {
-    const [open, setOpen] = useState(false);
+type BarProps = {
+    open: boolean,
+    handleDrawerOpen: () => void
+}
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
 
+const Bar: React.FunctionComponent<BarProps> = ({open, handleDrawerOpen}: BarProps) => {
     const classes = useStyles();
     return (
-        <AppBar position="sticky">
-            <Toolbar>
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerOpen}
-                    className={clsx(classes.menuButton, open && classes.menuButtonHidden)}>
-                    <MenuIcon/>
-                </IconButton>
-                <Typography variant="h6" className={classes.title}>
-                    Splunk Self Service Portal
-                </Typography>
-                <Button color="inherit">Login</Button>
-            </Toolbar>
-            <Menu
-                open={open}
-                handleDrawerClose={handleDrawerClose}/>
-        </AppBar>
+        <div>
+            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                <Toolbar>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}>
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography variant="h6" className={classes.title}>
+                        Splunk Self Service Portal
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+        </div>
+
     );
 }
+export default Bar;

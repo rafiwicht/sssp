@@ -11,11 +11,9 @@ const typeDefs = gql`
   type Query {
     indexes: [Idx!]!
     index(idxId: ID!): Idx!
-    login(name: String!, password: String!): AuthData!
   }
   type Mutation {
     createIndex(idxInput: IdxInput): Idx!
-    createUser(userInput: UserInput): AuthData!
   }
   type Subscription {
     idxAdded: Idx
@@ -32,20 +30,6 @@ const typeDefs = gql`
     service: String!
     frozenTimePeriodInSecs: Int!
     maxTotalDataSizeMB: Int!
-  }
-  type User {
-    _id: ID!
-    name: String!
-    password: String!
-  }
-  type AuthData {
-    userId: ID!
-    token: String!
-    tokenExpiration: Int!
-  }
-  input UserInput {
-    name: String!
-    password: String!
   }
 `;
 
