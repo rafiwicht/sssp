@@ -58,6 +58,7 @@ module.exports = {
         contentBase: path.join(__dirname, 'public'),
         compress: true,
         port: 3000,
+        sockPort: 8000,
         host: '0.0.0.0',
         disableHostCheck: true,
         historyApiFallback: {

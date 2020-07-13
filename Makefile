@@ -13,8 +13,6 @@ MONGO ?= sssp-mongo
 PROXY ?= sssp-proxy
 KEYCLOAK ?= sssp-keycloak
 
-IP := $(shell hostname -I | cut -d' ' -f1)
-
 ############## Local run ##############
 
 pod:
@@ -103,3 +101,5 @@ rm-proxy:
 run: pod mongo keycloak server client proxy
 
 stop: rm-pod
+
+refresh: stop run
