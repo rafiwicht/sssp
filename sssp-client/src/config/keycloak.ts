@@ -1,5 +1,5 @@
 const keycloakClient = {
-    url: "https://sssp.rwicht.ch:8080/auth/",
+    url: "https://sssp.rwicht.ch:8000/auth/",
     realm: "sssp",
     clientId: "sssp-client"
 }

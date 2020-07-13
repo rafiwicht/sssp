@@ -28,7 +28,7 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --hot",
+    "start": "webpack-dev-server --env.WDS_SOCKET_PORT=8000 --hot",
     "codegen": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml"
   },
   "eslintConfig": {

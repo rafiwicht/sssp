@@ -3,15 +3,15 @@ services:
 
   keycloak:
     image: "jboss/keycloak"
-    container_name: "keycloak"
+    container_name: "sssp-keycloak"
     restart: always
     environment:
       KEYCLOAK_USER: "${KEYCLOAK_USER}"
       KEYCLOAK_PASSWORD: "${KEYCLOAK_PASSWORD}"
       PROXY_ADDRESS_FORWARDING: "true"
-      KEYCLOAK_IMPORT: "keycloak/realm-export.json"
+      KEYCLOAK_IMPORT: "/sssp-keycloak/realm-export.json"
     volumes:
-      - "./keycloak:/keycloak:ro"
+      - "./sssp-keycloak:/sssp-keycloak:ro"
   mongo:
     image: mongo
     container_name: mongo
@@ -30,7 +30,6 @@ services:
       MONGO_USER: "${MONGO_USER}"
       MONGO_SECRET: "${MONGO_SECRET}"
       MONGO: "mongo"
-      JWT_SECRET: "${JWT_SECRET}"
     volumes:
       - "./sssp-server:/sssp-server"
     working_dir: /sssp-server
@@ -59,6 +58,6 @@ services:
       - server
     restart: always
     volumes:
-      - "./sssp-dev-proxy/:/etc/nginx/conf.d/"
+      - "./sssp-proxy/:/etc/nginx/conf.d/"
     ports:
       - "8080:8080"
