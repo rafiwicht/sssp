@@ -1,6 +1,6 @@
 "use strict";
 /**
- * File containing all index queries, mutations and subscriptions
+ * File containing all service queries, mutations and subscriptions
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -14,7 +14,7 @@ const IDX_ADDED = 'IDX_ADDED';
 /**
  * Idx Queries
  * indexes: [Idx!]!
- index(idxId: ID!): Index!
+ service(idxId: ID!): Index!
  }
  type Mutation {
     createIndex(createIndex: CreateIndex): Index!

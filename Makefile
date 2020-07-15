@@ -21,6 +21,8 @@ pod:
 rm-pod:
 	-podman pod rm sssp -f
 
+refresh-pod: rm-pod pod
+
 keycloak:
 	podman run -dt \
 		--pod sssp \
@@ -40,12 +42,16 @@ rm-keycloak:
 	-podman kill ${KEYCLOAK}
 	-podman rm ${KEYCLOAK}
 
+refresh-keycloak: rm-keycloak keycloak
+
 mongo:
 	podman run -dt --pod sssp --env MONGO_INITDB_ROOT_USERNAME=${MONGO_USER} --env MONGO_INITDB_ROOT_PASSWORD=${PASSWORD} --name ${MONGO} ${MONGO_IMG}
 
 rm-mongo:
 	-podman kill ${MONGO}
 	-podman rm ${MONGO}
+
+refresh-mongo: rm-mongo mongo
 
 server:
 	cd sssp-server
@@ -67,6 +73,8 @@ rm-server:
 	-podman kill ${SERVER}
 	-podman rm ${SERVER}
 
+refresh-server: rm-server server
+
 client:
 	cd sssp-client
 	yarn
@@ -85,6 +93,8 @@ rm-client:
 	-podman kill ${CLIENT}
 	-podman rm ${CLIENT}
 
+refresh-client: rm-client client
+
 proxy:
 	podman run -dt \
 		--pod sssp \
@@ -97,6 +107,8 @@ proxy:
 rm-proxy:
 	-podman kill ${PROXY}
 	-podman rm ${PROXY}
+
+refresh-proxy: rm-proxy proxy
 
 run: pod mongo keycloak server client proxy
 

@@ -7,5 +7,6 @@ export default {
     port: 5000 || process.env.PORT,
     path: '/graphql',
     allowedOrigins: ['http://localhost:8080', 'http://localhost:3000', 'http://localhost:5000'],
-    jwtCertUrl: "http://keycloak:8080/auth/realms/sssp/protocol/openid-connect/certs"
+    jwtCertUrl: 'http://localhost:8080/auth/realms/sssp/protocol/openid-connect/certs',
+    jwtFileName: 'certs'
 };

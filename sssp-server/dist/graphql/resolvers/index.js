@@ -11,4 +11,4 @@ const rootResolver = {
     Subscription: Object.assign({}, idx_1.IdxSubscription)
 };
 exports.default = rootResolver;
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=service.js.map

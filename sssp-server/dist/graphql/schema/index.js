@@ -45,4 +45,4 @@ const schema = {
     playground: true
 };
 exports.default = schema;
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=service.js.map

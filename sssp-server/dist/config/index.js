@@ -11,4 +11,4 @@ exports.default = {
     allowedOrigins: ['http://localhost:8080', 'http://localhost:3000', 'http://localhost:5000'],
     jwtCertUrl: "http://keycloak:8080/auth/realms/sssp/protocol/openid-connect/certs"
 };
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=service.js.map

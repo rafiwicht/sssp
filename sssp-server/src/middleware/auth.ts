@@ -4,9 +4,23 @@
  */
 
 import * as jwt from 'jsonwebtoken';
-import config from '../config';
+import config from "../config";
+import {exec} from "child_process";
+import * as fs from "fs";
 
-//const key = JSON.parse(data).keys[0].x5c[0]
+/**
+ * Download cert
+ */
+exec('wget '+ config.jwtCertUrl +' -O ' + config.jwtFileName);
+const data: any = fs.readFileSync(config.jwtFileName);
+const publicKey = JSON.parse(data).keys[0].x5c[0];
+
+/**
+ * Jwt verifying middleware
+ * @param req
+ * @param res
+ * @param next
+ */
 
 export default (req: any, res: any, next: any) => {
     const authHeader = req.get('Authorization');
@@ -21,7 +35,8 @@ export default (req: any, res: any, next: any) => {
     }
     let decodedToken: any;
     try {
-        decodedToken = jwt.verify(token, config.jwtSecret);
+        decodedToken = jwt.verify(token, publicKey);
+        console.log(decodedToken);
     } catch (err) {
         req.isAuth = false;
         return next();
@@ -32,5 +47,6 @@ export default (req: any, res: any, next: any) => {
     }
     req.isAuth = true;
     req.userId = decodedToken.userId;
+    console.log(decodedToken.userId)
     return next();
 };

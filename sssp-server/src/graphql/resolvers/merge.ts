@@ -3,11 +3,11 @@
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
-const transformIdx = idx => {
+const transformService = service => {
     return {
-        ...idx._doc,
-        _id: idx.id
+        ...service._doc,
+        _id: service.id
     };
 };
 
-export {transformIdx};
+export {transformService};

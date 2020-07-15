@@ -1,17 +1,19 @@
-import React from 'react';
+import React, {FunctionComponent} from 'react';
 import {ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 type MenuListItemProps = RouteComponentProps & {
-    text: string
+    text: string,
+    subpage: string,
+    icon: FunctionComponent
 }
 
-const MenuListItem: React.FunctionComponent<MenuListItemProps> = ({text, history}: MenuListItemProps) => {
+const MenuListItem: React.FunctionComponent<MenuListItemProps> = ({text, subpage, icon, history}: MenuListItemProps) => {
     return (
-        <ListItem button onClick={() => history.push("/")}>
+        <ListItem button onClick={() => history.push(subpage)}>
             <ListItemIcon>
-                <DashboardIcon />
+                {icon}
             </ListItemIcon>
             <ListItemText primary={text} />
         </ListItem>

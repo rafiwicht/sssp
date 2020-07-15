@@ -9,27 +9,21 @@ import resolvers from '../resolvers';
 
 const typeDefs = gql`
   type Query {
-    indexes: [Idx!]!
-    index(idxId: ID!): Idx!
+      services: [Service!]!
+      service(serviceId: ID!): Service!
   }
   type Mutation {
-    createIndex(idxInput: IdxInput): Idx!
+      createService(serviceInput: ServiceInput): Service!
+      updateService(serviceId: ID!, serviceInput: ServiceInput): Service!
   }
-  type Subscription {
-    idxAdded: Idx
-  }
-  type Idx {
+  type Service {
     _id: ID!
     name: String!
-    service: String!
-    frozenTimePeriodInSecs: Int!
-    maxTotalDataSizeMB: Int!
+    owner: String!
   }
-  input IdxInput {
+  input ServiceInput {
     name: String!
-    service: String!
-    frozenTimePeriodInSecs: Int!
-    maxTotalDataSizeMB: Int!
+    owner: String!
   }
 `;
 

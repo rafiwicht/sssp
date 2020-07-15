@@ -3,18 +3,15 @@
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
-import {IdxQueries, IdxMutation, IdxSubscription} from './idx';
+import {ServiceQueries, ServiceMutation} from './service';
 
 const rootResolver = {
     Query: {
-        ...IdxQueries,
+        ...ServiceQueries,
     },
     Mutation: {
-        ...IdxMutation,
+        ...ServiceMutation,
     },
-    Subscription: {
-        ...IdxSubscription
-    }
 };
 
 export default rootResolver;

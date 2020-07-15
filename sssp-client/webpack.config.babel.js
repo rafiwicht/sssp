@@ -48,6 +48,10 @@ module.exports = {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
             },
+            {
+                test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
+                loader: 'url-loader?limit=100000'
+            }
         ],
     },
     devtool: 'eval-source-map',
@@ -61,9 +65,7 @@ module.exports = {
         sockPort: 8000,
         host: '0.0.0.0',
         disableHostCheck: true,
-        historyApiFallback: {
-            index: 'index.html'
-        },
+        historyApiFallback: true,
         headers: {
             "Access-Control-Allow-Origin": "*"
         },

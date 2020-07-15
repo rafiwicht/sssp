@@ -4,8 +4,10 @@
 import React from 'react';
 import clsx from 'clsx';
 import {makeStyles} from "@material-ui/core/styles";
-import {IconButton, Theme, Drawer, Divider, Badge} from "@material-ui/core";
+import {IconButton, Theme, Drawer, Divider} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import HomeIcon from '@material-ui/icons/Home';
+import RoomServiceIcon from '@material-ui/icons/RoomService';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
@@ -46,10 +48,22 @@ type MenuProps = {
     handleDrawerClose: () => void
 }
 
+
+const test = [
+    {
+        text: 'Home',
+        subpage: '/home',
+        icon: (<HomeIcon />)
+    },
+    {
+        text: 'Service',
+        subpage: '/service',
+        icon: (<RoomServiceIcon />)
+    }]
+
 const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
 
-    const test = ['test1', 'test2', 'test3']
 
     return (
         <Drawer
@@ -57,19 +71,19 @@ const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: Men
             classes={{
                 paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
             }}
-            open={open} >
+            open={open}>
             <div className={classes.toolbarIcon}>
                 <IconButton
                     edge="start"
                     color="inherit"
                     aria-label="open drawer"
-                    onClick={handleDrawerClose} >
+                    onClick={handleDrawerClose}>
                     <ChevronLeftIcon/>
                 </IconButton>
             </div>
-            <Divider />
+            <Divider/>
             {test.map((value, index) => {
-                return (<MenuListItem text={value} key={index} />);
+                return (<MenuListItem {...value} key={index}/>);
             })}
         </Drawer>
     );
