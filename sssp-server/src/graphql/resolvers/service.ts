@@ -48,7 +48,8 @@ const ServiceMutation = {
                 const newService = new Service({
                     _id: new mongoose.Types.ObjectId(),
                     name: serviceInput.name,
-                    owner: serviceInput.owner
+                    owner: serviceInput.owner,
+                    state: 'on creation'
                 });
                 const savedService = await newService.save();
 
@@ -60,7 +61,15 @@ const ServiceMutation = {
     },
     updateService: async (parent: any, {serviceId, serviceInput}: any) => {
         try {
-            const service = await Service.findByIdAndUpdate(serviceId,);
+            const service = await Service.findByIdAndUpdate(serviceId,serviceInput);
+            return transformService(service);
+        } catch (error) {
+            throw error;
+        }
+    },
+    deleteService: async (parent: any, {serviceId}: any) => {
+        try {
+            const service = await Service.findByIdAndDelete(serviceId);
             return transformService(service);
         } catch (error) {
             throw error;

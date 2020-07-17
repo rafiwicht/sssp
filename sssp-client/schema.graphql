@@ -1,0 +1,38 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Mutation {
+    createService(serviceInput: ServiceInput!): Service!
+    deleteService(serviceId: ID!): Service!
+    updateService(serviceId: ID!, serviceInput: ServiceInput!): Service!
+}
+
+type Query {
+    service(serviceId: ID!): Service!
+    services: [Service!]!
+}
+
+type Service {
+    _id: ID!
+    name: String!
+    owner: String!
+    state: String!
+}
+
+enum CacheControlScope {
+    PRIVATE
+    PUBLIC
+}
+
+input ServiceInput {
+    name: String!
+    owner: String!
+}
+
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload

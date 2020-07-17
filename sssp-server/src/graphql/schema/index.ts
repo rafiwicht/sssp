@@ -13,17 +13,19 @@ const typeDefs = gql`
       service(serviceId: ID!): Service!
   }
   type Mutation {
-      createService(serviceInput: ServiceInput): Service!
-      updateService(serviceId: ID!, serviceInput: ServiceInput): Service!
+      createService(serviceInput: ServiceInput!): Service!
+      updateService(serviceId: ID!, serviceInput: ServiceInput!): Service!
+      deleteService(serviceId: ID!): Service!
   }
   type Service {
-    _id: ID!
-    name: String!
-    owner: String!
+      _id: ID!
+      name: String!
+      owner: String!
+      state: String!
   }
   input ServiceInput {
-    name: String!
-    owner: String!
+      name: String!
+      owner: String!
   }
 `;
 

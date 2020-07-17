@@ -7,11 +7,13 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ServiceInterface extends Document {
     name: string;
     owner: string;
+    state: string;
 }
 
 const ServiceSchema: Schema = new Schema({
     name: { type: String, required: true },
-    owner: { type: String, required: true }
+    owner: { type: String, required: true },
+    state: {type: String, required: true}
 });
 
 const Service = mongoose.model<ServiceInterface>('Service', ServiceSchema);

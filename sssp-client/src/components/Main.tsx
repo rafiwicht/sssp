@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import {Route, BrowserRouter, Redirect, Switch} from "react-router-dom";
+import {makeStyles, Theme} from "@material-ui/core/styles";
+import 'fontsource-roboto';
 
 import Bar from './Bar';
 import Home from './Home';
 import Menu from "./Menu";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import Service from "./service/Service";
-
-import 'fontsource-roboto';
+import ServiceRouter from "./service/ServiceRouter";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -49,15 +48,13 @@ const Main: React.FC = () => {
                 <div className={classes.content}>
                     <div className={classes.appBarSpacer}/>
                     <Switch>
-                        <Route
-                            path='/home'
-                            component={Home} />
-                        <Route
-                            path='/service'
-                            component={Service} />
-                        <Route
-                            path='/'
-                            exact>
+                        <Route path='/home' >
+                            <Home />
+                        </Route>
+                        <Route path='/service'>
+                            <ServiceRouter />
+                        </Route>
+                        <Route path='/' exact>
                             <Redirect to={'/home'} />
                         </Route>
                     </Switch>

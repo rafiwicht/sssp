@@ -1,6 +1,6 @@
 overwrite: true
-schema: "https://sssp.rwicht.ch:8080/graphql/"
-#documents: "src/**/*.graphql"
+schema: "https://sssp.rwicht.ch:8000/graphql/"
+documents: "src/components/**/query.ts"
 generates:
   src/generated/graphql.tsx:
     plugins:

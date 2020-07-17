@@ -6,7 +6,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 type MenuListItemProps = RouteComponentProps & {
     text: string,
     subpage: string,
-    icon: FunctionComponent
+    icon: any
 }
 
 const MenuListItem: React.FunctionComponent<MenuListItemProps> = ({text, subpage, icon, history}: MenuListItemProps) => {
