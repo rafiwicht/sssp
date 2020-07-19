@@ -5,6 +5,13 @@ schema {
     mutation: Mutation
 }
 
+type Index {
+    _id: ID!
+    frozenTimePeriodInSecs: Int!
+    maxTotalDataSizeMB: Int!
+    name: String!
+}
+
 type Mutation {
     createService(serviceInput: ServiceInput!): Service!
     deleteService(serviceId: ID!): Service!
@@ -18,9 +25,12 @@ type Query {
 
 type Service {
     _id: ID!
+    indexes: [Index!]!
     name: String!
     owner: String!
+    read: [String!]!
     state: String!
+    write: [String!]!
 }
 
 enum CacheControlScope {
@@ -28,9 +38,18 @@ enum CacheControlScope {
     PUBLIC
 }
 
+input IndexInput {
+    frozenTimePeriodInSecs: Int
+    maxTotalDataSizeMB: Int
+    name: String!
+}
+
 input ServiceInput {
+    indexes: [IndexInput]
     name: String!
     owner: String!
+    read: [String]
+    write: [String]
 }
 
 

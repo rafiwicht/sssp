@@ -51,9 +51,9 @@ const ServiceCreate: React.FunctionComponent<RouteComponentProps> = ({history}: 
     return (
         <div>
             <Typography variant='h3'>Create Service</Typography>
-            <Typography variant='h5'>Service options</Typography>
-            <Divider />
             <form autoComplete='off' onSubmit={() => handleSubmit()}>
+                <Typography variant='h5'>Service options</Typography>
+                <Divider />
                 <FormControl fullWidth className={classes.marginFields}>
                     <InputLabel htmlFor='name'>Name</InputLabel>
                     <Input
@@ -74,6 +74,12 @@ const ServiceCreate: React.FunctionComponent<RouteComponentProps> = ({history}: 
                         onChange={handleChange('owner')}
                     />
                 </FormControl>
+                <Typography variant='h5'>Index options</Typography>
+                <Divider />
+                t.b.d.
+                <Typography variant='h5'>Access options</Typography>
+                <Divider />
+                t.b.d.
             </form>
             <Divider />
             <Button

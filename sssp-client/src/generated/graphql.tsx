@@ -35,6 +35,17 @@ export type Service = {
   name: Scalars['String'];
   owner: Scalars['String'];
   state: Scalars['String'];
+  read: Array<Scalars['String']>;
+  write: Array<Scalars['String']>;
+  indexes: Array<Index>;
+};
+
+export type Index = {
+  __typename?: 'Index';
+  _id: Scalars['ID'];
+  name: Scalars['String'];
+  maxTotalDataSizeMB: Scalars['Int'];
+  frozenTimePeriodInSecs: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -63,6 +74,15 @@ export type MutationDeleteServiceArgs = {
 export type ServiceInput = {
   name: Scalars['String'];
   owner: Scalars['String'];
+  read?: Maybe<Array<Maybe<Scalars['String']>>>;
+  write?: Maybe<Array<Maybe<Scalars['String']>>>;
+  indexes?: Maybe<Array<Maybe<IndexInput>>>;
+};
+
+export type IndexInput = {
+  name: Scalars['String'];
+  maxTotalDataSizeMB?: Maybe<Scalars['Int']>;
+  frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
 };
 
 export enum CacheControlScope {
@@ -91,7 +111,11 @@ export type GetServiceQuery = (
   { __typename?: 'Query' }
   & { service: (
     { __typename?: 'Service' }
-    & Pick<Service, '_id' | 'name' | 'owner' | 'state'>
+    & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'read' | 'write'>
+    & { indexes: Array<(
+      { __typename?: 'Index' }
+      & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
+    )> }
   ) }
 );
 
@@ -197,6 +221,14 @@ export const GetServiceDocument = gql`
     name
     owner
     state
+    indexes {
+      _id
+      name
+      maxTotalDataSizeMB
+      frozenTimePeriodInSecs
+    }
+    read
+    write
   }
 }
     `;

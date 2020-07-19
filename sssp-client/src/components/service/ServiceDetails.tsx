@@ -2,14 +2,13 @@ import React from "react";
 import {RouteComponentProps, withRouter, useParams} from "react-router-dom";
 import {
     Button,
-    Divider,
-    Paper,
-    Table, TableBody, TableCell, TableContainer,
-    TableRow,
+    Divider, Grid,
     Typography
 } from "@material-ui/core";
 import {useGetServiceQuery} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import IndexList from "../index/IndexList";
+import UserList from "../user/UserList";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -21,6 +20,9 @@ const useStyles = makeStyles(() =>
             marginTop: 5,
             marginBottom: 5,
             marginRight: 5
+        },
+        marginDivider: {
+            marginBottom: 5
         }
     }),
 );
@@ -51,26 +53,34 @@ const ServiceDetails: React.FunctionComponent<RouteComponentProps> = ({history}:
         <div>
             <Typography variant='h3'>Service Details</Typography>
             <Typography variant='h5'>Service options</Typography>
-            <Divider />
-            <TableContainer component={Paper}>
-                <Table aria-label="service">
-                    <TableBody>
-                        <TableRow key='name'>
-                            <TableCell>Name</TableCell>
-                            <TableCell align='right'>{data.service.name}</TableCell>
-                        </TableRow>
-                        <TableRow key='owner'>
-                            <TableCell>Owner</TableCell>
-                            <TableCell align='right'>{data.service.owner}</TableCell>
-                        </TableRow>
-                        <TableRow key='state'>
-                            <TableCell>State</TableCell>
-                            <TableCell align='right'>{data.service.state}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Divider />
+            <Divider className={classes.marginDivider}/>
+            <Grid container spacing={2}>
+                <Grid item md={2}>
+                    Name
+                </Grid>
+                <Grid item md={10}>
+                    {data.service.name}
+                </Grid>
+                <Grid item md={2}>
+                    Owner
+                </Grid>
+                <Grid item md={10}>
+                    {data.service.owner}
+                </Grid>
+                <Grid item md={2}>
+                    State
+                </Grid>
+                <Grid item md={10}>
+                    {data.service.state}
+                </Grid>
+            </Grid>
+            <Typography variant='h5'>Index options</Typography>
+            <Divider className={classes.marginDivider}/>
+            <IndexList data={data.service.indexes} />
+            <Typography variant='h5'>Access options</Typography>
+            <Divider className={classes.marginDivider}/>
+            <UserList read={data.service.read} write={data.service.write} />
+            <Divider className={classes.marginDivider}/>
             <Button
                 variant='contained'
                 className={classes.marginButton}

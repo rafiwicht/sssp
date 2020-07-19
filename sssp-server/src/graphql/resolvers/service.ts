@@ -43,7 +43,7 @@ const ServiceMutation = {
             return transformService(savedService);
         }
     },
-    updateService: async (parent: any, {serviceId, serviceInput}: any) => {
+    updateService: async (parent: any, {serviceId, serviceInput}: any, context: any) => {
         const service = await Service.findByIdAndUpdate(serviceId,serviceInput);
         return transformService(service);
     },

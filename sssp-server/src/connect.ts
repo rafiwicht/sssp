@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 
 export default (db: string) => {
     Promise.promisifyAll(mongoose);
+    mongoose.set('useFindAndModify', false);
 
     const connect = () => {
         mongoose

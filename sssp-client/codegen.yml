@@ -1,5 +1,8 @@
 overwrite: true
-schema: "https://sssp.rwicht.ch:8000/graphql/"
+schema:
+  - https://sssp.rwicht.ch:8000/graphql/:
+      headers:
+        Authorization: Test
 documents: "src/components/**/query.ts"
 generates:
   src/generated/graphql.tsx:

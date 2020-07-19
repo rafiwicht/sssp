@@ -15,6 +15,14 @@ export default gql`
             name
             owner
             state
+            indexes {
+                _id
+                name
+                maxTotalDataSizeMB
+                frozenTimePeriodInSecs
+            }
+            read
+            write
         }
     },
     mutation CreateService($serviceInput: ServiceInput!)  {
