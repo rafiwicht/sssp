@@ -16,7 +16,7 @@ KEYCLOAK ?= sssp-keycloak
 ############## Local run ##############
 
 pod:
-	podman pod create -p 8000 --name sssp
+	podman pod create -p 8000 -p 27017 --name sssp
 
 rm-pod:
 	-podman pod rm sssp -f

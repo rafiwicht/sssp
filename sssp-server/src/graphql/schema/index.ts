@@ -22,10 +22,27 @@ const typeDefs = gql`
       name: String!
       owner: String!
       state: String!
+      read: [String!]!
+      write: [String!]!
+      indexes: [Index!]!
+  }
+  type Index {
+      _id: ID!
+      name: String!
+      maxTotalDataSizeMB: Int!
+      frozenTimePeriodInSecs: Int!
   }
   input ServiceInput {
       name: String!
       owner: String!
+      read: [String]
+      write: [String]
+      indexes: [IndexInput]
+  }
+  input IndexInput {
+      name: String!
+      maxTotalDataSizeMB: Int
+      frozenTimePeriodInSecs: Int
   }
 `;
 
