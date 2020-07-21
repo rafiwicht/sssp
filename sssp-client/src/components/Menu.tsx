@@ -8,6 +8,7 @@ import {IconButton, Theme, Drawer, Divider} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HomeIcon from '@material-ui/icons/Home';
 import RoomServiceIcon from '@material-ui/icons/RoomService';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
@@ -53,12 +54,20 @@ const test = [
     {
         text: 'Home',
         subpage: '/home',
+        adminOnly: false,
         icon: (<HomeIcon />)
     },
     {
         text: 'Service',
         subpage: '/service',
+        adminOnly: false,
         icon: (<RoomServiceIcon />)
+    },
+    {
+        text: 'Admin',
+        subpage: 'admin',
+        adminOnly: true,
+        icon: (<SupervisorAccountIcon />)
     }]
 
 const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {

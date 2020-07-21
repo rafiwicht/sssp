@@ -9,7 +9,6 @@ import client from "./config/apollo";
 
 
 const App: React.FC = () => {
-    console.log(process.env);
     return (
         <KeycloakProvider keycloak={keycloak} initConfig={{onLoad: 'login-required'}}>
             <ApolloProvider client={client}>

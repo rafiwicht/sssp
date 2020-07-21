@@ -7,6 +7,9 @@ import Bar from './Bar';
 import Home from './Home';
 import Menu from "./Menu";
 import ServiceRouter from "./service/ServiceRouter";
+import Admin from "./admin/Admin";
+import {useKeycloak} from "@react-keycloak/web";
+import useAdmin from "../hooks/useAdmin";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -24,6 +27,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Main: React.FC = () => {
     const [open, setOpen] = useState(false);
+    const [keycloak] = useKeycloak();
+    const admin = useAdmin();
 
     const classes = useStyles();
 
@@ -34,8 +39,13 @@ const Main: React.FC = () => {
         setOpen(false);
     };
 
-    return (
+    if(!keycloak.authenticated) {
+        return (
+            <div>You have to be logged in!</div>
+        );
+    }
 
+    return (
         <BrowserRouter>
             <div className={classes.root}>
                 <Bar
@@ -54,6 +64,11 @@ const Main: React.FC = () => {
                         <Route path='/service'>
                             <ServiceRouter />
                         </Route>
+                        { admin &&
+                            <Route path='/admin'>
+                                <Admin />
+                            </Route>
+                        }
                         <Route path='/' exact>
                             <Redirect to={'/home'} />
                         </Route>

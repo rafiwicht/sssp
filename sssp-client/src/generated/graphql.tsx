@@ -14,19 +14,58 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
 };
 
 export type Query = {
   __typename?: 'Query';
   services: Array<Service>;
   service: Service;
+  admin: Scalars['Boolean'];
 };
 
 
 export type QueryServiceArgs = {
   serviceId: Scalars['ID'];
+};
+
+
+export type QueryAdminArgs = {
+  userId: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createService: Service;
+  updateService: Service;
+  deleteService: Service;
+  createAdmin: Scalars['String'];
+  deleteAdmin: Scalars['String'];
+};
+
+
+export type MutationCreateServiceArgs = {
+  serviceInput: ServiceInput;
+};
+
+
+export type MutationUpdateServiceArgs = {
+  serviceId: Scalars['ID'];
+  serviceInput: ServiceInput;
+};
+
+
+export type MutationDeleteServiceArgs = {
+  serviceId: Scalars['ID'];
+};
+
+
+export type MutationCreateAdminArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type MutationDeleteAdminArgs = {
+  userId: Scalars['String'];
 };
 
 export type Service = {
@@ -48,29 +87,6 @@ export type Index = {
   frozenTimePeriodInSecs: Scalars['Int'];
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  createService: Service;
-  updateService: Service;
-  deleteService: Service;
-};
-
-
-export type MutationCreateServiceArgs = {
-  serviceInput: ServiceInput;
-};
-
-
-export type MutationUpdateServiceArgs = {
-  serviceId: Scalars['ID'];
-  serviceInput: ServiceInput;
-};
-
-
-export type MutationDeleteServiceArgs = {
-  serviceId: Scalars['ID'];
-};
-
 export type ServiceInput = {
   name: Scalars['String'];
   owner: Scalars['String'];
@@ -85,11 +101,35 @@ export type IndexInput = {
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
 };
 
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE'
-}
+export type IsAdminQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
 
+
+export type IsAdminQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'admin'>
+);
+
+export type CreateAdminMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type CreateAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'createAdmin'>
+);
+
+export type DeleteAdminMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type DeleteAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteAdmin'>
+);
 
 export type GetServicesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -160,6 +200,154 @@ export type DeleteServiceMutation = (
 );
 
 
+export const IsAdminDocument = gql`
+    query IsAdmin($userId: String!) {
+  admin(userId: $userId)
+}
+    `;
+export type IsAdminComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<IsAdminQuery, IsAdminQueryVariables>, 'query'> & ({ variables: IsAdminQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const IsAdminComponent = (props: IsAdminComponentProps) => (
+      <ApolloReactComponents.Query<IsAdminQuery, IsAdminQueryVariables> query={IsAdminDocument} {...props} />
+    );
+    
+export type IsAdminProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<IsAdminQuery, IsAdminQueryVariables>
+    } & TChildProps;
+export function withIsAdmin<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  IsAdminQuery,
+  IsAdminQueryVariables,
+  IsAdminProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, IsAdminQuery, IsAdminQueryVariables, IsAdminProps<TChildProps, TDataName>>(IsAdminDocument, {
+      alias: 'isAdmin',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useIsAdminQuery__
+ *
+ * To run a query within a React component, call `useIsAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsAdminQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useIsAdminQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<IsAdminQuery, IsAdminQueryVariables>) {
+        return ApolloReactHooks.useQuery<IsAdminQuery, IsAdminQueryVariables>(IsAdminDocument, baseOptions);
+      }
+export function useIsAdminLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<IsAdminQuery, IsAdminQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<IsAdminQuery, IsAdminQueryVariables>(IsAdminDocument, baseOptions);
+        }
+export type IsAdminQueryHookResult = ReturnType<typeof useIsAdminQuery>;
+export type IsAdminLazyQueryHookResult = ReturnType<typeof useIsAdminLazyQuery>;
+export type IsAdminQueryResult = ApolloReactCommon.QueryResult<IsAdminQuery, IsAdminQueryVariables>;
+export const CreateAdminDocument = gql`
+    mutation CreateAdmin($userId: String!) {
+  createAdmin(userId: $userId)
+}
+    `;
+export type CreateAdminMutationFn = ApolloReactCommon.MutationFunction<CreateAdminMutation, CreateAdminMutationVariables>;
+export type CreateAdminComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<CreateAdminMutation, CreateAdminMutationVariables>, 'mutation'>;
+
+    export const CreateAdminComponent = (props: CreateAdminComponentProps) => (
+      <ApolloReactComponents.Mutation<CreateAdminMutation, CreateAdminMutationVariables> mutation={CreateAdminDocument} {...props} />
+    );
+    
+export type CreateAdminProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<CreateAdminMutation, CreateAdminMutationVariables>
+    } & TChildProps;
+export function withCreateAdmin<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  CreateAdminMutation,
+  CreateAdminMutationVariables,
+  CreateAdminProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, CreateAdminMutation, CreateAdminMutationVariables, CreateAdminProps<TChildProps, TDataName>>(CreateAdminDocument, {
+      alias: 'createAdmin',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useCreateAdminMutation__
+ *
+ * To run a mutation, you first call `useCreateAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAdminMutation, { data, loading, error }] = useCreateAdminMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useCreateAdminMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateAdminMutation, CreateAdminMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateAdminMutation, CreateAdminMutationVariables>(CreateAdminDocument, baseOptions);
+      }
+export type CreateAdminMutationHookResult = ReturnType<typeof useCreateAdminMutation>;
+export type CreateAdminMutationResult = ApolloReactCommon.MutationResult<CreateAdminMutation>;
+export type CreateAdminMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateAdminMutation, CreateAdminMutationVariables>;
+export const DeleteAdminDocument = gql`
+    mutation DeleteAdmin($userId: String!) {
+  deleteAdmin(userId: $userId)
+}
+    `;
+export type DeleteAdminMutationFn = ApolloReactCommon.MutationFunction<DeleteAdminMutation, DeleteAdminMutationVariables>;
+export type DeleteAdminComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteAdminMutation, DeleteAdminMutationVariables>, 'mutation'>;
+
+    export const DeleteAdminComponent = (props: DeleteAdminComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteAdminMutation, DeleteAdminMutationVariables> mutation={DeleteAdminDocument} {...props} />
+    );
+    
+export type DeleteAdminProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteAdminMutation, DeleteAdminMutationVariables>
+    } & TChildProps;
+export function withDeleteAdmin<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteAdminMutation,
+  DeleteAdminMutationVariables,
+  DeleteAdminProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteAdminMutation, DeleteAdminMutationVariables, DeleteAdminProps<TChildProps, TDataName>>(DeleteAdminDocument, {
+      alias: 'deleteAdmin',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAdminMutation, { data, loading, error }] = useDeleteAdminMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useDeleteAdminMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAdminMutation, DeleteAdminMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteAdminMutation, DeleteAdminMutationVariables>(DeleteAdminDocument, baseOptions);
+      }
+export type DeleteAdminMutationHookResult = ReturnType<typeof useDeleteAdminMutation>;
+export type DeleteAdminMutationResult = ApolloReactCommon.MutationResult<DeleteAdminMutation>;
+export type DeleteAdminMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAdminMutation, DeleteAdminMutationVariables>;
 export const GetServicesDocument = gql`
     query GetServices {
   services {
