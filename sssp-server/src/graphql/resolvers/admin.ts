@@ -5,52 +5,34 @@
 
 import mongoose from 'mongoose';
 import Service from '../../models/service';
-import {transformService} from './merge';
+import Admin from "../../models/admin";
 
-const ServiceQueries = {
-    services: async () => {
-        const services = await Service.find();
-        return services.map((service) => {
-            return transformService(service);
-        });
-    },
-    service: async (parent: any, {serviceId}: any) => {
-        const service = await Service.findById(serviceId);
-        return transformService(service);
-
+const AdminQueries = {
+    admin: async (parent: any, {userId}: any) => {
+        const admin = await Admin.findById(userId);
+        return !!admin;
     }
 };
 
-const ServiceMutation = {
-    createService: async (parent: any, {serviceInput}: any, context: any) => {
-        const service = await Service.findOne({
-            name: serviceInput.name
-        });
+const AdminMutation = {
+    createAdmin: async (parent: any, {userId}: any, context: any) => {
+        const service = await Service.findById(userId);
         if (service) {
-            throw new Error('Service already Exists');
+            throw new Error('User already admin');
         } else {
-            const newService = new Service({
+            const newAdmin = new Admin({
                 _id: new mongoose.Types.ObjectId(),
-                name: serviceInput.name,
-                owner: serviceInput.owner,
-                state: 'on creation',
-                indexes: [],
-                read: [],
-                write: [context.userId]
+                userId: userId
             });
-            const savedService = await newService.save();
+            const savedAdmin = await newAdmin.save();
 
-            return transformService(savedService);
+            return savedAdmin._id;
         }
     },
-    updateService: async (parent: any, {serviceId, serviceInput}: any, context: any) => {
-        const service = await Service.findByIdAndUpdate(serviceId,serviceInput);
-        return transformService(service);
-    },
-    deleteService: async (parent: any, {serviceId}: any) => {
-        const service = await Service.findByIdAndDelete(serviceId);
-        return transformService(service);
+    deleteAdmin: async (parent: any, {userId}: any, context: any) => {
+        const admin = await Service.findByIdAndUpdate(userId);
+        return admin._id;
     }
 };
 
-export {ServiceQueries, ServiceMutation};
+export {AdminQueries, AdminMutation};
