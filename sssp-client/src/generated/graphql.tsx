@@ -20,6 +20,7 @@ export type Query = {
   __typename?: 'Query';
   services: Array<Service>;
   service: Service;
+  admins: Array<Scalars['String']>;
   admin: Scalars['Boolean'];
 };
 
@@ -100,6 +101,14 @@ export type IndexInput = {
   maxTotalDataSizeMB?: Maybe<Scalars['Int']>;
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
 };
+
+export type GetAdminsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAdminsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'admins'>
+);
 
 export type IsAdminQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -200,6 +209,55 @@ export type DeleteServiceMutation = (
 );
 
 
+export const GetAdminsDocument = gql`
+    query GetAdmins {
+  admins
+}
+    `;
+export type GetAdminsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetAdminsQuery, GetAdminsQueryVariables>, 'query'>;
+
+    export const GetAdminsComponent = (props: GetAdminsComponentProps) => (
+      <ApolloReactComponents.Query<GetAdminsQuery, GetAdminsQueryVariables> query={GetAdminsDocument} {...props} />
+    );
+    
+export type GetAdminsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetAdminsQuery, GetAdminsQueryVariables>
+    } & TChildProps;
+export function withGetAdmins<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetAdminsQuery,
+  GetAdminsQueryVariables,
+  GetAdminsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetAdminsQuery, GetAdminsQueryVariables, GetAdminsProps<TChildProps, TDataName>>(GetAdminsDocument, {
+      alias: 'getAdmins',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetAdminsQuery__
+ *
+ * To run a query within a React component, call `useGetAdminsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAdminsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAdminsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAdminsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAdminsQuery, GetAdminsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAdminsQuery, GetAdminsQueryVariables>(GetAdminsDocument, baseOptions);
+      }
+export function useGetAdminsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAdminsQuery, GetAdminsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAdminsQuery, GetAdminsQueryVariables>(GetAdminsDocument, baseOptions);
+        }
+export type GetAdminsQueryHookResult = ReturnType<typeof useGetAdminsQuery>;
+export type GetAdminsLazyQueryHookResult = ReturnType<typeof useGetAdminsLazyQuery>;
+export type GetAdminsQueryResult = ApolloReactCommon.QueryResult<GetAdminsQuery, GetAdminsQueryVariables>;
 export const IsAdminDocument = gql`
     query IsAdmin($userId: String!) {
   admin(userId: $userId)

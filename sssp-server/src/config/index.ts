@@ -8,5 +8,6 @@ export default {
     path: '/graphql',
     allowedOrigins: ['*'],
     jwtCertUrl: 'http://localhost:8080/auth/realms/sssp/protocol/openid-connect/certs',
-    jwtFileName: 'certs'
+    jwtFileName: 'certs',
+    ssspAdmins: process.env.SSSP_ADMINS || 'ssspAdmin'
 };

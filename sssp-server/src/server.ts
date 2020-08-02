@@ -3,9 +3,10 @@
  * @author Anurag Garg <garganurag893@gmail.com>
  */
 
-import connect from './connect';
+import connect from './config/connect';
 import config from './config';
 import Express from './config/express';
+import ssspAdmin from "./config/ssspAdmin";
 
 
 /**
@@ -13,6 +14,11 @@ import Express from './config/express';
  * @param db: string
  */
 connect(config.db);
+
+/**
+ * load default user
+ */
+ssspAdmin(config.ssspAdmins)
 
 /**
  * Initialize Express

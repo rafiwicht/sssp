@@ -37,6 +37,7 @@ keycloak:
 	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test2 -p ${PASSWORD} -r sssp
 	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test3 -p ${PASSWORD} -r sssp
 	podman restart ${KEYCLOAK}
+	sleep 20
 
 rm-keycloak:
 	-podman kill ${KEYCLOAK}
@@ -63,6 +64,7 @@ server:
 		--env MONGO_USER=${MONGO_USER} \
 		--env MONGO_SECRET=${PASSWORD} \
 		--env MONGO=localhost \
+		--env SSSP_ADMINS=test1 \
 		-v "./sssp-server:/sssp-server:Z" \
 		-w "/sssp-server" \
 		--name ${SERVER} \

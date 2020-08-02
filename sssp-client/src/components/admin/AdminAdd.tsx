@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import {BrowserRouterProps} from "react-router-dom";
-import {ServiceInput, useCreateAdminMutation} from "../../generated/graphql";
-import {Button, Divider, FormControl, Input, InputLabel, TextField, Typography} from "@material-ui/core";
+import {GetAdminsDocument, useCreateAdminMutation} from "../../generated/graphql";
+import {Button, TextField, Typography} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles(() =>
@@ -17,7 +16,9 @@ const AdminAdd: React.FC = () => {
     const [userId, setUserId] = useState<string>("");
     const classes = useStyles();
 
-    const [createAdmin] = useCreateAdminMutation();
+    const [createAdmin] = useCreateAdminMutation({
+        refetchQueries: [{query: GetAdminsDocument}]
+    });
 
     const handleChange = (event: any) => {
         setUserId(event.target.value);
@@ -40,6 +41,7 @@ const AdminAdd: React.FC = () => {
                 <TextField
                     id="userId"
                     label="UserID"
+                    value={userId}
                     onChange={event => handleChange(event)}/>
             </form>
             <Button

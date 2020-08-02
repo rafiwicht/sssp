@@ -2,6 +2,9 @@ import gql from 'graphql-tag';
 
 
 export default gql`
+    query GetAdmins {
+        admins
+    }
     query IsAdmin ($userId: String!) {
         admin(userId: $userId)
     },

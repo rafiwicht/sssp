@@ -12,6 +12,8 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
+import {useIsAdminQuery} from "../generated/graphql";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -46,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type MenuProps = {
     open: boolean,
+    admin: boolean,
     handleDrawerClose: () => void
 }
 
@@ -70,7 +73,7 @@ const test = [
         icon: (<SupervisorAccountIcon />)
     }]
 
-const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
+const Menu: React.FunctionComponent<MenuProps> = ({open, admin, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
 
 
@@ -92,7 +95,9 @@ const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: Men
             </div>
             <Divider/>
             {test.map((value, index) => {
-                return (<MenuListItem {...value} key={index}/>);
+                if(!value.adminOnly || admin) {
+                    return (<MenuListItem {...value} key={index}/>);
+                }
             })}
         </Drawer>
     );

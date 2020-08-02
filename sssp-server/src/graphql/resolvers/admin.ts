@@ -4,21 +4,37 @@
  */
 
 import mongoose from 'mongoose';
-import Service from '../../models/service';
 import Admin from "../../models/admin";
 
 const AdminQueries = {
+    admins: async (parent: any, {}, context: any) => {
+        console.log(context);
+        if(!context.admin) {
+            throw new Error('Unauthorized!')
+        }
+        const admins = await Admin.find();
+        return admins.map((admin) => {
+            return admin.userId;
+        });
+    },
     admin: async (parent: any, {userId}: any) => {
-        const admin = await Admin.findById(userId);
+        const admin = await Admin.findOne({
+            userId: userId
+        });
         return !!admin;
     }
 };
 
 const AdminMutation = {
     createAdmin: async (parent: any, {userId}: any, context: any) => {
-        const service = await Service.findById(userId);
-        if (service) {
-            throw new Error('User already admin');
+        if(!context.admin) {
+            throw new Error('Unauthorized!')
+        }
+        const admin = await Admin.findOne({
+            userId: userId
+        });
+        if (admin) {
+            throw new Error('User is already admin');
         } else {
             const newAdmin = new Admin({
                 _id: new mongoose.Types.ObjectId(),
@@ -26,12 +42,17 @@ const AdminMutation = {
             });
             const savedAdmin = await newAdmin.save();
 
-            return savedAdmin._id;
+            return savedAdmin.userId;
         }
     },
     deleteAdmin: async (parent: any, {userId}: any, context: any) => {
-        const admin = await Service.findByIdAndUpdate(userId);
-        return admin._id;
+        if(!context.admin) {
+            throw new Error('Unauthorized!')
+        }
+        const admin = await Admin.findOneAndDelete({
+            userId: userId
+        });
+        return admin.userId;
     }
 };
 

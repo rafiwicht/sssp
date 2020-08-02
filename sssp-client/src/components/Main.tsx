@@ -9,7 +9,7 @@ import Menu from "./Menu";
 import ServiceRouter from "./service/ServiceRouter";
 import Admin from "./admin/Admin";
 import {useKeycloak} from "@react-keycloak/web";
-import useAdmin from "../hooks/useAdmin";
+import {useIsAdminQuery} from "../generated/graphql";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -28,9 +28,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Main: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [keycloak] = useKeycloak();
-    const admin = useAdmin();
 
     const classes = useStyles();
+
+    const parsed: any = keycloak.tokenParsed || {preferred_username: ''};
+    const {data} = useIsAdminQuery({
+        variables: {
+            userId: parsed.preferred_username
+        }
+    });
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -54,6 +60,7 @@ const Main: React.FC = () => {
                 />
                 <Menu
                     open={open}
+                    admin={(data === undefined) ? false : data.admin}
                     handleDrawerClose={handleDrawerClose}/>
                 <div className={classes.content}>
                     <div className={classes.appBarSpacer}/>
@@ -64,7 +71,7 @@ const Main: React.FC = () => {
                         <Route path='/service'>
                             <ServiceRouter />
                         </Route>
-                        { admin &&
+                        {(data === undefined) ? false : data.admin &&
                             <Route path='/admin'>
                                 <Admin />
                             </Route>

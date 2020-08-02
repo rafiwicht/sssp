@@ -7,6 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import config from "../config";
 import {exec} from "child_process";
 import * as fs from "fs";
+import Admin from "../models/admin";
 
 /**
  * Download cert
@@ -26,7 +27,7 @@ ${publicKey}
  * @param next
  */
 
-export default (req: any, res: any, next: any) => {
+export default async (req: any, res: any, next: any) => {
     const authHeader = req.get('Authorization');
     if (!authHeader) {
         res.status = 401;
@@ -43,6 +44,7 @@ export default (req: any, res: any, next: any) => {
         decodedToken = jwt.verify(token, publicFile, { algorithms: ['RS256']});
     } catch (err) {
         res.status = 401;
+        console.log(err);
         return next(new Error('Unauthorized!'));
     }
     if (!decodedToken) {
@@ -50,5 +52,13 @@ export default (req: any, res: any, next: any) => {
         return next(new Error('Unauthorized!'));
     }
     req.userId = decodedToken.preferred_username;
+
+    const admin = await Admin.findOne({
+        userId: req.userId
+    });
+    req.admin = !!admin;
+    console.log(req.admin);
+    console.log(admin);
+
     return next();
 };

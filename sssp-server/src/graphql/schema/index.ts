@@ -11,6 +11,7 @@ const typeDefs = gql`
     type Query {
         services: [Service!]!
         service(serviceId: ID!): Service!
+        admins: [String!]!
         admin(userId: String!): Boolean!
     }
     type Mutation {
@@ -55,7 +56,10 @@ const schema: ApolloServerExpressConfig = {
     resolvers,
     introspection: true,
     context: ({req}: any) => {
-        return {userId: req.userId};
+        return {
+            userId: req.userId,
+            admin: req.admin
+        };
     },
     playground: true
 };
