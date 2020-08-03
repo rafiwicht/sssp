@@ -4,8 +4,9 @@ import {Button, Divider, FormControl, Input, InputLabel, Typography} from '@mate
 import {GetServicesDocument, IndexInput, ServiceInput, useCreateServiceMutation} from '../../generated/graphql';
 import {createStyles, makeStyles} from '@material-ui/styles';
 import IndexModList from '../index/IndexModList';
-import IndexForm from "../index/IndexForm";
-import UserModList from "../user/UserModList";
+import IndexForm from '../index/IndexForm';
+import UserModList from '../user/UserModList';
+import UserForm from '../user/UserForm';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -75,6 +76,12 @@ const ServiceCreate: React.FunctionComponent<RouteComponentProps> = ({history}: 
         }
     }
 
+    const handleUserAdd = (userId: string) => {
+        if(!serviceInput.read.includes(userId) && !serviceInput.write.includes(userId)) {
+            setServiceInput({...serviceInput, read: [...serviceInput.read, userId]});
+        }
+    };
+
     const handleSubmit = () => {
         createService({
             variables: {
@@ -82,7 +89,7 @@ const ServiceCreate: React.FunctionComponent<RouteComponentProps> = ({history}: 
             },
 
         }).then(() => {
-                history.push('/service')
+            history.push('/service');
         });
     }
 
@@ -94,7 +101,6 @@ const ServiceCreate: React.FunctionComponent<RouteComponentProps> = ({history}: 
     }
 
     const handleIndexAdd = (indexInput: IndexInput) => {
-        console.log(serviceInput.indexes.findIndex(i => i.name === indexInput.name) === -1);
         if(serviceInput.indexes.findIndex(i => i.name === indexInput.name) === -1) {
             setServiceInput({ ...serviceInput, indexes: [...serviceInput.indexes, indexInput] });
         }
@@ -139,6 +145,8 @@ const ServiceCreate: React.FunctionComponent<RouteComponentProps> = ({history}: 
                     read={serviceInput.read}
                     write={serviceInput.write}
                     handleAccessChange={handleAccessChange} />
+                <UserForm
+                    submitUser= {handleUserAdd} />
             </form>
             <Divider />
             <Button

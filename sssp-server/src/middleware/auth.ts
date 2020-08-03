@@ -13,7 +13,8 @@ import Admin from "../models/admin";
  * Download cert
  */
 exec('wget '+ config.jwtCertUrl +' -O ' + config.jwtFileName);
-const data: any = fs.readFileSync(config.jwtFileName);
+const data: string = fs.readFileSync(config.jwtFileName).toString();
+console.log(data);
 const publicKey = JSON.parse(data).keys[0].x5c[0];
 const publicFile = `-----BEGIN CERTIFICATE-----
 ${publicKey}
