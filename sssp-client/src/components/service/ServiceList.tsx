@@ -23,8 +23,15 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+type ServiceSimple = {
+    _id: string,
+    name: string,
+    owner: string,
+    state: string
+}
+
 type ServiceListProps = RouteComponentProps & {
-    data: Array<Service>
+    data: Array<ServiceSimple>
 }
 
 const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, history}: ServiceListProps) => {
@@ -54,7 +61,7 @@ const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, history}:
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row: Service) => (
+                    {data.map((row: ServiceSimple) => (
                         <TableRow key={row._id}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align='right'>{row.owner}</TableCell>

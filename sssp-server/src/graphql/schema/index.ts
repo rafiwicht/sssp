@@ -39,9 +39,9 @@ const typeDefs = gql`
     input ServiceInput {
         name: String!
         owner: String!
-        read: [String]
-        write: [String]
-        indexes: [IndexInput]
+        read: [String!]!
+        write: [String!]!
+        indexes: [IndexInput!]!
     }
     input IndexInput {
         name: String!

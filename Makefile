@@ -37,7 +37,6 @@ keycloak:
 	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test2 -p ${PASSWORD} -r sssp
 	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test3 -p ${PASSWORD} -r sssp
 	podman restart ${KEYCLOAK}
-	sleep 20
 
 rm-keycloak:
 	-podman kill ${KEYCLOAK}

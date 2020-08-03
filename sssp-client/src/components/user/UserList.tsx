@@ -12,12 +12,12 @@ import {
 import {Index} from "../../generated/graphql";
 
 
-type IndexListProps = {
+type UserListProps = {
     read: Array<string>,
     write: Array<string>
 }
 
-const IndexList: React.FunctionComponent<IndexListProps> = ({read, write}: IndexListProps) => {
+const UserList: React.FunctionComponent<UserListProps> = ({read, write}: UserListProps) => {
 
     return (
         <TableContainer component={Paper}>
@@ -49,4 +49,4 @@ const IndexList: React.FunctionComponent<IndexListProps> = ({read, write}: Index
         </TableContainer>
     );
 }
-export default IndexList;
+export default UserList;

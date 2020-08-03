@@ -34,9 +34,9 @@ const ServiceMutation = {
                 name: serviceInput.name,
                 owner: serviceInput.owner,
                 state: 'on creation',
-                indexes: [],
-                read: [],
-                write: [context.userId]
+                indexes: serviceInput.indexes,
+                read: serviceInput.read,
+                write: serviceInput.write
             });
             const savedService = await newService.save();
 

@@ -32,6 +32,7 @@ const Main: React.FC = () => {
     const classes = useStyles();
 
     const parsed: any = keycloak.tokenParsed || {preferred_username: ''};
+    localStorage.setItem('userId', parsed.preferred_username);
     const {data} = useIsAdminQuery({
         variables: {
             userId: parsed.preferred_username

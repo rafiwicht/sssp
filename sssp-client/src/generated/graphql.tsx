@@ -91,9 +91,9 @@ export type Index = {
 export type ServiceInput = {
   name: Scalars['String'];
   owner: Scalars['String'];
-  read?: Maybe<Array<Maybe<Scalars['String']>>>;
-  write?: Maybe<Array<Maybe<Scalars['String']>>>;
-  indexes?: Maybe<Array<Maybe<IndexInput>>>;
+  read: Array<Scalars['String']>;
+  write: Array<Scalars['String']>;
+  indexes: Array<IndexInput>;
 };
 
 export type IndexInput = {

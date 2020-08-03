@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Button,
     Paper,
     Table,
     TableBody,
@@ -9,15 +10,15 @@ import {
     TableRow
 } from "@material-ui/core";
 
-import {Index} from "../../generated/graphql";
-
+import {IndexInput} from "../../generated/graphql";
 
 
 type IndexListProps = {
-    data: Array<Index>
+    data: Array<IndexInput>,
+    handleDelete: (key: number) => void
 }
 
-const IndexList: React.FunctionComponent<IndexListProps> = ({data}: IndexListProps) => {
+const IndexModList: React.FunctionComponent<IndexListProps> = ({handleDelete, data = []}: IndexListProps) => {
 
     return (
         <TableContainer component={Paper}>
@@ -27,14 +28,22 @@ const IndexList: React.FunctionComponent<IndexListProps> = ({data}: IndexListPro
                         <TableCell>Name</TableCell>
                         <TableCell align='right'>MaxTotalDataSizeMB</TableCell>
                         <TableCell align='right'>FrozenTimePeriodInSecs</TableCell>
+                        <TableCell align='right'>Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row: Index) => (
-                        <TableRow key={row._id}>
+                    {data.map((row: IndexInput, index: number) => (
+                        <TableRow key={index}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align='right'>{row.maxTotalDataSizeMB}</TableCell>
                             <TableCell align='right'>{row.frozenTimePeriodInSecs}</TableCell>
+                            <TableCell align='right'>
+                                <Button
+                                    variant='contained'
+                                    color='secondary'
+                                    onClick={() => handleDelete(index)}
+                                >Delete</Button>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -42,4 +51,4 @@ const IndexList: React.FunctionComponent<IndexListProps> = ({data}: IndexListPro
         </TableContainer>
     );
 }
-export default IndexList;
+export default IndexModList;
