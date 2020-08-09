@@ -4,22 +4,8 @@
  */
 
 import * as jwt from 'jsonwebtoken';
-import config from "../config";
-import {exec} from "child_process";
-import * as fs from "fs";
 import Admin from "../models/admin";
-
-/**
- * Download cert
- */
-exec('wget '+ config.jwtCertUrl +' -O ' + config.jwtFileName);
-const data: string = fs.readFileSync(config.jwtFileName).toString();
-console.log(data);
-const publicKey = JSON.parse(data).keys[0].x5c[0];
-const publicFile = `-----BEGIN CERTIFICATE-----
-${publicKey}
------END CERTIFICATE----- 
-`
+import keycloakValidate from '../config/keycloak'
 
 /**
  * Jwt verifying middleware
@@ -42,7 +28,7 @@ export default async (req: any, res: any, next: any) => {
     }
     let decodedToken: any;
     try {
-        decodedToken = jwt.verify(token, publicFile, { algorithms: ['RS256']});
+        decodedToken = jwt.verify(token, keycloakValidate.publicFile(), { algorithms: ['RS256']});
     } catch (err) {
         res.status = 401;
         console.log(err);
