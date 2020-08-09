@@ -78,6 +78,7 @@ export type Service = {
   read: Array<Scalars['String']>;
   write: Array<Scalars['String']>;
   indexes: Array<Index>;
+  sourcetypes: Array<Sourcetype>;
 };
 
 export type Index = {
@@ -88,18 +89,29 @@ export type Index = {
   frozenTimePeriodInSecs: Scalars['Int'];
 };
 
+export type Sourcetype = {
+  __typename?: 'Sourcetype';
+  _id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 export type ServiceInput = {
   name: Scalars['String'];
   owner: Scalars['String'];
   read: Array<Scalars['String']>;
   write: Array<Scalars['String']>;
   indexes: Array<IndexInput>;
+  sourcetypes: Array<SourcetypeInput>;
 };
 
 export type IndexInput = {
   name: Scalars['String'];
   maxTotalDataSizeMB?: Maybe<Scalars['Int']>;
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
+};
+
+export type SourcetypeInput = {
+  name: Scalars['String'];
 };
 
 export type GetAdminsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -164,6 +176,9 @@ export type GetServiceQuery = (
     & { indexes: Array<(
       { __typename?: 'Index' }
       & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
+    )>, sourcetypes: Array<(
+      { __typename?: 'Sourcetype' }
+      & Pick<Sourcetype, '_id' | 'name'>
     )> }
   ) }
 );
@@ -472,6 +487,10 @@ export const GetServiceDocument = gql`
       name
       maxTotalDataSizeMB
       frozenTimePeriodInSecs
+    }
+    sourcetypes {
+      _id
+      name
     }
     read
     write

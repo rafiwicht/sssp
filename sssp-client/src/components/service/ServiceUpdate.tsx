@@ -1,60 +1,36 @@
-import React, {useState} from "react";
-import {RouteComponentProps, useParams, withRouter} from "react-router-dom";
-import {Button, Divider, FormControl, Input, InputLabel, Typography} from "@material-ui/core";
+import React, {useEffect} from "react";
+import {useParams, useHistory} from "react-router-dom";
 import {
-    GetServicesDocument,
-    ServiceInput,
-    useGetServiceQuery,
+    GetServiceComponent, GetServiceDocument,
+    GetServicesDocument, Index,
+    ServiceInput, Sourcetype, useGetServiceLazyQuery,
     useUpdateServiceMutation
 } from "../../generated/graphql";
-import {createStyles, makeStyles} from "@material-ui/styles";
+import ServiceMod from "./ServiceMod";
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        marginFields: {
-            marginTop: 5,
-            marginBottom: 5
-        },
-        marginButton: {
-            marginTop: 5,
-            marginBottom: 5,
-            marginRight: 5
-        }
-    }),
-);
-
-
-const ServiceUpdate: React.FunctionComponent<RouteComponentProps> = ({history}: RouteComponentProps) => {
+const ServiceUpdate: React.FC = () => {
     const { id } = useParams();
-    const classes = useStyles();
 
-    const [serviceInput, setServiceInput] = useState<ServiceInput>({
-        name: '',
-        owner: ''
-    });
+    let history = useHistory();
 
     const [updateService] = useUpdateServiceMutation({
-        refetchQueries: [{query: GetServicesDocument}]
+        refetchQueries: [{
+            query: GetServicesDocument
+        }, {
+            query: GetServiceDocument,
+            variables: {
+                serviceId: id
+            }
+        }]
     });
-    const {data, error, loading} = useGetServiceQuery({
+
+    const [getService, {data, error, loading}] = useGetServiceLazyQuery({
         variables: {
             serviceId: id
-        },
-        onCompleted: serviceData => setServiceInput({
-            name: serviceData.service.name,
-            owner: serviceData.service.owner
-        })
+        }
     });
 
-    const handleChange = (prop: keyof ServiceInput) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setServiceInput({ ...serviceInput, [prop]: event.target.value });
-    };
-
-    const handleCancel = () => {
-        history.push('/service')
-    }
-
-    const handleSubmit = () => {
+    const handleSubmit = (serviceInput: ServiceInput) => {
         updateService({
             variables: {
                 serviceId: id,
@@ -64,6 +40,10 @@ const ServiceUpdate: React.FunctionComponent<RouteComponentProps> = ({history}: 
                 history.push('/service')
         });
     }
+
+    useEffect(() => {
+        getService();
+    }, [])
 
     if (loading) {
         return <div>Loading...</div>;
@@ -75,51 +55,28 @@ const ServiceUpdate: React.FunctionComponent<RouteComponentProps> = ({history}: 
 
     return (
         <div>
-            <Typography variant='h3'>Update Service</Typography>
-            <form autoComplete='off' onSubmit={() => handleSubmit()}>
-                <Typography variant='h5'>Service options</Typography>
-                <Divider />
-                <FormControl fullWidth className={classes.marginFields}>
-                    <InputLabel htmlFor='name'>Name</InputLabel>
-                    <Input
-                        id='name'
-                        type='text'
-                        required
-                        value={serviceInput.name }
-                        onChange={handleChange('name')}
-                    />
-                </FormControl>
-                <FormControl fullWidth className={classes.marginFields}>
-                    <InputLabel htmlFor='owner'>Owner</InputLabel>
-                    <Input
-                        id='owner'
-                        type='text'
-                        required
-                        value={serviceInput.owner}
-                        onChange={handleChange('owner')}
-                    />
-                </FormControl>
-                <Typography variant='h5'>Index options</Typography>
-                <Divider />
-                t.b.d.
-                <Typography variant='h5'>Access options</Typography>
-                <Divider />
-                t.b.d.
-            </form>
-            <Divider />
-            <Button
-                variant='contained'
-                className={classes.marginButton}
-                onClick={() => handleCancel()}
-            >Cancel</Button>
-            <Button
-                variant='contained'
-                color='primary'
-                className={classes.marginButton}
-                onClick={() => handleSubmit()}
-            >Submit</Button>
+            <ServiceMod
+                handleSubmit={handleSubmit}
+                serviceMod={{
+                    name: data.service.name,
+                    owner: data.service.owner,
+                    indexes: data.service.indexes.map((e : Index) => {
+                        return {
+                            name: e.name,
+                            maxTotalDataSizeMB: e.maxTotalDataSizeMB,
+                            frozenTimePeriodInSecs: e.frozenTimePeriodInSecs
+                        }
+                    }),
+                    sourcetypes: data.service.sourcetypes.map((e: Sourcetype) => {
+                       return {
+                           name: e.name
+                       }
+                    }),
+                    read: data.service.read,
+                    write: data.service.write
+                }}
+            />
         </div>
-
     );
 }
-export default withRouter(ServiceUpdate);
+export default ServiceUpdate;

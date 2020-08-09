@@ -21,6 +21,10 @@ export default gql`
                 maxTotalDataSizeMB
                 frozenTimePeriodInSecs
             }
+            sourcetypes {
+                _id
+                name
+            }
             read
             write
         }

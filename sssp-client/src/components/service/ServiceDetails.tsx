@@ -9,6 +9,7 @@ import {useGetServiceQuery} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import IndexList from "../index/IndexList";
 import UserList from "../user/UserList";
+import SourcetypeList from "../sourcetype/SourcetypeList";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -74,9 +75,11 @@ const ServiceDetails: React.FunctionComponent<RouteComponentProps> = ({history}:
                     {data.service.state}
                 </Grid>
             </Grid>
-            <Typography variant='h5'>Index options</Typography>
+            <Typography variant='h5'>Indexes</Typography>
             <Divider className={classes.marginDivider}/>
             <IndexList data={data.service.indexes} />
+            <Typography variant='h5'>Sourcetypes</Typography>
+            <SourcetypeList data={data.service.sourcetypes} />
             <Typography variant='h5'>Access options</Typography>
             <Divider className={classes.marginDivider}/>
             <UserList read={data.service.read} write={data.service.write} />

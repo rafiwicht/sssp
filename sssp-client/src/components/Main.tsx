@@ -10,6 +10,7 @@ import ServiceRouter from "./service/ServiceRouter";
 import Admin from "./admin/Admin";
 import {useKeycloak} from "@react-keycloak/web";
 import {useIsAdminQuery} from "../generated/graphql";
+import SourcetypeRouter from "./sourcetype/SourcetypeRouter";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -71,6 +72,9 @@ const Main: React.FC = () => {
                         </Route>
                         <Route path='/service'>
                             <ServiceRouter />
+                        </Route>
+                        <Route path='/sourcetype'>
+                            <SourcetypeRouter />
                         </Route>
                         {(data === undefined) ? false : data.admin &&
                             <Route path='/admin'>
