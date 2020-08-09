@@ -10,9 +10,8 @@ import {
     TableRow
 } from "@material-ui/core";
 
-import {Service} from "../../generated/graphql";
-import {RouteComponentProps, withRouter} from "react-router-dom";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles(() =>
@@ -30,12 +29,14 @@ type ServiceSimple = {
     state: string
 }
 
-type ServiceListProps = RouteComponentProps & {
+type ServiceListProps = {
     data: Array<ServiceSimple>
 }
 
-const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, history}: ServiceListProps) => {
+const ServiceList: React.FunctionComponent<ServiceListProps> = ({data}: ServiceListProps) => {
     const classes = useStyles();
+
+    let history = useHistory();
 
     const handleDetails = (id: string) => {
         history.push('/service/details/' + id);
@@ -92,4 +93,4 @@ const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, history}:
         </TableContainer>
     );
 }
-export default withRouter(ServiceList);
+export default ServiceList;

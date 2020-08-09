@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {
-    GetServiceComponent, GetServiceDocument,
+    GetServiceDocument,
     GetServicesDocument, Index,
     ServiceInput, Sourcetype, useGetServiceLazyQuery,
     useUpdateServiceMutation

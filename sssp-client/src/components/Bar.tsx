@@ -7,7 +7,6 @@ import {AppBar, IconButton, Theme, Toolbar, Typography} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import {makeStyles} from '@material-ui/core/styles';
 
-import Menu from './Menu';
 import visualization from "../config/visualization";
 
 const useStyles = makeStyles((theme: Theme) => ({

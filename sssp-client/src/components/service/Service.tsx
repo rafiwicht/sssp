@@ -1,13 +1,15 @@
 import React, {useEffect} from "react";
-import {RouteComponentProps, withRouter, useRouteMatch} from "react-router-dom";
+import {useRouteMatch, useHistory} from "react-router-dom";
 import {Button, Typography} from "@material-ui/core";
 import ServiceList from "./ServiceList";
 import {useGetServicesLazyQuery} from "../../generated/graphql";
 
 
-const Service: React.FunctionComponent<RouteComponentProps> = ({history}: RouteComponentProps) => {
+const Service: React.FC = () => {
     const [getServices, {data, loading, error}] = useGetServicesLazyQuery();
     const { path } = useRouteMatch();
+
+    let history = useHistory();
 
     const handleCreate = () => {
         history.push(`${path}/create`)
@@ -36,4 +38,4 @@ const Service: React.FunctionComponent<RouteComponentProps> = ({history}: RouteC
     );
 }
 
-export default withRouter(Service);
+export default Service;

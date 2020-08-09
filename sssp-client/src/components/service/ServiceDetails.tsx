@@ -1,5 +1,5 @@
 import React from "react";
-import {RouteComponentProps, withRouter, useParams} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
 import {
     Button,
     Divider, Grid,
@@ -28,9 +28,11 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const ServiceDetails: React.FunctionComponent<RouteComponentProps> = ({history}: RouteComponentProps) => {
+const ServiceDetails: React.FC = () => {
     const { id } = useParams();
     const classes = useStyles();
+
+    let history = useHistory();
 
     const {data, error, loading} = useGetServiceQuery( {
         variables: {
@@ -93,4 +95,4 @@ const ServiceDetails: React.FunctionComponent<RouteComponentProps> = ({history}:
 
     );
 }
-export default withRouter(ServiceDetails);
+export default ServiceDetails;

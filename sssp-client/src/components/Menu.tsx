@@ -12,8 +12,6 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
-import {useIsAdminQuery} from "../generated/graphql";
-import {useKeycloak} from "@react-keycloak/web";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -75,7 +73,6 @@ const test = [
 
 const Menu: React.FunctionComponent<MenuProps> = ({open, admin, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
-
 
     return (
         <Drawer

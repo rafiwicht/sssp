@@ -1,5 +1,5 @@
 import React from "react";
-import {RouteComponentProps, useParams, withRouter} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
 import {Button, Divider, Typography} from "@material-ui/core";
 import {GetServicesDocument, useDeleteServiceMutation} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
@@ -14,9 +14,11 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const ServiceDelete: React.FunctionComponent<RouteComponentProps> = ({history}: RouteComponentProps) => {
+const ServiceDelete: React.FC = () => {
     const { id } = useParams();
     const classes = useStyles();
+
+    let history = useHistory();
 
     const [deleteService] = useDeleteServiceMutation({
         refetchQueries: [{query: GetServicesDocument}]
@@ -53,4 +55,4 @@ const ServiceDelete: React.FunctionComponent<RouteComponentProps> = ({history}: 
 
     );
 }
-export default withRouter(ServiceDelete);
+export default ServiceDelete;
