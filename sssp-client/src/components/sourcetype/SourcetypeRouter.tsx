@@ -7,7 +7,7 @@ const SourcetypeRouter: React.FC = () => {
 
     return (
         <Switch>
-            <Route path={`${path}/helper/:id`}>
+            <Route path={`${path}/helper/:serviceId/:sourcetypeId`}>
                 <SourcetypeHelper />
             </Route>
         </Switch>

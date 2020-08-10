@@ -3,23 +3,16 @@
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 import mongoose, { Schema, Document } from "mongoose";
+import splunk from '../config/splunk';
 
-export interface ExtractionInterface extends Document {
-    name: string;
+export interface KeyValueInterface extends Document {
+    key: string;
     value: string;
 }
 
 export interface SourcetypeInterface extends Document {
     name: string;
-    breakOnlyBeforeDate: string;
-    eventBreaker: string;
-    eventBreakerEnable: boolean;
-    lineBreaker: string;
-    maxTimestampLookahead: number;
-    shouldLineMerge: boolean;
-    timeFormat: string;
-    truncate: number;
-    extractions: [ExtractionInterface]
+    fields: [KeyValueInterface];
 }
 
 export interface IndexInterface extends Document {
@@ -40,35 +33,27 @@ export interface ServiceInterface extends Document {
 
 const IndexSchema: Schema = new Schema({
     name: { type: String, required: true},
-    maxTotalDataSizeMB: { type: Number, required: true},
-    frozenTimePeriodInSecs: { type: Number, required: true}
+    maxTotalDataSizeMB: { type: Number, default: splunk.maxTotalDataSizeMB},
+    frozenTimePeriodInSecs: { type: Number, default: splunk.frozenTimePeriodInSecs}
 });
 
-const ExtractionSchema: Schema = new Schema({
-    name: { type: String, required: true },
-    value: { type: String, required: true }
+const KeyValueSchema: Schema = new Schema({
+    key: { type: String, required: true },
+    value: { type: String, default: '' }
 })
 
 const SourcetypeSchema: Schema = new Schema({
     name: { type: String, required: true},
-    breakOnlyBeforeDate: { type: String, required: true},
-    eventBreaker: { type: String, required: true},
-    eventBreakerEnable: { type: Boolean, required: true},
-    lineBreaker: { type: String, required: true},
-    maxTimestampLookahead: { type: Number, required: true},
-    shouldLineMerge: { type: Boolean, required: true},
-    timeFormat: { type: String, required: true},
-    truncate: { type: Number, required: true},
-    extractions: { type: [ExtractionSchema], required: true}
+    fields: { type: [KeyValueSchema], default: []}
 });
 
 const ServiceSchema: Schema = new Schema({
     name: { type: String, required: true },
     owner: { type: String, required: true },
     state: { type: String, required: true },
-    indexes: { type: [IndexSchema], required: true },
-    sourcetypes: { type: [SourcetypeSchema], required: true},
-    read: { type: [String], required: true },
+    indexes: { type: [IndexSchema], default: [] },
+    sourcetypes: { type: [SourcetypeSchema], default: []},
+    read: { type: [String], default:[] },
     write: { type: [String], required: true }
 });
 

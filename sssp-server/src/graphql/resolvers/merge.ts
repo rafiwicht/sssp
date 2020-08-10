@@ -10,4 +10,11 @@ const transformService = service => {
     };
 };
 
-export {transformService};
+const transformSourcetype = sourcetype => {
+    return {
+        ...sourcetype._doc,
+        _id: sourcetype.id
+    };
+};
+
+export {transformService, transformSourcetype};

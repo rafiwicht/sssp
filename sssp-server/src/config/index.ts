@@ -4,7 +4,7 @@
  */
 export default {
     db: `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_SECRET}@${process.env.MONGO}:27017`,
-    port: 5000 || process.env.PORT,
+    port: process.env.PORT || 5000,
     path: '/graphql',
     allowedOrigins: ['*'],
     jwtCertUrl: 'http://localhost:8080/auth/realms/sssp/protocol/openid-connect/certs',

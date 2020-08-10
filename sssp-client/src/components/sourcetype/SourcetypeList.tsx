@@ -10,20 +10,21 @@ import {
     TableRow
 } from "@material-ui/core";
 
-import {Index, Sourcetype} from "../../generated/graphql";
 import { useHistory } from 'react-router-dom';
 
-
-
 type SourcetypeListProps = {
-    data: Array<Sourcetype>
+    serviceId: string,
+    data: Array<{
+        _id: string,
+        name: string
+    }>
 }
 
-const SourcetypeList: React.FunctionComponent<SourcetypeListProps> = ({data}: SourcetypeListProps) => {
+const SourcetypeList: React.FunctionComponent<SourcetypeListProps> = ({serviceId, data}: SourcetypeListProps) => {
     let history = useHistory();
 
     const handleHelper = (id: string) => {
-        history.push('/sourcetype/helper/' + id);
+        history.push(`/sourcetype/helper/${serviceId}/${id}`);
     }
 
     return (
@@ -36,7 +37,7 @@ const SourcetypeList: React.FunctionComponent<SourcetypeListProps> = ({data}: So
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row: Sourcetype) => (
+                    {data.map((row) => (
                         <TableRow key={row._id}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align='right'>

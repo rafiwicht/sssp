@@ -4,13 +4,13 @@
  */
 
 import mongoose from 'mongoose';
-import Service from '../../models/service';
+import Service, {  ServiceInterface } from '../../models/service';
 import {transformService} from './merge';
 
 const ServiceQueries = {
     services: async () => {
         const services = await Service.find();
-        return services.map((service) => {
+        return services.map((service: ServiceInterface) => {
             return transformService(service);
         });
     },
@@ -30,14 +30,9 @@ const ServiceMutation = {
             throw new Error('Service already Exists');
         } else {
             const newService = new Service({
+                ...serviceInput,
                 _id: new mongoose.Types.ObjectId(),
-                name: serviceInput.name,
-                owner: serviceInput.owner,
-                state: 'on creation',
-                indexes: serviceInput.indexes,
-                sourcetypes: serviceInput.sourcetypes,
-                read: serviceInput.read,
-                write: serviceInput.write
+                state: 'on creation'
             });
             const savedService = await newService.save();
 

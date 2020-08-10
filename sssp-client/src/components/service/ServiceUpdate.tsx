@@ -3,13 +3,17 @@ import {useParams, useHistory} from "react-router-dom";
 import {
     GetServiceDocument,
     GetServicesDocument, Index,
-    ServiceInput, Sourcetype, useGetServiceLazyQuery,
+    ServiceInput, useGetServiceLazyQuery,
     useUpdateServiceMutation
 } from "../../generated/graphql";
 import ServiceMod from "./ServiceMod";
 
+type ServiceUpdateParams = {
+    id: string
+}
+
 const ServiceUpdate: React.FC = () => {
-    const { id } = useParams();
+    const { id }: ServiceUpdateParams = useParams();
 
     let history = useHistory();
 
@@ -67,7 +71,7 @@ const ServiceUpdate: React.FC = () => {
                             frozenTimePeriodInSecs: e.frozenTimePeriodInSecs
                         }
                     }),
-                    sourcetypes: data.service.sourcetypes.map((e: Sourcetype) => {
+                    sourcetypes: data.service.sourcetypes.map((e) => {
                        return {
                            name: e.name
                        }
