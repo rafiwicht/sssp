@@ -35,6 +35,7 @@ const ServiceMutation = {
                 owner: serviceInput.owner,
                 state: 'on creation',
                 indexes: serviceInput.indexes,
+                sourcetypes: serviceInput.sourcetypes,
                 read: serviceInput.read,
                 write: serviceInput.write
             });

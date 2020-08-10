@@ -29,6 +29,7 @@ const typeDefs = gql`
         read: [String!]!
         write: [String!]!
         indexes: [Index!]!
+        sourcetypes: [Sourcetype!]!
     }
     type Index {
         _id: ID!
@@ -36,19 +37,26 @@ const typeDefs = gql`
         maxTotalDataSizeMB: Int!
         frozenTimePeriodInSecs: Int!
     }
+    type Sourcetype {
+        _id: ID!
+        name: String!
+    }
     input ServiceInput {
         name: String!
         owner: String!
         read: [String!]!
         write: [String!]!
         indexes: [IndexInput!]!
+        sourcetypes: [SourcetypeInput!]!
     }
     input IndexInput {
         name: String!
         maxTotalDataSizeMB: Int
         frozenTimePeriodInSecs: Int
     }
-
+    input SourcetypeInput {
+        name: String!
+    }
 `;
 
 const schema: ApolloServerExpressConfig = {

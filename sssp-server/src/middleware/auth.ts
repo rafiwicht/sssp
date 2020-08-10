@@ -31,7 +31,6 @@ export default async (req: any, res: any, next: any) => {
         decodedToken = jwt.verify(token, keycloakValidate.publicFile(), { algorithms: ['RS256']});
     } catch (err) {
         res.status = 401;
-        console.log(err);
         return next(new Error('Unauthorized!'));
     }
     if (!decodedToken) {
@@ -44,8 +43,6 @@ export default async (req: any, res: any, next: any) => {
         userId: req.userId
     });
     req.admin = !!admin;
-    console.log(req.admin);
-    console.log(admin);
 
     return next();
 };

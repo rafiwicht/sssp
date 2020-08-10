@@ -19,7 +19,6 @@ class KeycloakValidate {
     }
 
     public publicFile () {
-        console.log(this.publicKey);
         if(this.publicKey == '') {
             this.init()
         }
