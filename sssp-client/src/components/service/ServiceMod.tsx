@@ -63,8 +63,6 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         const index = from.indexOf(userId);
         from.splice(index, 1);
         to.push(userId);
-        console.log(from);
-        console.log(to);
         if(event.target.checked) {
             setServiceInput({
                 ...serviceInput,
