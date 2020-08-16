@@ -13,6 +13,7 @@ const typeDefs = gql`
         service(serviceId: ID!): Service!
         admins: [String!]!
         admin(userId: String!): Boolean!
+        sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
     }
     type Mutation {
         createService(serviceInput: ServiceInput!): Service!
@@ -20,6 +21,7 @@ const typeDefs = gql`
         deleteService(serviceId: ID!): Service!
         createAdmin(userId: String!): String!
         deleteAdmin(userId: String!): String!
+        updateSourcetype(serviceId: ID!, sourcetypeId: ID!, sourcetypeInput: SourcetypeInput!): Sourcetype!
     }
     type Service {
         _id: ID!
@@ -40,14 +42,20 @@ const typeDefs = gql`
     type Sourcetype {
         _id: ID!
         name: String!
+        fields: [KeyValue!]!
+    }
+    type KeyValue {
+        _id: ID!
+        key: String!
+        value: String!
     }
     input ServiceInput {
         name: String!
         owner: String!
-        read: [String!]!
+        read: [String!]
         write: [String!]!
-        indexes: [IndexInput!]!
-        sourcetypes: [SourcetypeInput!]!
+        indexes: [IndexInput!]
+        sourcetypes: [SourcetypeInput!]
     }
     input IndexInput {
         name: String!
@@ -56,7 +64,13 @@ const typeDefs = gql`
     }
     input SourcetypeInput {
         name: String!
+        fields: [KeyValueInput!]
     }
+    input KeyValueInput {
+        key: String!
+        value: String
+    }
+
 `;
 
 const schema: ApolloServerExpressConfig = {

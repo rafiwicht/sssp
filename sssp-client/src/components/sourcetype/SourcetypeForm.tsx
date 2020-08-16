@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, FormControl, Input, InputLabel} from "@material-ui/core";
-import {IndexInput, SourcetypeInput} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import { SourcetypeInput } from '../../generated/graphql';
 
 
 type SourcetypeFormProps = {
@@ -29,7 +29,7 @@ const SourcetypeForm: React.FunctionComponent<SourcetypeFormProps> = ({submitSou
         setHidden(false);
     }
 
-    const handleChange = (prop: keyof IndexInput) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (prop: keyof SourcetypeInput) => (event: React.ChangeEvent<HTMLInputElement>) => {
         setSourcetypeInput({ ...sourcetypeInput, [prop]: event.target.value });
     };
 

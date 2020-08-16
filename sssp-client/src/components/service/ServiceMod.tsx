@@ -10,7 +10,6 @@ import { useHistory } from 'react-router-dom';
 import SourcetypeModList from "../sourcetype/SourcetypeModList";
 import SourcetypeForm from "../sourcetype/SourcetypeForm";
 
-
 const useStyles = makeStyles(() =>
     createStyles({
         marginFields: {
@@ -30,17 +29,15 @@ type ServiceModProps = {
     serviceMod?: ServiceInput
 }
 
-const defaultService: ServiceInput = {
-    name: '',
-    owner: '',
-    indexes: [],
-    sourcetypes: [],
-    read: [],
-    write: [localStorage.getItem('userId') || '']
-};
-
-const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod = defaultService}: ServiceModProps) => {
-    const [serviceInput, setServiceInput] = useState<ServiceInput>(serviceMod);
+const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod}: ServiceModProps) => {
+    const [serviceInput, setServiceInput] = useState({
+        name: serviceMod?.name || '',
+        owner: serviceMod?.owner || '',
+        indexes: serviceMod?.indexes || [],
+        sourcetypes: serviceMod?.sourcetypes || [],
+        read: serviceMod?.read || [],
+        write: serviceMod?.read || [localStorage.getItem('userId') || '']
+    });
 
     const classes = useStyles();
     let history = useHistory();
@@ -66,8 +63,6 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         const index = from.indexOf(userId);
         from.splice(index, 1);
         to.push(userId);
-        console.log(from);
-        console.log(to);
         if(event.target.checked) {
             setServiceInput({
                 ...serviceInput,
@@ -99,7 +94,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
     }
 
     const handleIndexAdd = (indexInput: IndexInput) => {
-        if(serviceInput.indexes.findIndex(i => i.name === indexInput.name) === -1) {
+        if(serviceInput.indexes.findIndex((i: IndexInput) => i.name === indexInput.name) === -1) {
             setServiceInput({ ...serviceInput, indexes: [...serviceInput.indexes, indexInput] });
         }
     }
@@ -112,7 +107,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
     }
 
     const handleSourcetypeAdd = (sourcetypeInput: SourcetypeInput) => {
-        if(serviceInput.sourcetypes.findIndex(i => i.name === sourcetypeInput.name) === -1) {
+        if(serviceInput.sourcetypes.findIndex((i: SourcetypeInput) => i.name === sourcetypeInput.name) === -1) {
             setServiceInput({ ...serviceInput, sourcetypes: [...serviceInput.sourcetypes, sourcetypeInput] });
         }
     }
@@ -150,7 +145,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                     data={serviceInput.indexes} />
                 <IndexForm
                     submitIndex={handleIndexAdd}/>
-                <Typography variant='h5'>Access options</Typography>
+                <Typography variant='h5'>Sourcetypes</Typography>
                 <Divider />
                 <SourcetypeModList
                     data={serviceInput.sourcetypes}

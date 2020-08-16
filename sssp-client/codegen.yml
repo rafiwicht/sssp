@@ -10,3 +10,6 @@ generates:
       - "typescript-react-apollo"
     config:
       withHooks: true
+      #avoidOptionals: 
+      #  inputValue: true
+      #maybeValue: T

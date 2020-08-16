@@ -14,8 +14,12 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+type ServiceDeleteParams = {
+    id: string
+}
+
 const ServiceDelete: React.FC = () => {
-    const { id } = useParams();
+    const { id }: ServiceDeleteParams = useParams();
     const classes = useStyles();
 
     let history = useHistory();

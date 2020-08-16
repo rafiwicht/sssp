@@ -28,8 +28,12 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+type ServiceDetailsParams = {
+    id: string
+}
+
 const ServiceDetails: React.FC = () => {
-    const { id } = useParams();
+    const { id }: ServiceDetailsParams = useParams();
     const classes = useStyles();
 
     let history = useHistory();
@@ -81,7 +85,9 @@ const ServiceDetails: React.FC = () => {
             <Divider className={classes.marginDivider}/>
             <IndexList data={data.service.indexes} />
             <Typography variant='h5'>Sourcetypes</Typography>
-            <SourcetypeList data={data.service.sourcetypes} />
+            <SourcetypeList 
+                serviceId={id}
+                data={data.service.sourcetypes} />
             <Typography variant='h5'>Access options</Typography>
             <Divider className={classes.marginDivider}/>
             <UserList read={data.service.read} write={data.service.write} />

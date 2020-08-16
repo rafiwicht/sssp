@@ -9,8 +9,7 @@ import {
     TableHead,
     TableRow
 } from "@material-ui/core";
-
-import {SourcetypeInput} from "../../generated/graphql";
+import { SourcetypeInput } from '../../generated/graphql';
 
 
 type SourcetypeModListProps = {
