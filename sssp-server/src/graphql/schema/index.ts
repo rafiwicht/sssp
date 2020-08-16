@@ -13,7 +13,11 @@ const typeDefs = gql`
         service(serviceId: ID!): Service!
         admins: [String!]!
         admin(userId: String!): Boolean!
+<<<<<<< HEAD
         sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
+=======
+        #sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
+>>>>>>> 691908691b62dd20b0f4ac632379596dc327faa9
     }
     type Mutation {
         createService(serviceInput: ServiceInput!): Service!
@@ -21,7 +25,7 @@ const typeDefs = gql`
         deleteService(serviceId: ID!): Service!
         createAdmin(userId: String!): String!
         deleteAdmin(userId: String!): String!
-        updateSourcetype(serviceId: ID!, sourcetypeId: ID!, sourcetypeInput: SourcetypeInput!): Sourcetype!
+        #updateSourcetype(serviceId: ID!, sourcetypeId: ID!, sourcetypeInput: SourcetypeInput!): Sourcetype!
     }
     type Service {
         _id: ID!
@@ -31,7 +35,7 @@ const typeDefs = gql`
         read: [String!]!
         write: [String!]!
         indexes: [Index!]!
-        sourcetypes: [Sourcetype!]!
+        apps: [App!]!
     }
     type Index {
         _id: ID!
@@ -39,10 +43,20 @@ const typeDefs = gql`
         maxTotalDataSizeMB: Int!
         frozenTimePeriodInSecs: Int!
     }
-    type Sourcetype {
+    #type Sourcetype {
+    #    _id: ID!
+    #    name: String!
+    #    fields: [KeyValue!]!
+    #}
+    enum AppType {
+        XA
+        UI
+    }
+    type App {
         _id: ID!
         name: String!
-        fields: [KeyValue!]!
+        type: AppType!
+        url: String!
     }
     type KeyValue {
         _id: ID!
@@ -55,16 +69,16 @@ const typeDefs = gql`
         read: [String!]
         write: [String!]!
         indexes: [IndexInput!]
-        sourcetypes: [SourcetypeInput!]
+        apps: [AppInput!]
     }
     input IndexInput {
         name: String!
         maxTotalDataSizeMB: Int
         frozenTimePeriodInSecs: Int
     }
-    input SourcetypeInput {
+    input AppInput {
         name: String!
-        fields: [KeyValueInput!]
+        type: AppType!
     }
     input KeyValueInput {
         key: String!

@@ -63,6 +63,7 @@ server:
 		--env MONGO_USER=${MONGO_USER} \
 		--env MONGO_SECRET=${PASSWORD} \
 		--env MONGO=localhost \
+		--env GITHUB_TOKEN=${GITHUB_TOKEN} \
 		--env SSSP_ADMINS=test1 \
 		-v "./sssp-server:/sssp-server:Z" \
 		-w "/sssp-server" \
@@ -110,6 +111,21 @@ rm-proxy:
 	-podman rm ${PROXY}
 
 refresh-proxy: rm-proxy proxy
+
+bitbucket:
+	podman run -dt \
+		--pod sssp \
+		--env DEV_MODE=true \
+		--env PORT=3000 \
+		-v "./sssp-proxy/:/etc/nginx/conf.d:Z" \
+		--name ${PROXY} \
+		${NGINX_IMG}
+
+rm-bitbucket:
+	-podman kill ${PROXY}
+	-podman rm ${PROXY}
+
+refresh-bitbucket: rm-bitbucket bitbucket
 
 run: pod mongo keycloak server client proxy
 

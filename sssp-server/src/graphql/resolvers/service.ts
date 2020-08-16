@@ -4,8 +4,10 @@
  */
 
 import mongoose from 'mongoose';
-import Service, {  ServiceInterface } from '../../models/service';
+import Service, {ServiceInterface} from '../../models/service';
 import {transformService} from './merge';
+import GitConnectorInterface from "../../git-connector";
+import GithubConnector from "../../git-connector/github";
 
 const ServiceQueries = {
     services: async () => {
@@ -21,6 +23,9 @@ const ServiceQueries = {
     }
 };
 
+
+const bc: GitConnectorInterface = new GithubConnector();
+
 const ServiceMutation = {
     createService: async (parent: any, {serviceInput}: any, context: any) => {
         const service = await Service.findOne({
@@ -35,6 +40,10 @@ const ServiceMutation = {
                 state: 'on creation'
             });
             const savedService = await newService.save();
+
+            savedService.apps.forEach((e) => {
+                bc.create(e.name,[],[], e.type);
+            });
 
             return transformService(savedService);
         }

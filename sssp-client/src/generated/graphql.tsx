@@ -93,7 +93,7 @@ export type Service = {
   read: Array<Scalars['String']>;
   write: Array<Scalars['String']>;
   indexes: Array<Index>;
-  sourcetypes: Array<Sourcetype>;
+  apps: Array<App>;
 };
 
 export type Index = {
@@ -104,11 +104,21 @@ export type Index = {
   frozenTimePeriodInSecs: Scalars['Int'];
 };
 
-export type Sourcetype = {
-  __typename?: 'Sourcetype';
+export enum AppType {
+  Xa = 'XA',
+  Ui = 'UI'
+}
+
+export type App = {
+  __typename?: 'App';
   _id: Scalars['ID'];
   name: Scalars['String'];
+<<<<<<< HEAD
   fields: Array<KeyValue>;
+=======
+  type: AppType;
+  url: Scalars['String'];
+>>>>>>> 691908691b62dd20b0f4ac632379596dc327faa9
 };
 
 export type KeyValue = {
@@ -124,7 +134,7 @@ export type ServiceInput = {
   read?: Maybe<Array<Scalars['String']>>;
   write: Array<Scalars['String']>;
   indexes?: Maybe<Array<IndexInput>>;
-  sourcetypes?: Maybe<Array<SourcetypeInput>>;
+  apps?: Maybe<Array<AppInput>>;
 };
 
 export type IndexInput = {
@@ -133,9 +143,9 @@ export type IndexInput = {
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
 };
 
-export type SourcetypeInput = {
+export type AppInput = {
   name: Scalars['String'];
-  fields?: Maybe<Array<KeyValueInput>>;
+  type: AppType;
 };
 
 export type KeyValueInput = {
@@ -205,9 +215,9 @@ export type GetServiceQuery = (
     & { indexes: Array<(
       { __typename?: 'Index' }
       & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
-    )>, sourcetypes: Array<(
-      { __typename?: 'Sourcetype' }
-      & Pick<Sourcetype, '_id' | 'name'>
+    )>, apps: Array<(
+      { __typename?: 'App' }
+      & Pick<App, '_id' | 'name' | 'type' | 'url'>
     )> }
   ) }
 );
@@ -550,9 +560,11 @@ export const GetServiceDocument = gql`
       maxTotalDataSizeMB
       frozenTimePeriodInSecs
     }
-    sourcetypes {
+    apps {
       _id
       name
+      type
+      url
     }
     read
     write
