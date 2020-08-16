@@ -8,7 +8,6 @@ import config from './config';
 import Express from './config/express';
 import ssspAdmin from "./config/ssspAdmin";
 
-
 /**
  * Connect database
  * @param db: string

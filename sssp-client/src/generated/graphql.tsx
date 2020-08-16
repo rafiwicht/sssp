@@ -22,7 +22,6 @@ export type Query = {
   service: Service;
   admins: Array<Scalars['String']>;
   admin: Scalars['Boolean'];
-  sourcetype: Sourcetype;
 };
 
 
@@ -35,12 +34,6 @@ export type QueryAdminArgs = {
   userId: Scalars['String'];
 };
 
-
-export type QuerySourcetypeArgs = {
-  serviceId: Scalars['ID'];
-  sourcetypeId: Scalars['ID'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createService: Service;
@@ -48,7 +41,6 @@ export type Mutation = {
   deleteService: Service;
   createAdmin: Scalars['String'];
   deleteAdmin: Scalars['String'];
-  updateSourcetype: Sourcetype;
 };
 
 
@@ -77,13 +69,6 @@ export type MutationDeleteAdminArgs = {
   userId: Scalars['String'];
 };
 
-
-export type MutationUpdateSourcetypeArgs = {
-  serviceId: Scalars['ID'];
-  sourcetypeId: Scalars['ID'];
-  sourcetypeInput: SourcetypeInput;
-};
-
 export type Service = {
   __typename?: 'Service';
   _id: Scalars['ID'];
@@ -93,7 +78,7 @@ export type Service = {
   read: Array<Scalars['String']>;
   write: Array<Scalars['String']>;
   indexes: Array<Index>;
-  sourcetypes: Array<Sourcetype>;
+  apps: Array<App>;
 };
 
 export type Index = {
@@ -104,11 +89,17 @@ export type Index = {
   frozenTimePeriodInSecs: Scalars['Int'];
 };
 
-export type Sourcetype = {
-  __typename?: 'Sourcetype';
+export enum AppType {
+  Xa = 'XA',
+  Ui = 'UI'
+}
+
+export type App = {
+  __typename?: 'App';
   _id: Scalars['ID'];
   name: Scalars['String'];
-  fields: Array<KeyValue>;
+  type: AppType;
+  url: Scalars['String'];
 };
 
 export type KeyValue = {
@@ -124,7 +115,7 @@ export type ServiceInput = {
   read?: Maybe<Array<Scalars['String']>>;
   write: Array<Scalars['String']>;
   indexes?: Maybe<Array<IndexInput>>;
-  sourcetypes?: Maybe<Array<SourcetypeInput>>;
+  apps?: Maybe<Array<AppInput>>;
 };
 
 export type IndexInput = {
@@ -133,9 +124,9 @@ export type IndexInput = {
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
 };
 
-export type SourcetypeInput = {
+export type AppInput = {
   name: Scalars['String'];
-  fields?: Maybe<Array<KeyValueInput>>;
+  type: AppType;
 };
 
 export type KeyValueInput = {
@@ -205,9 +196,9 @@ export type GetServiceQuery = (
     & { indexes: Array<(
       { __typename?: 'Index' }
       & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
-    )>, sourcetypes: Array<(
-      { __typename?: 'Sourcetype' }
-      & Pick<Sourcetype, '_id' | 'name'>
+    )>, apps: Array<(
+      { __typename?: 'App' }
+      & Pick<App, '_id' | 'name' | 'type' | 'url'>
     )> }
   ) }
 );
@@ -249,39 +240,6 @@ export type DeleteServiceMutation = (
   & { deleteService: (
     { __typename?: 'Service' }
     & Pick<Service, 'name'>
-  ) }
-);
-
-export type GetSourcetypeQueryVariables = Exact<{
-  serviceId: Scalars['ID'];
-  sourcetypeId: Scalars['ID'];
-}>;
-
-
-export type GetSourcetypeQuery = (
-  { __typename?: 'Query' }
-  & { sourcetype: (
-    { __typename?: 'Sourcetype' }
-    & Pick<Sourcetype, '_id' | 'name'>
-    & { fields: Array<(
-      { __typename?: 'KeyValue' }
-      & Pick<KeyValue, '_id' | 'key' | 'value'>
-    )> }
-  ) }
-);
-
-export type UpdateSourcetypeMutationVariables = Exact<{
-  serviceId: Scalars['ID'];
-  sourcetypeId: Scalars['ID'];
-  sourcetypeInput: SourcetypeInput;
-}>;
-
-
-export type UpdateSourcetypeMutation = (
-  { __typename?: 'Mutation' }
-  & { updateSourcetype: (
-    { __typename?: 'Sourcetype' }
-    & Pick<Sourcetype, 'name'>
   ) }
 );
 
@@ -550,9 +508,11 @@ export const GetServiceDocument = gql`
       maxTotalDataSizeMB
       frozenTimePeriodInSecs
     }
-    sourcetypes {
+    apps {
       _id
       name
+      type
+      url
     }
     read
     write
@@ -758,115 +718,3 @@ export function useDeleteServiceMutation(baseOptions?: ApolloReactHooks.Mutation
 export type DeleteServiceMutationHookResult = ReturnType<typeof useDeleteServiceMutation>;
 export type DeleteServiceMutationResult = ApolloReactCommon.MutationResult<DeleteServiceMutation>;
 export type DeleteServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteServiceMutation, DeleteServiceMutationVariables>;
-export const GetSourcetypeDocument = gql`
-    query GetSourcetype($serviceId: ID!, $sourcetypeId: ID!) {
-  sourcetype(serviceId: $serviceId, sourcetypeId: $sourcetypeId) {
-    _id
-    name
-    fields {
-      _id
-      key
-      value
-    }
-  }
-}
-    `;
-export type GetSourcetypeComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetSourcetypeQuery, GetSourcetypeQueryVariables>, 'query'> & ({ variables: GetSourcetypeQueryVariables; skip?: boolean; } | { skip: boolean; });
-
-    export const GetSourcetypeComponent = (props: GetSourcetypeComponentProps) => (
-      <ApolloReactComponents.Query<GetSourcetypeQuery, GetSourcetypeQueryVariables> query={GetSourcetypeDocument} {...props} />
-    );
-    
-export type GetSourcetypeProps<TChildProps = {}, TDataName extends string = 'data'> = {
-      [key in TDataName]: ApolloReactHoc.DataValue<GetSourcetypeQuery, GetSourcetypeQueryVariables>
-    } & TChildProps;
-export function withGetSourcetype<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  GetSourcetypeQuery,
-  GetSourcetypeQueryVariables,
-  GetSourcetypeProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withQuery<TProps, GetSourcetypeQuery, GetSourcetypeQueryVariables, GetSourcetypeProps<TChildProps, TDataName>>(GetSourcetypeDocument, {
-      alias: 'getSourcetype',
-      ...operationOptions
-    });
-};
-
-/**
- * __useGetSourcetypeQuery__
- *
- * To run a query within a React component, call `useGetSourcetypeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSourcetypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetSourcetypeQuery({
- *   variables: {
- *      serviceId: // value for 'serviceId'
- *      sourcetypeId: // value for 'sourcetypeId'
- *   },
- * });
- */
-export function useGetSourcetypeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetSourcetypeQuery, GetSourcetypeQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetSourcetypeQuery, GetSourcetypeQueryVariables>(GetSourcetypeDocument, baseOptions);
-      }
-export function useGetSourcetypeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetSourcetypeQuery, GetSourcetypeQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetSourcetypeQuery, GetSourcetypeQueryVariables>(GetSourcetypeDocument, baseOptions);
-        }
-export type GetSourcetypeQueryHookResult = ReturnType<typeof useGetSourcetypeQuery>;
-export type GetSourcetypeLazyQueryHookResult = ReturnType<typeof useGetSourcetypeLazyQuery>;
-export type GetSourcetypeQueryResult = ApolloReactCommon.QueryResult<GetSourcetypeQuery, GetSourcetypeQueryVariables>;
-export const UpdateSourcetypeDocument = gql`
-    mutation UpdateSourcetype($serviceId: ID!, $sourcetypeId: ID!, $sourcetypeInput: SourcetypeInput!) {
-  updateSourcetype(serviceId: $serviceId, sourcetypeId: $sourcetypeId, sourcetypeInput: $sourcetypeInput) {
-    name
-  }
-}
-    `;
-export type UpdateSourcetypeMutationFn = ApolloReactCommon.MutationFunction<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables>;
-export type UpdateSourcetypeComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables>, 'mutation'>;
-
-    export const UpdateSourcetypeComponent = (props: UpdateSourcetypeComponentProps) => (
-      <ApolloReactComponents.Mutation<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables> mutation={UpdateSourcetypeDocument} {...props} />
-    );
-    
-export type UpdateSourcetypeProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables>
-    } & TChildProps;
-export function withUpdateSourcetype<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  UpdateSourcetypeMutation,
-  UpdateSourcetypeMutationVariables,
-  UpdateSourcetypeProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables, UpdateSourcetypeProps<TChildProps, TDataName>>(UpdateSourcetypeDocument, {
-      alias: 'updateSourcetype',
-      ...operationOptions
-    });
-};
-
-/**
- * __useUpdateSourcetypeMutation__
- *
- * To run a mutation, you first call `useUpdateSourcetypeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSourcetypeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSourcetypeMutation, { data, loading, error }] = useUpdateSourcetypeMutation({
- *   variables: {
- *      serviceId: // value for 'serviceId'
- *      sourcetypeId: // value for 'sourcetypeId'
- *      sourcetypeInput: // value for 'sourcetypeInput'
- *   },
- * });
- */
-export function useUpdateSourcetypeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables>(UpdateSourcetypeDocument, baseOptions);
-      }
-export type UpdateSourcetypeMutationHookResult = ReturnType<typeof useUpdateSourcetypeMutation>;
-export type UpdateSourcetypeMutationResult = ApolloReactCommon.MutationResult<UpdateSourcetypeMutation>;
-export type UpdateSourcetypeMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateSourcetypeMutation, UpdateSourcetypeMutationVariables>;

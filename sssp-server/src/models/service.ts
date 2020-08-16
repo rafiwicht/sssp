@@ -5,14 +5,15 @@
 import mongoose, { Schema, Document } from "mongoose";
 import splunk from '../config/splunk';
 
-export interface KeyValueInterface extends Document {
-    key: string;
-    value: string;
+export enum AppType {
+    XA,
+    UI
 }
 
-export interface SourcetypeInterface extends Document {
+export interface AppInterface extends Document {
     name: string;
-    fields: [KeyValueInterface];
+    type: AppType
+    url: string;
 }
 
 export interface IndexInterface extends Document {
@@ -26,7 +27,7 @@ export interface ServiceInterface extends Document {
     owner: string;
     state: string;
     indexes: [IndexInterface];
-    sourcetypes: [SourcetypeInterface];
+    apps: [AppInterface];
     read: [string];
     write: [string];
 }
@@ -37,14 +38,10 @@ const IndexSchema: Schema = new Schema({
     frozenTimePeriodInSecs: { type: Number, default: splunk.frozenTimePeriodInSecs}
 });
 
-const KeyValueSchema: Schema = new Schema({
-    key: { type: String, required: true },
-    value: { type: String, default: '' }
-})
-
-const SourcetypeSchema: Schema = new Schema({
+const AppSchema: Schema = new Schema({
     name: { type: String, required: true},
-    fields: { type: [KeyValueSchema], default: []}
+    type: { type: AppType, default: AppType.XA},
+    urls: { type: String, required: true}
 });
 
 const ServiceSchema: Schema = new Schema({
@@ -52,7 +49,7 @@ const ServiceSchema: Schema = new Schema({
     owner: { type: String, required: true },
     state: { type: String, required: true },
     indexes: { type: [IndexSchema], default: [] },
-    sourcetypes: { type: [SourcetypeSchema], default: []},
+    apps: { type: [AppSchema], default: []},
     read: { type: [String], default:[] },
     write: { type: [String], required: true }
 });

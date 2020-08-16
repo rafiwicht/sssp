@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState} from 'react';
-import {IndexInput, ServiceInput, SourcetypeInput} from "../../generated/graphql";
+import {AppInput, IndexInput, ServiceInput} from "../../generated/graphql";
 import {Button, Divider, FormControl, Input, InputLabel, Typography} from "@material-ui/core";
 import IndexModList from "../index/IndexModList";
 import IndexForm from "../index/IndexForm";
@@ -7,8 +7,8 @@ import UserModList from "../user/UserModList";
 import UserForm from "../user/UserForm";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import { useHistory } from 'react-router-dom';
-import SourcetypeModList from "../sourcetype/SourcetypeModList";
-import SourcetypeForm from "../sourcetype/SourcetypeForm";
+import AppModList from "../app/AppModList";
+import AppForm from "../app/AppForm";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -34,7 +34,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         name: serviceMod?.name || '',
         owner: serviceMod?.owner || '',
         indexes: serviceMod?.indexes || [],
-        sourcetypes: serviceMod?.sourcetypes || [],
+        apps: serviceMod?.apps || [],
         read: serviceMod?.read || [],
         write: serviceMod?.read || [localStorage.getItem('userId') || '']
     });
@@ -99,16 +99,16 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         }
     }
 
-    const handleSourcetypeDelete = (id: number) => {
-        if(id < serviceInput.sourcetypes.length) {
-            serviceInput.sourcetypes.splice(id, 1);
+    const handleAppDelete = (id: number) => {
+        if(id < serviceInput.apps.length) {
+            serviceInput.apps.splice(id, 1);
             setServiceInput({...serviceInput});
         }
     }
 
-    const handleSourcetypeAdd = (sourcetypeInput: SourcetypeInput) => {
-        if(serviceInput.sourcetypes.findIndex((i: SourcetypeInput) => i.name === sourcetypeInput.name) === -1) {
-            setServiceInput({ ...serviceInput, sourcetypes: [...serviceInput.sourcetypes, sourcetypeInput] });
+    const handleAppAdd = (sourcetypeInput: AppInput) => {
+        if(serviceInput.apps.findIndex((i: AppInput) => i.name === sourcetypeInput.name) === -1) {
+            setServiceInput({ ...serviceInput, apps: [...serviceInput.apps, sourcetypeInput] });
         }
     }
 
@@ -145,13 +145,13 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                     data={serviceInput.indexes} />
                 <IndexForm
                     submitIndex={handleIndexAdd}/>
-                <Typography variant='h5'>Sourcetypes</Typography>
+                <Typography variant='h5'>Apps and addons</Typography>
                 <Divider />
-                <SourcetypeModList
-                    data={serviceInput.sourcetypes}
-                    handleDelete={handleSourcetypeDelete} />
-                    <SourcetypeForm
-                        submitSourcetype={handleSourcetypeAdd} />
+                <AppModList
+                    data={serviceInput.apps}
+                    handleDelete={handleAppDelete} />
+                <AppForm
+                    submitApp={handleAppAdd} />
                 <Typography variant='h5'>Access options</Typography>
                 <Divider />
                 <UserModList

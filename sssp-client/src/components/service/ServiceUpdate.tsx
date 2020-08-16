@@ -71,9 +71,10 @@ const ServiceUpdate: React.FC = () => {
                             frozenTimePeriodInSecs: e.frozenTimePeriodInSecs
                         }
                     }),
-                    sourcetypes: data.service.sourcetypes.map((e) => {
+                    apps: data.service.apps.map((e) => {
                        return {
-                           name: e.name
+                           name: e.name,
+                           type: e.type
                        }
                     }),
                     read: data.service.read,

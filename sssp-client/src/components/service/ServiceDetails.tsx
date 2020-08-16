@@ -10,6 +10,7 @@ import {createStyles, makeStyles} from "@material-ui/styles";
 import IndexList from "../index/IndexList";
 import UserList from "../user/UserList";
 import SourcetypeList from "../sourcetype/SourcetypeList";
+import AppList from "../app/AppList";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -84,10 +85,9 @@ const ServiceDetails: React.FC = () => {
             <Typography variant='h5'>Indexes</Typography>
             <Divider className={classes.marginDivider}/>
             <IndexList data={data.service.indexes} />
-            <Typography variant='h5'>Sourcetypes</Typography>
-            <SourcetypeList 
-                serviceId={id}
-                data={data.service.sourcetypes} />
+            <Typography variant='h5'>Apps and addons</Typography>
+            <AppList
+                data={data.service.apps} />
             <Typography variant='h5'>Access options</Typography>
             <Divider className={classes.marginDivider}/>
             <UserList read={data.service.read} write={data.service.write} />

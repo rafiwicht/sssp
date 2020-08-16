@@ -5,18 +5,18 @@
 
 import {ServiceQueries, ServiceMutation} from './service';
 import {AdminMutation, AdminQueries} from "./admin";
-import {SourcetypeQueries, SourcetypeMutations} from './sourcetype';
+//import {SourcetypeQueries, SourcetypeMutations} from './sourcetype';
 
 const rootResolver = {
     Query: {
         ...ServiceQueries,
         ...AdminQueries,
-        ...SourcetypeQueries,
+        //...SourcetypeQueries,
     },
     Mutation: {
         ...ServiceMutation,
         ...AdminMutation,
-        ...SourcetypeMutations,
+        //...SourcetypeMutations,
     },
 };
 
