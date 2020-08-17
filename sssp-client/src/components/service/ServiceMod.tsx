@@ -30,6 +30,7 @@ type ServiceModProps = {
 }
 
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod}: ServiceModProps) => {
+    console.log(localStorage.getItem('userId'));
     const [serviceInput, setServiceInput] = useState({
         name: serviceMod?.name || '',
         owner: serviceMod?.owner || '',
@@ -85,6 +86,22 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         }
     };
 
+    const handleUserDelete = (userId: string) => {
+        if(serviceInput.read.includes(userId)) {
+            const index = serviceInput.read.indexOf(userId);
+            if (index > -1) {
+                serviceInput.read.splice(index, 1);
+            }
+        }
+        else if (serviceInput.write.includes(userId)) {
+            const index = serviceInput.write.indexOf(userId);
+            if (index > -1) {
+                serviceInput.write.splice(index, 1);
+            }
+        }
+        setServiceInput({...serviceInput});
+    };
+
 
     const handleIndexDelete = (id: number) => {
         if(id < serviceInput.indexes.length) {
@@ -106,9 +123,9 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         }
     }
 
-    const handleAppAdd = (sourcetypeInput: AppInput) => {
-        if(serviceInput.apps.findIndex((i: AppInput) => i.name === sourcetypeInput.name) === -1) {
-            setServiceInput({ ...serviceInput, apps: [...serviceInput.apps, sourcetypeInput] });
+    const handleAppAdd = (appInput: AppInput) => {
+        if(serviceInput.apps.findIndex((i: AppInput) => i.name === appInput.name) === -1) {
+            setServiceInput({ ...serviceInput, apps: [...serviceInput.apps, appInput] });
         }
     }
 
@@ -157,7 +174,8 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                 <UserModList
                     read={serviceInput.read}
                     write={serviceInput.write}
-                    handleAccessChange={handleAccessChange} />
+                    handleAccessChange={handleAccessChange}
+                    handleUserDelete={handleUserDelete} />
                 <UserForm
                     submitUser= {handleUserAdd} />
             </form>

@@ -17,7 +17,6 @@ const ServiceCreate: React.FC = () => {
             variables: {
                 serviceInput: serviceInput
             },
-
         }).then(() => {
             history.push('/service');
         });

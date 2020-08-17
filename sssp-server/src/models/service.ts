@@ -6,8 +6,11 @@ import mongoose, { Schema, Document } from "mongoose";
 import splunk from '../config/splunk';
 
 export enum AppType {
-    XA,
-    UI
+    FA = 'FA',
+    TA = 'TA',
+    SA = 'SA',
+    IA = 'IA',
+    UI = 'UI'
 }
 
 export interface AppInterface extends Document {
@@ -40,8 +43,8 @@ const IndexSchema: Schema = new Schema({
 
 const AppSchema: Schema = new Schema({
     name: { type: String, required: true},
-    type: { type: AppType, default: AppType.XA},
-    urls: { type: String, required: true}
+    type: { type: AppType, default: AppType.TA},
+    url: { type: String, required: true}
 });
 
 const ServiceSchema: Schema = new Schema({

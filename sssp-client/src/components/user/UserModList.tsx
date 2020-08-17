@@ -1,5 +1,6 @@
 import React, {ChangeEvent} from 'react';
 import {
+    Button,
     Checkbox,
     Paper,
     Table,
@@ -9,15 +10,26 @@ import {
     TableHead,
     TableRow
 } from "@material-ui/core";
+import {createStyles, makeStyles} from "@material-ui/styles";
 
 
 type UserModListProps = {
     read: Array<string>,
     write: Array<string>,
-    handleAccessChange: (userId: string, accessType: ChangeEvent<HTMLInputElement>) => void
+    handleAccessChange: (userId: string, accessType: ChangeEvent<HTMLInputElement>) => void,
+    handleUserDelete: (userId: string) => void
 }
 
-const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, handleAccessChange}: UserModListProps) => {
+const useStyles = makeStyles(() =>
+    createStyles({
+        marginButton: {
+            marginLeft: 5
+        }
+    }),
+);
+
+const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, handleAccessChange, handleUserDelete}: UserModListProps) => {
+    const classes = useStyles();
 
     return (
         <TableContainer component={Paper}>
@@ -40,7 +52,14 @@ const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, ha
                             <TableCell align='right'>
                                 <Checkbox checked onChange={(event) => handleAccessChange(userId, event)} />
                             </TableCell>
-                            <TableCell align='right'>Delete</TableCell>
+                            <TableCell align='right'>
+                                <Button
+                                    variant='contained'
+                                    color='secondary'
+                                    className={classes.marginButton}
+                                    onClick={() => handleUserDelete(userId)}
+                                >Delete</Button>
+                            </TableCell>
                         </TableRow>
                     ))}
                     {read.map((userId: string) => (
@@ -52,7 +71,14 @@ const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, ha
                             <TableCell align='right'>
                                 <Checkbox onChange={(event) => handleAccessChange(userId, event)} />
                             </TableCell>
-                            <TableCell align='right'>Delete</TableCell>
+                            <TableCell align='right'>
+                                <Button
+                                    variant='contained'
+                                    color='secondary'
+                                    className={classes.marginButton}
+                                    onClick={() => handleUserDelete(userId)}
+                                >Delete</Button>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

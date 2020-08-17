@@ -1,6 +1,0 @@
-/* overrides */
-.code-edit-container :not(pre) > code[class*="language-"],
-.code-edit-container pre[class*="language-"] {
-    background: transparent;
-    margin: 0;
-}

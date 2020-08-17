@@ -13,11 +13,7 @@ const typeDefs = gql`
         service(serviceId: ID!): Service!
         admins: [String!]!
         admin(userId: String!): Boolean!
-<<<<<<< HEAD
-        sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
-=======
         #sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
->>>>>>> 691908691b62dd20b0f4ac632379596dc327faa9
     }
     type Mutation {
         createService(serviceInput: ServiceInput!): Service!
@@ -49,7 +45,10 @@ const typeDefs = gql`
     #    fields: [KeyValue!]!
     #}
     enum AppType {
-        XA
+        FA
+        TA
+        SA
+        IA
         UI
     }
     type App {
@@ -80,11 +79,6 @@ const typeDefs = gql`
         name: String!
         type: AppType!
     }
-    input KeyValueInput {
-        key: String!
-        value: String
-    }
-
 `;
 
 const schema: ApolloServerExpressConfig = {

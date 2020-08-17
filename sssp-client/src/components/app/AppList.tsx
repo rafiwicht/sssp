@@ -34,7 +34,7 @@ const AppList: React.FunctionComponent<AppListProps> = ({data}: AppListProps) =>
                         <TableRow key={row._id}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align='right'>{row.type}</TableCell>
-                            <TableCell align='right'>{row.url}</TableCell>
+                            <TableCell align='right'><a href={row.url}>{row.url}</a></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

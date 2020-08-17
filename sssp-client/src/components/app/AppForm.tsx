@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {Button, FormControl, Input, InputLabel, MenuItem, Select} from "@material-ui/core";
-import {AppInput, AppType, IndexInput} from "../../generated/graphql";
+import {Button, FormControl, Input, InputLabel, MenuItem, Select, Typography} from "@material-ui/core";
+import {AppInput, AppType} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import config from '../../config';
 
 
 type AppFormProps = {
@@ -14,6 +15,11 @@ const useStyles = makeStyles(() =>
             marginTop: 5,
             marginBottom: 5,
             marginRight: 5
+        },
+        typo: {
+            display: 'inline-block',
+            margin: 5,
+            marginTop: 27
         }
     }),
 );
@@ -21,7 +27,7 @@ const useStyles = makeStyles(() =>
 const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProps) => {
     const [appInput, setAppInput] = useState<AppInput>({
         name: '',
-        type: AppType.Xa
+        type: AppType.Ta
     });
     const [hidden, setHidden] = useState<boolean>(true);
     const classes = useStyles();
@@ -38,12 +44,15 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
         setHidden(true);
         setAppInput({
             name: '',
-            type: AppType.Xa
+            type: AppType.Ta
         });
     }
 
     const handleSubmit = () => {
-        submitApp(appInput);
+        submitApp({
+            name: `${appInput.type}-${config.firm}-${appInput.name}`,
+            type: appInput.type
+        });
         reset();
     }
 
@@ -59,6 +68,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
 
     return (
         <div>
+            <Typography className={classes.typo} variant='body1'>{`${appInput.type}-${config.firm}-`}</Typography>
             <FormControl className={classes.margin}>
                 <InputLabel htmlFor='name'>Name</InputLabel>
                 <Input
@@ -70,13 +80,16 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
                 />
             </FormControl>
             <FormControl className={classes.margin}>
-                <InputLabel htmlFor='name'>Type</InputLabel>
+                <InputLabel htmlFor='type'>Type</InputLabel>
                 <Select
                     id="type"
                     value={appInput.type}
                     onChange={handleChange('type')}
                 >
-                    <MenuItem value={AppType.Xa}>XA</MenuItem>
+                    <MenuItem value={AppType.Ta}>TA</MenuItem>
+                    <MenuItem value={AppType.Fa}>FA</MenuItem>
+                    <MenuItem value={AppType.Sa}>SA</MenuItem>
+                    <MenuItem value={AppType.Ia}>IA</MenuItem>
                     <MenuItem value={AppType.Ui}>UI</MenuItem>
                 </Select>
             </FormControl>

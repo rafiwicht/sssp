@@ -1,11 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {
     Button,
     Divider, Grid,
     Typography
 } from "@material-ui/core";
-import {useGetServiceQuery} from "../../generated/graphql";
+import {useGetServiceLazyQuery} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import IndexList from "../index/IndexList";
 import UserList from "../user/UserList";
@@ -38,11 +38,15 @@ const ServiceDetails: React.FC = () => {
 
     let history = useHistory();
 
-    const {data, error, loading} = useGetServiceQuery( {
+    const [getService, {data, error, loading}] = useGetServiceLazyQuery( {
         variables: {
             serviceId: id
         }
     });
+
+    useEffect(() => {
+        getService();
+    }, []);
 
     if (loading) {
         return <div>Loading...</div>;

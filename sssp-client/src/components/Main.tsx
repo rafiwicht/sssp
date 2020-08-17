@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Route, BrowserRouter, Redirect, Switch} from "react-router-dom";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import 'fontsource-roboto';
@@ -9,8 +9,12 @@ import Menu from "./Menu";
 import ServiceRouter from "./service/ServiceRouter";
 import Admin from "./admin/Admin";
 import {useKeycloak} from "@react-keycloak/web";
-import {useIsAdminQuery} from "../generated/graphql";
-import SourcetypeRouter from "./sourcetype/SourcetypeRouter";
+import {useIsAdminLazyQuery, useIsAdminQuery} from "../generated/graphql";
+import {KeycloakTokenParsed} from "keycloak-js";
+
+type TokenParsed = KeycloakTokenParsed & {
+    preferred_username: string
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -32,13 +36,32 @@ const Main: React.FC = () => {
 
     const classes = useStyles();
 
-    const parsed: any = keycloak.tokenParsed || {preferred_username: ''};
-    localStorage.setItem('userId', parsed.preferred_username);
-    const {data} = useIsAdminQuery({
-        variables: {
-            userId: parsed.preferred_username
+    const [userId, setUserId] = useState<string>("");
+
+    const [isAdmin, {data, loading, error}] = useIsAdminLazyQuery();
+
+    useEffect(() => {
+        if (keycloak.authenticated) {
+            const parsed: TokenParsed = keycloak.tokenParsed as TokenParsed;
+            setUserId(parsed.preferred_username);
+
+
+
+            isAdmin({
+                variables: {
+                    userId: parsed.preferred_username
+                }
+            })
         }
-    });
+    }, [keycloak.authenticated]);
+
+    localStorage.setItem('userId', userId);
+
+    if(userId === '') {
+        return (
+            <div>You have to be logged in!</div>
+        );
+    }
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -47,10 +70,12 @@ const Main: React.FC = () => {
         setOpen(false);
     };
 
-    if(!keycloak.authenticated) {
-        return (
-            <div>You have to be logged in!</div>
-        );
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return <div>ERROR</div>;
     }
 
     return (
@@ -62,7 +87,7 @@ const Main: React.FC = () => {
                 />
                 <Menu
                     open={open}
-                    admin={(data === undefined) ? false : data.admin}
+                    admin={data.admin}
                     handleDrawerClose={handleDrawerClose}/>
                 <div className={classes.content}>
                     <div className={classes.appBarSpacer}/>
@@ -73,10 +98,7 @@ const Main: React.FC = () => {
                         <Route path='/service'>
                             <ServiceRouter />
                         </Route>
-                        <Route path='/sourcetype'>
-                            <SourcetypeRouter />
-                        </Route>
-                        {(data === undefined) ? false : data.admin &&
+                        {data.admin &&
                             <Route path='/admin'>
                                 <Admin />
                             </Route>
