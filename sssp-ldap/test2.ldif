@@ -1,0 +1,5 @@
+dn: uid=test2,ou=users,dc=rwicht,dc=ch
+objectClass: inetOrgPerson
+cn: test2
+uid: test2
+userPassword:: e1NTSEF9Q3ZFUDRrWXlWQWVEVERuaWNZTWZ5dDFaUGsvN2NwQUI=

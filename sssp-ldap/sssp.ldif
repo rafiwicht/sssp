@@ -1,0 +1,29 @@
+dn: cn=test1,dc=rwicht,dc=ch
+changetype: add
+cn: test1
+sn: 3
+objectClass: person
+userPassword: Welcome.2020
+
+dn: cn=test2,dc=rwicht,dc=ch
+changetype: add
+cn: test2
+sn: 4
+objectClass: person
+userPassword: Welcome.2020
+
+dn: ou=Groups,dc=rwicht,dc=ch
+changetype: add
+objectclass: organizationalUnit
+ou: Groups
+
+dn: ou=Users,dc=rwicht,dc=ch
+changetype: add
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=sssp-admin,ou=Groups,dc=rwicht,dc=ch
+changetype: add
+cn: sssp-admin
+objectclass: groupOfUniqueNames
+uniqueMember: cn=test1,dc=rwicht,dc=ch

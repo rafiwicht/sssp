@@ -5,6 +5,7 @@ NODE_IMG ?= node
 NGINX_IMG ?= nginx
 MONGO_IMG ?= mongo
 KEYCLOAK_IMG ?= jboss/keycloak
+LDAP_IMG ?= osixia/openldap:1.4.0
 
 
 SERVER ?= sssp-server
@@ -12,6 +13,7 @@ CLIENT ?= sssp-client
 MONGO ?= sssp-mongo
 PROXY ?= sssp-proxy
 KEYCLOAK ?= sssp-keycloak
+LDAP ?= sssp-ldap
 
 ############## Local run ##############
 
@@ -112,20 +114,21 @@ rm-proxy:
 
 refresh-proxy: rm-proxy proxy
 
-bitbucket:
+ldap:
 	podman run -dt \
 		--pod sssp \
-		--env DEV_MODE=true \
-		--env PORT=3000 \
-		-v "./sssp-proxy/:/etc/nginx/conf.d:Z" \
-		--name ${PROXY} \
-		${NGINX_IMG}
+		--env LDAP_TLS=false \
+		--env LDAP_DOMAIN=rwicht.ch \
+		-v "./sssp-ldap/sssp.ldif:/container/service/slapd/assets/config/bootstrap/ldif/sssp.ldif:Z" \
+		--name ${LDAP} \
+		${LDAP_IMG} \
+		--copy-service
 
-rm-bitbucket:
-	-podman kill ${PROXY}
-	-podman rm ${PROXY}
+rm-ldap:
+	-podman kill ${LDAP}
+	-podman rm ${LDAP}
 
-refresh-bitbucket: rm-bitbucket bitbucket
+refresh-ldap: rm-ldap ldap
 
 run: pod mongo keycloak server client proxy
 
