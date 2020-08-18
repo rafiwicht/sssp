@@ -6,7 +6,15 @@
 import mongoose from 'mongoose';
 import Service, {AppInterface, ServiceInterface} from '../../models/service';
 import {transformService} from './merge';
-import {createRepo, deleteRepo} from "../../git-connector/github";
+import GithubConnector from "../../git-connector/github";
+import GitConnectorInterface from "../../git-connector";
+import config from '../../config';
+
+
+let gitConnector: GitConnectorInterface;
+if(config.githubToken) {
+    gitConnector = new GithubConnector();
+}
 
 const ServiceQueries = {
     services: async () => {
@@ -40,7 +48,7 @@ const ServiceMutation = {
                     return {
                         ...e,
                         _id: new mongoose.Types.ObjectId(),
-                        url: createRepo(e.name,[],[], e.type)
+                        url: gitConnector.createRepo(e.name,[],[], e.type)
                     };
                 })
             });
@@ -64,7 +72,7 @@ const ServiceMutation = {
 
         // Delete apps
         currentApps.filter(e => !newApps.includes(e)).forEach(e => {
-            deleteRepo(e);
+            gitConnector.deleteRepo(e);
         })
 
         const updatedService = await Service.findByIdAndUpdate(serviceId, {
@@ -73,7 +81,7 @@ const ServiceMutation = {
                 return {
                     ...e,
                     _id: new mongoose.Types.ObjectId(),
-                    url: createRepo(e.name,[],[], e.type)
+                    url: gitConnector.createRepo(e.name,[],[], e.type)
                 };
             })
         });
@@ -82,7 +90,7 @@ const ServiceMutation = {
     deleteService: async (parent: any, {serviceId}: any) => {
         const service = await Service.findByIdAndDelete(serviceId);
         service.apps.forEach((e: AppInterface) => {
-            deleteRepo(e.name);
+            gitConnector.deleteRepo(e.name);
         })
         return transformService(service);
     }

@@ -73,6 +73,7 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({submitUser}: UserForm
                 color='primary'
                 className={classes.margin}
                 onClick={() => handleSubmit()}
+                disabled={userId === ''}
             >Submit</Button>
         </div>
     );

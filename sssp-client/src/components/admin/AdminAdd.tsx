@@ -42,6 +42,7 @@ const AdminAdd: React.FC = () => {
                     id="userId"
                     label="UserID"
                     value={userId}
+                    required
                     onChange={event => handleChange(event)}/>
             </form>
             <Button
@@ -49,6 +50,7 @@ const AdminAdd: React.FC = () => {
                 color='primary'
                 className={classes.margin}
                 onClick={() => handleSubmit()}
+                disabled={userId === ''}
             >Add</Button>
         </div>
 

@@ -135,7 +135,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
             <form autoComplete='off' onSubmit={() => handleSubmit(serviceInput)}>
                 <Typography variant='h5'>Service options</Typography>
                 <Divider />
-                <FormControl fullWidth className={classes.marginFields}>
+                <FormControl fullWidth className={classes.marginFields} required>
                     <InputLabel htmlFor='name'>Name</InputLabel>
                     <Input
                         id='name'
@@ -145,7 +145,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                         onChange={handleChange('name')}
                     />
                 </FormControl>
-                <FormControl fullWidth className={classes.marginFields}>
+                <FormControl fullWidth className={classes.marginFields} required>
                     <InputLabel htmlFor='owner'>Owner</InputLabel>
                     <Input
                         id='owner'
@@ -190,6 +190,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                 color='primary'
                 className={classes.marginButton}
                 onClick={() => handleSubmit(serviceInput)}
+                disabled={serviceInput.name === '' || serviceInput.owner === ''}
             >Submit</Button>
         </div>
 

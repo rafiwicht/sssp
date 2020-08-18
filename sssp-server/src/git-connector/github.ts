@@ -3,6 +3,7 @@ import axios, {AxiosPromise, AxiosResponse, Method} from 'axios';
 import {AppType} from "../models/service";
 import config from "../config";
 import {appConf, defaultMeta, navDefault, viewAppInfo} from "./templates";
+import GitConnectorInterface from "./index";
 
 const githubBaseUrl: string = 'https://api.github.com';
 const organisation: string = config.githubOrg;
@@ -19,49 +20,53 @@ const uiTemplates = [
     viewAppInfo
 ]
 
+class GithubConnector implements GitConnectorInterface {
+    createRepo(name: string, read: Array<string>, write: Array<string>, type: AppType) {
+        console.log('-----');
+        axiosRequest(
+            `/orgs/${organisation}/repos`
+        ).then((r: AxiosResponse) => {
+            if(!r.data.map(e => {return e.name}).includes(name)) {
+                axiosRequest(
+                    `/orgs/${organisation}/repos`,
+                    {
+                        name: name,
+                        private: true,
+                        init_init: true
+                    },
+                    'POST'
+                )
+                    .then(() => {
+                        template(name, type);
+                    }).catch(r => {
+                    console.log(r);
+                });
+            }
+        }).catch(r => {
+            console.log(r);
+        });
 
-const createRepo = (name: string, read: Array<string>, write: Array<string>, type: AppType) => {
-    console.log('-----');
-    axiosRequest(
-        `/orgs/${organisation}/repos`
-    ).then((r: AxiosResponse) => {
-        if(!r.data.map(e => {return e.name}).includes(name)) {
-            axiosRequest(
-                `/orgs/${organisation}/repos`,
-                {
-                    name: name,
-                    private: true,
-                    init_init: true
-                },
-                'POST'
-            )
-            .then(() => {
-                template(name, type);
-            }).catch(r => {
-                console.log(r);
+        return `https://github.com/${organisation}/${name}`;
+    }
+
+    deleteRepo(name: string) {
+        axiosRequest(
+            `/orgs/${organisation}/repos`
+        )
+            .then((r: AxiosResponse) => {
+                if(r.data.map(e => {return e.name}).includes(name)) {
+                    axiosRequest(
+                        `/repos/${organisation}/${name}`,
+                        {},
+                        'DELETE'
+                    )
+                }
             });
-        }
-    }).catch(r => {
-        console.log(r);
-    });
+    }
+}
 
-    return `https://github.com/${organisation}/${name}`;
-};
 
-const deleteRepo = (name: string) => {
-    axiosRequest(
-        `/orgs/${organisation}/repos`
-    )
-    .then((r: AxiosResponse) => {
-        if(r.data.map(e => {return e.name}).includes(name)) {
-            axiosRequest(
-                `/repos/${organisation}/${name}`,
-                {},
-                'DELETE'
-            )
-        }
-    });
-};
+
 
 const template = async(name: string, type: AppType) => {
     await axiosRequest(
@@ -171,4 +176,4 @@ const axiosRequest = (url: string, data: object = null, method : Method = 'GET',
     return axios(axiosParams);
 }
 
-export {createRepo, deleteRepo, template};
+export default GithubConnector;

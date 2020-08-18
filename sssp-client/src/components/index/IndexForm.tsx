@@ -61,7 +61,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({submitIndex}: Index
 
     return (
         <div>
-            <FormControl className={classes.margin}>
+            <FormControl className={classes.margin} required>
                 <InputLabel htmlFor='name'>Name</InputLabel>
                 <Input
                     id='name'
@@ -71,7 +71,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({submitIndex}: Index
                     onChange={handleChange('name')}
                 />
             </FormControl>
-            <FormControl className={classes.margin}>
+            <FormControl className={classes.margin} required>
                 <InputLabel htmlFor='name'>maxTotalDataSizeMB</InputLabel>
                 <Input
                     id='name'
@@ -81,7 +81,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({submitIndex}: Index
                     onChange={handleChange('name')}
                 />
             </FormControl>
-            <FormControl className={classes.margin}>
+            <FormControl className={classes.margin} required>
                 <InputLabel htmlFor='name'>Name</InputLabel>
                 <Input
                     id='frozenTimePeriodInSecs'
@@ -102,6 +102,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({submitIndex}: Index
                 color='primary'
                 className={classes.margin}
                 onClick={() => handleSubmit()}
+                disabled={indexInput.name === ''}
             >Submit</Button>
         </div>
     );

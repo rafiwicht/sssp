@@ -19,6 +19,8 @@ const ServiceCreate: React.FC = () => {
             },
         }).then(() => {
             history.push('/service');
+        }).catch((r) => {
+            console.log(r);
         });
     }
 

@@ -69,7 +69,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
     return (
         <div>
             <Typography className={classes.typo} variant='body1'>{`${appInput.type}-${config.firm}-`}</Typography>
-            <FormControl className={classes.margin}>
+            <FormControl className={classes.margin} required>
                 <InputLabel htmlFor='name'>Name</InputLabel>
                 <Input
                     id='name'
@@ -103,6 +103,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
                 color='primary'
                 className={classes.margin}
                 onClick={() => handleSubmit()}
+                disabled={appInput.name === ''}
             >Submit</Button>
         </div>
     );
