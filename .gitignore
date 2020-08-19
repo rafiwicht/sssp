@@ -9,3 +9,9 @@ node_modules/
 *.pem
 *.key
 certs
+sssp-gitlab/logs
+sssp-gitlab/data
+gitlab-secrets.json
+ssh_host_ec*
+ssh_host_ed*
+ssh_host_rsa*

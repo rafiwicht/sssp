@@ -8,7 +8,6 @@ import {IconButton, Theme, Drawer, Divider} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HomeIcon from '@material-ui/icons/Home';
 import RoomServiceIcon from '@material-ui/icons/RoomService';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
@@ -46,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type MenuProps = {
     open: boolean,
-    admin: boolean,
     handleDrawerClose: () => void
 }
 
@@ -63,15 +61,9 @@ const test = [
         subpage: '/service',
         adminOnly: false,
         icon: (<RoomServiceIcon />)
-    },
-    {
-        text: 'Admin',
-        subpage: 'admin',
-        adminOnly: true,
-        icon: (<SupervisorAccountIcon />)
     }]
 
-const Menu: React.FunctionComponent<MenuProps> = ({open, admin, handleDrawerClose}: MenuProps) => {
+const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
 
     return (
@@ -92,9 +84,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({open, admin, handleDrawerClos
             </div>
             <Divider/>
             {test.map((value, index) => {
-                if(!value.adminOnly || admin) {
-                    return (<MenuListItem {...value} key={index}/>);
-                }
+                return (<MenuListItem {...value} key={index}/>);
             })}
         </Drawer>
     );

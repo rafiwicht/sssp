@@ -6,21 +6,18 @@
 import {gql} from 'apollo-server-express';
 import {ApolloServerExpressConfig} from 'apollo-server-express';
 import resolvers from '../resolvers';
+import {AuthenticationError} from 'apollo-server';
 
 const typeDefs = gql`
     type Query {
         services: [Service!]!
         service(serviceId: ID!): Service!
-        admins: [String!]!
-        admin(userId: String!): Boolean!
         #sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
     }
     type Mutation {
         createService(serviceInput: ServiceInput!): Service!
         updateService(serviceId: ID!, serviceInput: ServiceInput!): Service!
         deleteService(serviceId: ID!): Service!
-        createAdmin(userId: String!): String!
-        deleteAdmin(userId: String!): String!
         #updateSourcetype(serviceId: ID!, sourcetypeId: ID!, sourcetypeInput: SourcetypeInput!): Sourcetype!
     }
     type Service {
@@ -86,6 +83,7 @@ const schema: ApolloServerExpressConfig = {
     resolvers,
     introspection: true,
     context: ({req}: any) => {
+        if (!req.userId) throw new AuthenticationError('Unauthenticated!');
         return {
             userId: req.userId,
             admin: req.admin

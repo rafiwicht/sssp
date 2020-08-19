@@ -10,7 +10,6 @@ import GithubConnector from "../../git-connector/github";
 import GitConnectorInterface from "../../git-connector";
 import config from '../../config';
 
-
 let gitConnector: GitConnectorInterface;
 if(config.githubToken) {
     gitConnector = new GithubConnector();

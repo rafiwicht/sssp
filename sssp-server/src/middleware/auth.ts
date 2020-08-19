@@ -4,8 +4,8 @@
  */
 
 import * as jwt from 'jsonwebtoken';
-import Admin from "../models/admin";
-import keycloakValidate from '../config/keycloak'
+import keycloakValidate from '../config/keycloak';
+import config from '../config';
 
 /**
  * Jwt verifying middleware
@@ -17,32 +17,23 @@ import keycloakValidate from '../config/keycloak'
 export default async (req: any, res: any, next: any) => {
     const authHeader = req.get('Authorization');
     if (!authHeader) {
-        res.status = 401;
-        return next(new Error('Unauthorized!'));
+        return next();
     }
     const token = authHeader.split(' ')[1];
 
     if (!token || token === '') {
-        res.status = 401;
-        return next(new Error('Unauthorized!'));
+        return next();
     }
     let decodedToken: any;
     try {
         decodedToken = jwt.verify(token, keycloakValidate.publicFile(), { algorithms: ['RS256']});
     } catch (err) {
-        res.status = 401;
-        return next(new Error('Unauthorized!'));
+        return next();
     }
     if (!decodedToken) {
-        res.status = 401;
-        return next(new Error('Unauthorized!'));
+        return next();
     }
     req.userId = decodedToken.preferred_username;
-
-    const admin = await Admin.findOne({
-        userId: req.userId
-    });
-    req.admin = !!admin;
-
+    req.admin = decodedToken.realm_access.roles.includes(config.adminRole);
     return next();
 };

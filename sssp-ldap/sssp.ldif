@@ -1,29 +1,29 @@
-dn: cn=test1,dc=rwicht,dc=ch
+dn: ou=groups,dc=rwicht,dc=ch
+changetype: add
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=users,dc=rwicht,dc=ch
+changetype: add
+objectclass: organizationalUnit
+ou: users
+
+dn: cn=test1,ou=users,dc=rwicht,dc=ch
 changetype: add
 cn: test1
 sn: 3
 objectClass: person
 userPassword: Welcome.2020
 
-dn: cn=test2,dc=rwicht,dc=ch
+dn: cn=test2,ou=users,dc=rwicht,dc=ch
 changetype: add
 cn: test2
 sn: 4
 objectClass: person
 userPassword: Welcome.2020
 
-dn: ou=Groups,dc=rwicht,dc=ch
-changetype: add
-objectclass: organizationalUnit
-ou: Groups
-
-dn: ou=Users,dc=rwicht,dc=ch
-changetype: add
-objectclass: organizationalUnit
-ou: Users
-
-dn: cn=sssp-admin,ou=Groups,dc=rwicht,dc=ch
+dn: cn=sssp-admin,ou=groups,dc=rwicht,dc=ch
 changetype: add
 cn: sssp-admin
-objectclass: groupOfUniqueNames
-uniqueMember: cn=test1,dc=rwicht,dc=ch
+objectclass: groupOfNames
+member: cn=test1,ou=users,dc=rwicht,dc=ch

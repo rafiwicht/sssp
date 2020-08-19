@@ -10,7 +10,7 @@ export default {
     allowedOrigins: ['*'],
     jwtCertUrl: 'http://localhost:8080/auth/realms/sssp/protocol/openid-connect/certs',
     jwtFileName: 'certs',
-    ssspAdmins: process.env.SSSP_ADMINS || 'ssspAdmin',
     githubToken: process.env.GITHUB_TOKEN,
-    githubOrg: process.env.GITHUB_ORG || 'sssp-test'
+    githubOrg: process.env.GITHUB_ORG || 'sssp-test',
+    adminRole: process.env.ADMIN_ROLE || 'sssp-admin'
 };

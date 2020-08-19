@@ -7,9 +7,7 @@ import Bar from './Bar';
 import Home from './Home';
 import Menu from "./Menu";
 import ServiceRouter from "./service/ServiceRouter";
-import Admin from "./admin/Admin";
 import {useKeycloak} from "@react-keycloak/web";
-import {useIsAdminLazyQuery, useIsAdminQuery} from "../generated/graphql";
 import {KeycloakTokenParsed} from "keycloak-js";
 
 type TokenParsed = KeycloakTokenParsed & {
@@ -31,29 +29,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 const Main: React.FC = () => {
-    const [open, setOpen] = useState(false);
     const [keycloak] = useKeycloak();
-
     const classes = useStyles();
 
-    const [userId, setUserId] = useState<string>("");
+    const [open, setOpen] = useState<boolean>(false);
+    const [userId, setUserId] = useState<string>('');
 
-    const [isAdmin, {data, loading, error}] = useIsAdminLazyQuery();
-
-    useEffect(() => {
-        if (keycloak.authenticated) {
-            const parsed: TokenParsed = keycloak.tokenParsed as TokenParsed;
-            setUserId(parsed.preferred_username);
-
-
-
-            isAdmin({
-                variables: {
-                    userId: parsed.preferred_username
-                }
-            })
-        }
-    }, [keycloak.authenticated]);
+    if (keycloak.authenticated) {
+        const parsed: TokenParsed = keycloak.tokenParsed as TokenParsed;
+        if(parsed.preferred_username !== userId) setUserId(parsed.preferred_username);
+    }
 
     localStorage.setItem('userId', userId);
 
@@ -70,14 +55,6 @@ const Main: React.FC = () => {
         setOpen(false);
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error || !data) {
-        return <div>ERROR</div>;
-    }
-
     return (
         <BrowserRouter>
             <div className={classes.root}>
@@ -87,7 +64,6 @@ const Main: React.FC = () => {
                 />
                 <Menu
                     open={open}
-                    admin={data.admin}
                     handleDrawerClose={handleDrawerClose}/>
                 <div className={classes.content}>
                     <div className={classes.appBarSpacer}/>
@@ -98,11 +74,6 @@ const Main: React.FC = () => {
                         <Route path='/service'>
                             <ServiceRouter />
                         </Route>
-                        {data.admin &&
-                            <Route path='/admin'>
-                                <Admin />
-                            </Route>
-                        }
                         <Route path='/' exact>
                             <Redirect to={'/home'} />
                         </Route>

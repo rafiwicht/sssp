@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@octokit/rest": "^18.0.3",
+    "apollo-error": "^1.0.2",
     "apollo-server": "^2.15.0",
     "apollo-server-express": "^2.15.0",
     "axios": "^0.19.2",

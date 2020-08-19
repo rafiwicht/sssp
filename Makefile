@@ -6,6 +6,7 @@ NGINX_IMG ?= nginx
 MONGO_IMG ?= mongo
 KEYCLOAK_IMG ?= jboss/keycloak
 LDAP_IMG ?= osixia/openldap:1.4.0
+GITLAB_IMG ?= gitlab/gitlab-ce
 
 
 SERVER ?= sssp-server
@@ -14,11 +15,12 @@ MONGO ?= sssp-mongo
 PROXY ?= sssp-proxy
 KEYCLOAK ?= sssp-keycloak
 LDAP ?= sssp-ldap
+GITLAB ?= sssp-gitlab
 
 ############## Local run ##############
 
 pod:
-	podman pod create -p 8000 -p 27017 --name sssp
+	podman pod create -p 8000 -p 27017 -p 8080 -p 8001 --name sssp
 
 rm-pod:
 	-podman pod rm sssp -f
@@ -35,10 +37,6 @@ keycloak:
 		-v "./sssp-keycloak:/sssp-keycloak:Z" \
 		--name ${KEYCLOAK} \
 		${KEYCLOAK_IMG} -Djboss.bind.address.private=127.0.0.1 -Djboss.bind.address=127.0.0.1
-	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test1 -p ${PASSWORD} -r sssp
-	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test2 -p ${PASSWORD} -r sssp
-	podman exec -it ${KEYCLOAK} /opt/jboss/keycloak/bin/add-user-keycloak.sh -u test3 -p ${PASSWORD} -r sssp
-	podman restart ${KEYCLOAK}
 
 rm-keycloak:
 	-podman kill ${KEYCLOAK}
@@ -66,7 +64,6 @@ server:
 		--env MONGO_SECRET=${PASSWORD} \
 		--env MONGO=localhost \
 		--env GITHUB_TOKEN=${GITHUB_TOKEN} \
-		--env SSSP_ADMINS=test1 \
 		-v "./sssp-server:/sssp-server:Z" \
 		-w "/sssp-server" \
 		--name ${SERVER} \
@@ -122,7 +119,8 @@ ldap:
 		-v "./sssp-ldap/sssp.ldif:/container/service/slapd/assets/config/bootstrap/ldif/sssp.ldif:Z" \
 		--name ${LDAP} \
 		${LDAP_IMG} \
-		--copy-service
+		--copy-service --loglevel debug
+	sleep 20
 
 rm-ldap:
 	-podman kill ${LDAP}
@@ -130,7 +128,26 @@ rm-ldap:
 
 refresh-ldap: rm-ldap ldap
 
-run: pod mongo keycloak server client proxy
+gitlab:
+	-mkdir sssp-gitlab/logs
+	-mkdir sssp-gitlab/data
+	podman run -dt \
+		--pod sssp \
+		--name ${GITLAB} \
+		-v "./sssp-gitlab/config:/etc/gitlab:Z" \
+  		-v "./sssp-gitlab/logs:/var/log/gitlab:Z" \
+  		-v "./sssp-gitlab/data:/var/opt/gitlab:Z" \
+		${GITLAB_IMG}
+
+rm-gitlab:
+	-podman kill ${GITLAB}
+	-podman rm ${GITLAB}
+	-rm -rf sssp-gitlab/logs
+	-rm -rf sssp-gitlab/data
+
+refresh-gitlab: rm-gitlab gitlab
+
+run: pod gitlab ldap mongo keycloak server client proxy
 
 stop: rm-pod
 

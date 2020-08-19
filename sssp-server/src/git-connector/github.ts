@@ -22,10 +22,10 @@ const uiTemplates = [
 
 class GithubConnector implements GitConnectorInterface {
     createRepo(name: string, read: Array<string>, write: Array<string>, type: AppType) {
-        console.log('-----');
         axiosRequest(
             `/orgs/${organisation}/repos`
         ).then((r: AxiosResponse) => {
+            console.log(r);
             if(!r.data.map(e => {return e.name}).includes(name)) {
                 axiosRequest(
                     `/orgs/${organisation}/repos`,
@@ -53,22 +53,21 @@ class GithubConnector implements GitConnectorInterface {
         axiosRequest(
             `/orgs/${organisation}/repos`
         )
-            .then((r: AxiosResponse) => {
-                if(r.data.map(e => {return e.name}).includes(name)) {
-                    axiosRequest(
-                        `/repos/${organisation}/${name}`,
-                        {},
-                        'DELETE'
-                    )
-                }
-            });
+        .then((r: AxiosResponse) => {
+            if(r.data.map(e => {return e.name}).includes(name)) {
+                axiosRequest(
+                    `/repos/${organisation}/${name}`,
+                    {},
+                    'DELETE'
+                )
+            }
+        });
     }
 }
 
-
-
-
 const template = async(name: string, type: AppType) => {
+    console.log('Template-----');
+    console.log(type);
     await axiosRequest(
         `/repos/${organisation}/${name}/contents/README.md`,
         {
@@ -103,6 +102,8 @@ const template = async(name: string, type: AppType) => {
 
     }
     if(type === AppType.UI) {
+        console.log('UI-------');
+        console.log(type);
         for (const e of uiTemplates) {
             const {path, content} = e();
             const blobResponse = await axiosRequest(

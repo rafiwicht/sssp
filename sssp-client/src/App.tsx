@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {KeycloakProvider} from '@react-keycloak/web'
 import {ApolloProvider} from '@apollo/react-hooks';
 
-import keycloak from "./singletons/keycloak";
+import keycloak from "./config/keycloak";
 import Main from "./components/Main";
 import client from "./config/apollo";
 import {Snackbar} from "@material-ui/core";
