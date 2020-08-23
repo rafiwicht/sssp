@@ -62,8 +62,8 @@ server:
 		--env DEV_MODE=true \
 		--env MONGO_USER=${MONGO_USER} \
 		--env MONGO_SECRET=${PASSWORD} \
-		--env MONGO=localhost \
-		--env GITHUB_TOKEN=${GITHUB_TOKEN} \
+		--env MONGO=127.0.0.1 \
+		--env GITLAB_TOKEN=${GITLAB_TOKEN} \
 		-v "./sssp-server:/sssp-server:Z" \
 		-w "/sssp-server" \
 		--name ${SERVER} \
@@ -139,7 +139,7 @@ gitlab:
   		-v "./sssp-gitlab/data:/var/opt/gitlab:Z" \
 		${GITLAB_IMG}
 	sleep 300
-	podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
+	podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
 
 rm-gitlab:
 	-podman kill ${GITLAB}

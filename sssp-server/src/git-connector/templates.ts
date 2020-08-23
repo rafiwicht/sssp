@@ -3,7 +3,6 @@ import {AppType} from "../models/service";
 
 export const appConf = (name: string, type: AppType) => {
     const nameShort = name.split('-')[-1];
-    console.log(nameShort);
 
     return {
         path: 'default/app.conf',
@@ -81,3 +80,14 @@ export const viewAppInfo = () => {
 `
     };
 }
+
+
+export const templates = [
+    appConf,
+    defaultMeta,
+]
+
+export const uiTemplates = [
+    navDefault,
+    viewAppInfo
+]

@@ -1462,7 +1462,7 @@
               "false"
             ],
             "connectionUrl": [
-              "ldap://localhost"
+              "ldap://127.0.0.1"
             ],
             "syncRegistrations": [
               "false"

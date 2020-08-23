@@ -9,10 +9,14 @@ import {transformService} from './merge';
 import GithubConnector from "../../git-connector/github";
 import GitConnectorInterface from "../../git-connector";
 import config from '../../config';
+import GitlabConnector from "../../git-connector/gitlab";
 
 let gitConnector: GitConnectorInterface;
 if(config.githubToken) {
     gitConnector = new GithubConnector();
+}
+if(config.gitlabToken) {
+    gitConnector = new GitlabConnector();
 }
 
 const ServiceQueries = {
@@ -52,8 +56,6 @@ const ServiceMutation = {
                 })
             });
             const savedService = await newService.save();
-
-            console.log(savedService);
 
             return transformService(savedService);
         }

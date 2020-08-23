@@ -8,7 +8,6 @@ import {transformSourcetype} from './merge';
 const SourcetypeQueries = {
     sourcetype: async (parent: any, {serviceId, sourcetypeId}: any) => {
         const service = await Service.findById(serviceId);
-        console.log(service);
         return transformSourcetype(service.sourcetypes.id(sourcetypeId));
 
     }
@@ -24,7 +23,6 @@ const SourcetypeMutations = {
                 "sourcetype.$": sourcetypeInput
             }
         });
-        console.log(service);
         return transformSourcetype(service.sourcetypes.id(sourcetypeId));
     }
 };

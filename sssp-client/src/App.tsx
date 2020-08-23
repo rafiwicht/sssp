@@ -18,7 +18,6 @@ const App: React.FC = () => {
     const [messages, setMessages] = useState<Array<string>>([]);
 
     const setErrors = (errorMessages: Array<string>) => {
-        console.log(errorMessages);
         setMessages(errorMessages);
         setOpen(true);
     }

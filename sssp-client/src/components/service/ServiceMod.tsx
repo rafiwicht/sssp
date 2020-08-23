@@ -30,8 +30,7 @@ type ServiceModProps = {
 }
 
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod}: ServiceModProps) => {
-    console.log(localStorage.getItem('userId'));
-    const [serviceInput, setServiceInput] = useState({
+     const [serviceInput, setServiceInput] = useState({
         name: serviceMod?.name || '',
         owner: serviceMod?.owner || '',
         indexes: serviceMod?.indexes || [],
