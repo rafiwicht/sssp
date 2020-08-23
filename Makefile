@@ -20,7 +20,7 @@ GITLAB ?= sssp-gitlab
 ############## Local run ##############
 
 pod:
-	podman pod create -p 8000 -p 27017 -p 8080 -p 8001 --name sssp
+	podman pod create -p 8000 -p 27017 -p 7080:80 -p 7443:443 -p 7022:22 --name sssp
 
 rm-pod:
 	-podman pod rm sssp -f
@@ -129,8 +129,8 @@ rm-ldap:
 refresh-ldap: rm-ldap ldap
 
 gitlab:
-	-mkdir sssp-gitlab/logs
-	-mkdir sssp-gitlab/data
+	-mkdir ./sssp-gitlab/logs
+	-mkdir ./sssp-gitlab/data
 	podman run -dt \
 		--pod sssp \
 		--name ${GITLAB} \
@@ -142,12 +142,12 @@ gitlab:
 rm-gitlab:
 	-podman kill ${GITLAB}
 	-podman rm ${GITLAB}
-	-rm -rf sssp-gitlab/logs
-	-rm -rf sssp-gitlab/data
+	-sudo rm -rf ./sssp-gitlab/logs
+	-sudo rm -rf ./sssp-gitlab/data
 
 refresh-gitlab: rm-gitlab gitlab
 
-run: pod gitlab ldap mongo keycloak server client proxy
+run: pod ldap mongo keycloak server client proxy gitlab
 
 stop: rm-pod
 

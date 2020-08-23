@@ -26,7 +26,7 @@
 ##! On AWS EC2 instances, we also attempt to fetch the public hostname/IP
 ##! address from AWS. For more details, see:
 ##! https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
-external_url 'http://sssp.rwicht.ch:8001'
+# external_url 'GENERATED_EXTERNAL_URL'
 
 ## Roles for multi-instance GitLab
 ##! The default is to have no roles enabled, which results in GitLab running as an all-in-one instance.
@@ -71,7 +71,7 @@ external_url 'http://sssp.rwicht.ch:8001'
 # gitlab_rails['max_request_duration_seconds'] = 57
 
 ### Email Settings
-gitlab_rails['gitlab_email_enabled'] = false
+# gitlab_rails['gitlab_email_enabled'] = true
 # gitlab_rails['gitlab_email_from'] = 'example@example.com'
 # gitlab_rails['gitlab_email_display_name'] = 'Example'
 # gitlab_rails['gitlab_email_reply_to'] = 'noreply@example.com'
@@ -385,31 +385,28 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ###! **Be careful not to break the indentation in the ldap_servers block. It is
 ###!   in yaml format and the spaces must be retained. Using tabs will not work.**
 
-# gitlab_rails['ldap_enabled'] = false
+gitlab_rails['ldap_enabled'] = true
 # gitlab_rails['prevent_ldap_sign_in'] = false
 
 ###! **remember to close this block with 'EOS' below**
-# gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
-#   main: # 'main' is the GitLab 'provider ID' of this LDAP server
-#     label: 'LDAP'
-#     host: 'localhost'
-#     port: 389
-#     uid: 'sAMAccountName'
-#     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-#     password: '_the_password_of_the_bind_user'
-#     encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
-#     verify_certificates: true
-#     smartcard_auth: false
-#     active_directory: true
-#     allow_username_or_email_login: false
-#     lowercase_usernames: false
-#     block_auto_created_users: false
-#     base: ''
-#     user_filter: ''
-#     ## EE only
-#     group_base: ''
-#     admin_group: ''
-#     sync_ssh_keys: false
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+    main: # 'main' is the GitLab 'provider ID' of this LDAP server
+        label: 'LDAP'
+        host: 'localhost'
+        port: 389
+        uid: 'cn'
+        bind_dn: 'cn=admin,dc=rwicht,dc=ch'
+        password: 'admin'
+        encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
+        verify_certificates: true
+        smartcard_auth: false
+        active_directory: true
+        allow_username_or_email_login: false
+        lowercase_usernames: false
+        block_auto_created_users: false
+        base: 'ou=users,dc=rwicht,dc=ch'
+        user_filter: ''
+    EOS
 #
 #   secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
 #     label: 'LDAP'
@@ -674,7 +671,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 # registry_external_url 'https://registry.example.com'
 
 ### Settings used by GitLab application
-# gitlab_rails['registry_enabled'] = true
+gitlab_rails['registry_enabled'] = false
 # gitlab_rails['registry_host'] = "registry.gitlab.example.com"
 # gitlab_rails['registry_port'] = "5005"
 # gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
@@ -691,7 +688,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 # gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
 
 ### Settings used by Registry application
-# registry['enable'] = true
+registry['enable'] = false
 # registry['username'] = "registry"
 # registry['group'] = "registry"
 # registry['uid'] = nil
@@ -837,7 +834,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 
 ### Advanced settings
 # unicorn['listen'] = 'localhost'
-# unicorn['port'] = 8080
+unicorn['port'] = 8081
 # unicorn['socket'] = '/var/opt/gitlab/gitlab-rails/sockets/gitlab.socket'
 # unicorn['pidfile'] = '/opt/gitlab/var/unicorn/unicorn.pid'
 # unicorn['tcp_nopush'] = true
@@ -874,7 +871,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 
 ### Advanced settings
 # puma['listen'] = '127.0.0.1'
-# puma['port'] = 8080
+puma['port'] = 8081
 # puma['socket'] = '/var/opt/gitlab/gitlab-rails/sockets/gitlab.socket'
 # puma['pidfile'] = '/opt/gitlab/var/puma/puma.pid'
 # puma['state_path'] = '/opt/gitlab/var/puma/puma.state'
@@ -1611,7 +1608,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ###! Docs: https://docs.gitlab.com/ee/administration/high_availability
 # monitoring_role['enable'] = true
 
-# prometheus['enable'] = true
+prometheus['enable'] = false
 # prometheus['monitor_kubernetes'] = true
 # prometheus['username'] = 'gitlab-prometheus'
 # prometheus['group'] = 'gitlab-prometheus'
@@ -1688,7 +1685,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ## Prometheus Alertmanager
 ################################################################################
 
-# alertmanager['enable'] = true
+alertmanager['enable'] = false
 # alertmanager['home'] = '/var/opt/gitlab/alertmanager'
 # alertmanager['log_directory'] = '/var/log/gitlab/alertmanager'
 # alertmanager['admin_email'] = 'admin@example.com'
@@ -1711,7 +1708,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ##! Docs: https://docs.gitlab.com/ee/administration/monitoring/prometheus/node_exporter.html
 ################################################################################
 
-# node_exporter['enable'] = true
+node_exporter['enable'] = false
 # node_exporter['home'] = '/var/opt/gitlab/node-exporter'
 # node_exporter['log_directory'] = '/var/log/gitlab/node-exporter'
 # node_exporter['flags'] = {
@@ -1730,7 +1727,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ##! Docs: https://docs.gitlab.com/ee/administration/monitoring/prometheus/redis_exporter.html
 ################################################################################
 
-# redis_exporter['enable'] = true
+redis_exporter['enable'] = false
 # redis_exporter['log_directory'] = '/var/log/gitlab/redis-exporter'
 # redis_exporter['flags'] = {
 #   'redis.addr' => "unix:///var/opt/gitlab/redis/redis.socket",
@@ -1748,7 +1745,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ##! Docs: https://docs.gitlab.com/ee/administration/monitoring/prometheus/postgres_exporter.html
 ################################################################################
 
-# postgres_exporter['enable'] = true
+postgres_exporter['enable'] = false
 # postgres_exporter['home'] = '/var/opt/gitlab/postgres-exporter'
 # postgres_exporter['log_directory'] = '/var/log/gitlab/postgres-exporter'
 # postgres_exporter['flags'] = {}
@@ -1778,7 +1775,7 @@ gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = nil
 ################################################################################
 
 
-# gitlab_exporter['enable'] = true
+gitlab_exporter['enable'] = false
 # gitlab_exporter['log_directory'] = "/var/log/gitlab/gitlab-exporter"
 # gitlab_exporter['home'] = "/var/opt/gitlab/gitlab-exporter"
 
