@@ -9,26 +9,44 @@ import resolvers from '../resolvers';
 import {AuthenticationError} from 'apollo-server';
 
 const typeDefs = gql`
+    enum Kind {
+        CURRENT
+        FUTURE
+    }
     type Query {
-        services: [Service!]!
-        service(serviceId: ID!): Service!
-        #sourcetype(serviceId: ID! sourcetypeId: ID!): Sourcetype!
+        services(kind: Kind = CURRENT): [Service!]!
+        service(serviceId: ID!, kind: Kind = CURRENT): Service!
+        workflows: [Workflow!]!
+        workflow(serviceId: ID!): Workflow!
     }
     type Mutation {
         createService(serviceInput: ServiceInput!): Service!
         updateService(serviceId: ID!, serviceInput: ServiceInput!): Service!
         deleteService(serviceId: ID!): Service!
-        #updateSourcetype(serviceId: ID!, sourcetypeId: ID!, sourcetypeInput: SourcetypeInput!): Sourcetype!
+        acceptWorkflow(serviceId: ID!): Service!
+        declineWorkflow(serviceId: ID!): Service!
+    }
+    enum State {
+        IN_CREATION
+        ACTIVE
+        IN_DELETION
+        IN_MODIFICATION
+    }
+    type Workflow {
+        new: Service
+        current: Service
     }
     type Service {
         _id: ID!
         name: String!
         owner: String!
-        state: String!
+        description: String!
+        dataClassification: String!
         read: [String!]!
         write: [String!]!
         indexes: [Index!]!
         apps: [App!]!
+        state: State!
     }
     type Index {
         _id: ID!
@@ -36,11 +54,6 @@ const typeDefs = gql`
         maxTotalDataSizeMB: Int!
         frozenTimePeriodInSecs: Int!
     }
-    #type Sourcetype {
-    #    _id: ID!
-    #    name: String!
-    #    fields: [KeyValue!]!
-    #}
     enum AppType {
         FA
         TA
@@ -62,6 +75,8 @@ const typeDefs = gql`
     input ServiceInput {
         name: String!
         owner: String!
+        description: String!
+        dataClassification: String!
         read: [String!]
         write: [String!]!
         indexes: [IndexInput!]

@@ -11,7 +11,6 @@ const ServiceCreate: React.FC = () => {
 
     let history = useHistory();
 
-
     const handleSubmit = (serviceInput: ServiceInput) => {
         createService({
             variables: {
@@ -19,8 +18,6 @@ const ServiceCreate: React.FC = () => {
             },
         }).then(() => {
             history.push('/service');
-        }).catch((r) => {
-            console.log(r);
         });
     }
 

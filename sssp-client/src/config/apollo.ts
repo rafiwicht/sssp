@@ -1,7 +1,7 @@
 import ApolloClient from 'apollo-client';
 import {createHttpLink} from 'apollo-link-http'
 import { onError } from 'apollo-link-error';
-import {ContextSetter, setContext} from 'apollo-link-context';
+import {setContext} from 'apollo-link-context';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import keycloak from "./keycloak";
 
@@ -14,22 +14,25 @@ export default ({setErrors}: ApolloProps) => {
     const errorLink = onError(({ response, operation, graphQLErrors, networkError, forward }) => {
         let errors: Array<string> = []
         if (graphQLErrors) {
-            graphQLErrors.map(({ message, locations, path }) => {
-                if(message.includes('Unauthenticated!')) {
-                    const token = keycloak?.token
-                    operation.setContext({
-                        headers: {
-                            authorization: token ? `Bearer ${token}` : "",
-                        }
+            graphQLErrors.map(({ message, locations, path, extensions }) => {
+                if(extensions?.code === 'UNAUTHENTICATED') {
+                    console.log('refresh token --------------------------------');
+                    keycloak.updateToken(5).then(() => {
+                        operation.setContext({
+                            headers: {
+                                authorization: `Bearer ${keycloak.token}`,
+                            }
+                        });
+                        return forward(operation);
                     });
-                    return forward(operation);
                 }
-                errors.push(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path ${path}`);
+                else {
+                    errors.push(message);
+                }
             });
         }
         if (networkError) {
-            errors.push(`[Network error]: ${networkError}`);
-
+            errors.push(networkError.message);
         }
         setErrors(errors);
     })

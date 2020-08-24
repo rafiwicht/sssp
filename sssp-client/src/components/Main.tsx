@@ -9,6 +9,8 @@ import Menu from "./Menu";
 import ServiceRouter from "./service/ServiceRouter";
 import {useKeycloak} from "@react-keycloak/web";
 import {KeycloakTokenParsed} from "keycloak-js";
+import WorkflowRouter from "./workflow/WorkflowRouter";
+import config from '../config';
 
 type TokenParsed = KeycloakTokenParsed & {
     preferred_username: string
@@ -34,13 +36,16 @@ const Main: React.FC = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const [userId, setUserId] = useState<string>('');
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     if (keycloak.authenticated) {
         const parsed: TokenParsed = keycloak.tokenParsed as TokenParsed;
         if(parsed.preferred_username !== userId) setUserId(parsed.preferred_username);
+        if(parsed.realm_access?.roles.includes(config.adminRole) !== isAdmin) setIsAdmin(parsed.realm_access?.roles.includes(config.adminRole) || false);
     }
 
     localStorage.setItem('userId', userId);
+    localStorage.setItem('isAdmin', JSON.stringify(userId));
 
     if(userId === '') {
         return (
@@ -74,6 +79,11 @@ const Main: React.FC = () => {
                         <Route path='/service'>
                             <ServiceRouter />
                         </Route>
+                        { isAdmin &&
+                            <Route path='/workflow'>
+                                <WorkflowRouter />
+                            </Route>
+                        }
                         <Route path='/' exact>
                             <Redirect to={'/home'} />
                         </Route>

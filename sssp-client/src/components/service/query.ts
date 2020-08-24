@@ -1,20 +1,23 @@
 import gql from "graphql-tag";
 
 export default gql`
-    query GetServices {
-        services {
+    query GetServices($kind: Kind) {
+        services(kind: $kind) {
             _id
             name
             owner
+            dataClassification
             state
         }
-    },
-    query GetService($serviceId: ID!) {
-        service(serviceId: $serviceId) {
+    }
+    query GetService($serviceId: ID!, $kind: Kind) {
+        service(serviceId: $serviceId, kind: $kind) {
             _id
             name
             owner
             state
+            dataClassification
+            description
             indexes {
                 _id
                 name
@@ -30,7 +33,7 @@ export default gql`
             read
             write
         }
-    },
+    }
     mutation CreateService($serviceInput: ServiceInput!)  {
         createService(serviceInput: $serviceInput) {
             name

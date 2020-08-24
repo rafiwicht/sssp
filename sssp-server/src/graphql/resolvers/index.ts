@@ -3,17 +3,17 @@
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
-import {ServiceQueries, ServiceMutation} from './service';
-//import {SourcetypeQueries, SourcetypeMutations} from './sourcetype';
+import {ServiceQueries, ServiceMutations} from './service';
+import {WorkflowMutations, WorkflowQueries} from "./workflow";
 
 const rootResolver = {
     Query: {
         ...ServiceQueries,
-        //...SourcetypeQueries,
+        ...WorkflowQueries,
     },
     Mutation: {
-        ...ServiceMutation,
-        //...SourcetypeMutations,
+        ...ServiceMutations,
+        ...WorkflowMutations,
     },
 };
 

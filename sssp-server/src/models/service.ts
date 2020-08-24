@@ -13,6 +13,13 @@ export enum AppType {
     UI = 'UI'
 }
 
+export enum State {
+    IN_CREATION= 'IN_CREATION',
+    ACTIVE = 'ACTIVE',
+    IN_DELETION = 'IN_CREATION',
+    IN_MODIFICATION = 'IN_MODIFICATION'
+}
+
 export interface AppInterface extends Document {
     name: string;
     type: AppType
@@ -25,14 +32,21 @@ export interface IndexInterface extends Document {
     frozenTimePeriodInSecs: number;
 }
 
-export interface ServiceInterface extends Document {
+export interface BaseServiceInterface extends Document {
     name: string;
     owner: string;
-    state: string;
+    description: string;
+    dataClassification: string;
+    revision: number;
     indexes: [IndexInterface];
     apps: [AppInterface];
     read: [string];
     write: [string];
+}
+
+export interface ServiceInterface extends BaseServiceInterface {
+    futureService: BaseServiceInterface;
+    state: State;
 }
 
 const IndexSchema: Schema = new Schema({
@@ -47,15 +61,27 @@ const AppSchema: Schema = new Schema({
     url: { type: String, required: true}
 });
 
-const ServiceSchema: Schema = new Schema({
+const baseService = {
     name: { type: String, required: true },
     owner: { type: String, required: true },
-    state: { type: String, required: true },
+    description: { type: String, required: true },
+    dataClassification: { type: String, required: true },
     indexes: { type: [IndexSchema], default: [] },
     apps: { type: [AppSchema], default: []},
     read: { type: [String], default:[] },
-    write: { type: [String], required: true }
+    write: { type: [String], default: [] },
+    revision: { type: Number, default: 1}
+};
+
+const BaseServiceSchema: Schema = new Schema(baseService);
+
+
+const ServiceSchema: Schema = new Schema({
+    ...baseService,
+    state: { type: State, default: State.IN_CREATION },
+    futureService: { type: BaseServiceSchema, default: null}
 });
 
 const Service = mongoose.model<ServiceInterface>('Service', ServiceSchema);
-export default Service;
+const RevisionService = mongoose.model<BaseServiceInterface>('RevisionService', BaseServiceSchema);
+export {Service, RevisionService};

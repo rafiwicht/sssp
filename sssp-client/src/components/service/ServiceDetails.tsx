@@ -1,15 +1,12 @@
-import React, {useEffect} from "react";
-import {useParams, useHistory} from "react-router-dom";
-import {
-    Button,
-    Divider, Grid,
-    Typography
-} from "@material-ui/core";
-import {useGetServiceLazyQuery} from "../../generated/graphql";
+import React, {useEffect, useState} from "react";
+import {useHistory, useParams} from "react-router-dom";
+import {Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, Typography} from "@material-ui/core";
+import {Kind, State, useGetServiceLazyQuery} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import IndexList from "../index/IndexList";
 import UserList from "../user/UserList";
 import AppList from "../app/AppList";
+import ServiceDisplay from "./ServiceDisplay";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -22,9 +19,11 @@ const useStyles = makeStyles(() =>
             marginBottom: 5,
             marginRight: 5
         },
-        marginDivider: {
-            marginBottom: 5
-        }
+        margin: {
+            marginTop: 5,
+            marginBottom: 5,
+            marginRight: 5
+        },
     }),
 );
 
@@ -36,11 +35,14 @@ const ServiceDetails: React.FC = () => {
     const { id }: ServiceDetailsParams = useParams();
     const classes = useStyles();
 
+    const [kind, setKind] = useState<Kind>(Kind.Future);
+
     let history = useHistory();
 
     const [getService, {data, error, loading}] = useGetServiceLazyQuery( {
         variables: {
-            serviceId: id
+            serviceId: id,
+            kind: kind
         }
     });
 
@@ -62,39 +64,22 @@ const ServiceDetails: React.FC = () => {
 
     return (
         <div>
+            { data.service.state === State.InModification &&
+            <FormControl className={classes.margin}>
+                <InputLabel htmlFor='modState'>Modification state</InputLabel>
+                <Select
+                    id="modState"
+                    value={kind}
+                    onChange={(e: any) => setKind(e.target.value)}
+                >
+                    <MenuItem value={Kind.Future}>Future modifications</MenuItem>
+                    <MenuItem value={Kind.Current}>Active state</MenuItem>
+                </Select>
+            </FormControl>
+            }
             <Typography variant='h3'>Service Details</Typography>
-            <Typography variant='h5'>Service options</Typography>
-            <Divider className={classes.marginDivider}/>
-            <Grid container spacing={2}>
-                <Grid item md={2}>
-                    Name
-                </Grid>
-                <Grid item md={10}>
-                    {data.service.name}
-                </Grid>
-                <Grid item md={2}>
-                    Owner
-                </Grid>
-                <Grid item md={10}>
-                    {data.service.owner}
-                </Grid>
-                <Grid item md={2}>
-                    State
-                </Grid>
-                <Grid item md={10}>
-                    {data.service.state}
-                </Grid>
-            </Grid>
-            <Typography variant='h5'>Indexes</Typography>
-            <Divider className={classes.marginDivider}/>
-            <IndexList data={data.service.indexes} />
-            <Typography variant='h5'>Apps and addons</Typography>
-            <AppList
-                data={data.service.apps} />
-            <Typography variant='h5'>Access options</Typography>
-            <Divider className={classes.marginDivider}/>
-            <UserList read={data.service.read} write={data.service.write} />
-            <Divider className={classes.marginDivider}/>
+            <ServiceDisplay
+                service={data.service} />
             <Button
                 variant='contained'
                 className={classes.marginButton}

@@ -8,6 +8,7 @@ import {IconButton, Theme, Drawer, Divider} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HomeIcon from '@material-ui/icons/Home';
 import RoomServiceIcon from '@material-ui/icons/RoomService';
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
@@ -61,10 +62,18 @@ const test = [
         subpage: '/service',
         adminOnly: false,
         icon: (<RoomServiceIcon />)
+    },
+    {
+        text: 'Workflow',
+        subpage: '/workflow',
+        adminOnly: true,
+        icon: (<DoubleArrowIcon />)
     }]
 
 const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
+
+    const admin: boolean = JSON.parse(localStorage.getItem('isAdmin') || '');
 
     return (
         <Drawer
@@ -84,7 +93,10 @@ const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: Men
             </div>
             <Divider/>
             {test.map((value, index) => {
-                return (<MenuListItem {...value} key={index}/>);
+                if(admin || !value.adminOnly) {
+                    return (<MenuListItem {...value} key={index}/>);
+                }
+
             })}
         </Drawer>
     );

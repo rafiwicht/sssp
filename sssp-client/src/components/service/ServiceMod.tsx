@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useState} from 'react';
-import {AppInput, IndexInput, ServiceInput} from "../../generated/graphql";
-import {Button, Divider, FormControl, Input, InputLabel, Typography} from "@material-ui/core";
+import {AppInput, AppType, IndexInput, ServiceInput} from "../../generated/graphql";
+import {Button, Divider, FormControl, Input, InputLabel, MenuItem, Select, Typography} from "@material-ui/core";
 import IndexModList from "../index/IndexModList";
 import IndexForm from "../index/IndexForm";
 import UserModList from "../user/UserModList";
@@ -31,18 +31,20 @@ type ServiceModProps = {
 
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod}: ServiceModProps) => {
      const [serviceInput, setServiceInput] = useState({
-        name: serviceMod?.name || '',
-        owner: serviceMod?.owner || '',
-        indexes: serviceMod?.indexes || [],
-        apps: serviceMod?.apps || [],
-        read: serviceMod?.read || [],
-        write: serviceMod?.read || [localStorage.getItem('userId') || '']
+         name: serviceMod?.name || '',
+         owner: serviceMod?.owner || '',
+         description: serviceMod?.description || '',
+         dataClassification: serviceMod?.dataClassification || '',
+         indexes: serviceMod?.indexes || [],
+         apps: serviceMod?.apps || [],
+         read: serviceMod?.read || [],
+         write: serviceMod?.read || [localStorage.getItem('userId') || '']
     });
 
     const classes = useStyles();
     let history = useHistory();
 
-    const handleChange = (prop: keyof ServiceInput) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (prop: keyof ServiceInput) => (event: any) => {
         setServiceInput({ ...serviceInput, [prop]: event.target.value });
     };
 
@@ -154,6 +156,29 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                         onChange={handleChange('owner')}
                     />
                 </FormControl>
+                <FormControl fullWidth className={classes.marginFields} required>
+                    <InputLabel htmlFor='description'>Description</InputLabel>
+                    <Input
+                        id='description'
+                        type='text'
+                        required
+                        value={serviceInput.description}
+                        onChange={handleChange('description')}
+                    />
+                </FormControl>
+                <FormControl fullWidth className={classes.marginFields} required>
+                    <InputLabel htmlFor='dataClassification'>Data classification</InputLabel>
+                    <Select
+                        id="dataClassification"
+                        required
+                        value={serviceInput.dataClassification}
+                        onChange={handleChange('dataClassification')}
+                    >
+                        <MenuItem value='Standard'>Standard</MenuItem>
+                        <MenuItem value='DSGVO'>DSGVO</MenuItem>
+                        <MenuItem value='PCI'>PCI</MenuItem>
+                    </Select>
+                </FormControl>
                 <Typography variant='h5'>Indexes</Typography>
                 <Divider />
                 <IndexModList
@@ -189,7 +214,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                 color='primary'
                 className={classes.marginButton}
                 onClick={() => handleSubmit(serviceInput)}
-                disabled={serviceInput.name === '' || serviceInput.owner === ''}
+                disabled={serviceInput.name === '' || serviceInput.owner === '' || serviceInput.description === '' || serviceInput.dataClassification === ''}
             >Submit</Button>
         </div>
 

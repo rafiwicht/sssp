@@ -64,6 +64,8 @@ const ServiceUpdate: React.FC = () => {
                 serviceMod={{
                     name: data.service.name,
                     owner: data.service.owner,
+                    description: data.service.description,
+                    dataClassification: data.service.dataClassification,
                     indexes: data.service.indexes.map((e : Index) => {
                         return {
                             name: e.name,

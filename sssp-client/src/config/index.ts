@@ -1,5 +1,6 @@
 
 
 export default {
-    firm: 'SSSP'
+    firm: 'SSSP',
+    adminRole: 'sssp-admin'
 }
