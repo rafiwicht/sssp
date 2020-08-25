@@ -1,24 +1,6 @@
 import gql from "graphql-tag";
 
 export default gql`
-    query GetWorkflows {
-        workflows {
-            current {
-                _id
-                name
-                owner
-                dataClassification
-                state
-            }
-            new {
-                _id
-                name
-                owner
-                dataClassification
-                state
-            }
-        }
-    }
     query GetWorkflow($serviceId: ID!) {
         workflow(serviceId: $serviceId) {
             current {

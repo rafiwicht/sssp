@@ -16,7 +16,7 @@ export enum AppType {
 export enum State {
     IN_CREATION= 'IN_CREATION',
     ACTIVE = 'ACTIVE',
-    IN_DELETION = 'IN_CREATION',
+    IN_DELETION = 'IN_DELETION',
     IN_MODIFICATION = 'IN_MODIFICATION'
 }
 
@@ -32,7 +32,7 @@ export interface IndexInterface extends Document {
     frozenTimePeriodInSecs: number;
 }
 
-export interface BaseServiceInterface extends Document {
+export interface ServiceInterface extends Document {
     name: string;
     owner: string;
     description: string;
@@ -42,10 +42,6 @@ export interface BaseServiceInterface extends Document {
     apps: [AppInterface];
     read: [string];
     write: [string];
-}
-
-export interface ServiceInterface extends BaseServiceInterface {
-    futureService: BaseServiceInterface;
     state: State;
 }
 
@@ -58,30 +54,23 @@ const IndexSchema: Schema = new Schema({
 const AppSchema: Schema = new Schema({
     name: { type: String, required: true},
     type: { type: AppType, default: AppType.TA},
-    url: { type: String, required: true}
+    url: { type: String, default: 'in creation'}
 });
 
-const baseService = {
+const ServiceSchema: Schema = new Schema({
     name: { type: String, required: true },
     owner: { type: String, required: true },
     description: { type: String, required: true },
     dataClassification: { type: String, required: true },
+    revision: { type: Number, default: 1},
     indexes: { type: [IndexSchema], default: [] },
     apps: { type: [AppSchema], default: []},
     read: { type: [String], default:[] },
     write: { type: [String], default: [] },
-    revision: { type: Number, default: 1}
-};
-
-const BaseServiceSchema: Schema = new Schema(baseService);
-
-
-const ServiceSchema: Schema = new Schema({
-    ...baseService,
-    state: { type: State, default: State.IN_CREATION },
-    futureService: { type: BaseServiceSchema, default: null}
+    state: { type: State, default: State.IN_CREATION }
 });
 
 const Service = mongoose.model<ServiceInterface>('Service', ServiceSchema);
-const RevisionService = mongoose.model<BaseServiceInterface>('RevisionService', BaseServiceSchema);
-export {Service, RevisionService};
+const FutureService = mongoose.model<ServiceInterface>('FutureService', ServiceSchema);
+const RevisionService = mongoose.model<ServiceInterface>('RevisionService', ServiceSchema);
+export {Service, FutureService, RevisionService};

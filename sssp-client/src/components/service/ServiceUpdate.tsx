@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {
     GetServiceDocument,
-    GetServicesDocument, Index,
+    GetServicesDocument, Index, Kind,
     ServiceInput, useGetServiceLazyQuery,
     useUpdateServiceMutation
 } from "../../generated/graphql";
@@ -30,7 +30,8 @@ const ServiceUpdate: React.FC = () => {
 
     const [getService, {data, error, loading}] = useGetServiceLazyQuery({
         variables: {
-            serviceId: id
+            serviceId: id,
+            kind: Kind.Newest
         }
     });
 

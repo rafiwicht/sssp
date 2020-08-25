@@ -1,12 +1,11 @@
 import React, {useEffect} from 'react';
 import {useHistory, useParams} from "react-router-dom";
 import {
-    GetWorkflowsDocument, State, useAcceptWorkflowMutation, useDeclineWorkflowMutation,
+    GetServicesDocument, useAcceptWorkflowMutation, useDeclineWorkflowMutation,
     useGetWorkflowLazyQuery,
 
 } from "../../generated/graphql";
-import {Button, Typography} from "@material-ui/core";
-import ServiceList from "../service/ServiceList";
+import {Button} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import ServiceDisplay from "../service/ServiceDisplay";
 
@@ -33,7 +32,7 @@ const WorkflowDetails: React.FC = () => {
             serviceId: id
         },
         refetchQueries: [{
-            query: GetWorkflowsDocument
+            query: GetServicesDocument
         }]
     });
 
@@ -42,7 +41,7 @@ const WorkflowDetails: React.FC = () => {
             serviceId: id
         },
         refetchQueries: [{
-            query: GetWorkflowsDocument
+            query: GetServicesDocument
         }]
     });
 
@@ -112,8 +111,6 @@ const WorkflowDetails: React.FC = () => {
             </div>
         );
     }
-
-
 
     return (
         <div>

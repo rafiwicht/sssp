@@ -18,14 +18,14 @@ export type Scalars = {
 
 export enum Kind {
   Current = 'CURRENT',
-  Future = 'FUTURE'
+  Future = 'FUTURE',
+  Newest = 'NEWEST'
 }
 
 export type Query = {
   __typename?: 'Query';
   services: Array<Service>;
   service: Service;
-  workflows: Array<Workflow>;
   workflow: Workflow;
 };
 
@@ -89,7 +89,7 @@ export enum State {
 
 export type Workflow = {
   __typename?: 'Workflow';
-  new?: Maybe<Service>;
+  new: Service;
   current?: Maybe<Service>;
 };
 
@@ -234,23 +234,6 @@ export type DeleteServiceMutation = (
   ) }
 );
 
-export type GetWorkflowsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetWorkflowsQuery = (
-  { __typename?: 'Query' }
-  & { workflows: Array<(
-    { __typename?: 'Workflow' }
-    & { current?: Maybe<(
-      { __typename?: 'Service' }
-      & Pick<Service, '_id' | 'name' | 'owner' | 'dataClassification' | 'state'>
-    )>, new?: Maybe<(
-      { __typename?: 'Service' }
-      & Pick<Service, '_id' | 'name' | 'owner' | 'dataClassification' | 'state'>
-    )> }
-  )> }
-);
-
 export type GetWorkflowQueryVariables = Exact<{
   serviceId: Scalars['ID'];
 }>;
@@ -270,7 +253,7 @@ export type GetWorkflowQuery = (
         { __typename?: 'App' }
         & Pick<App, '_id' | 'name' | 'type' | 'url'>
       )> }
-    )>, new?: Maybe<(
+    )>, new: (
       { __typename?: 'Service' }
       & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
       & { indexes: Array<(
@@ -280,7 +263,7 @@ export type GetWorkflowQuery = (
         { __typename?: 'App' }
         & Pick<App, '_id' | 'name' | 'type' | 'url'>
       )> }
-    )> }
+    ) }
   ) }
 );
 
@@ -593,70 +576,6 @@ export function useDeleteServiceMutation(baseOptions?: ApolloReactHooks.Mutation
 export type DeleteServiceMutationHookResult = ReturnType<typeof useDeleteServiceMutation>;
 export type DeleteServiceMutationResult = ApolloReactCommon.MutationResult<DeleteServiceMutation>;
 export type DeleteServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteServiceMutation, DeleteServiceMutationVariables>;
-export const GetWorkflowsDocument = gql`
-    query GetWorkflows {
-  workflows {
-    current {
-      _id
-      name
-      owner
-      dataClassification
-      state
-    }
-    new {
-      _id
-      name
-      owner
-      dataClassification
-      state
-    }
-  }
-}
-    `;
-export type GetWorkflowsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetWorkflowsQuery, GetWorkflowsQueryVariables>, 'query'>;
-
-    export const GetWorkflowsComponent = (props: GetWorkflowsComponentProps) => (
-      <ApolloReactComponents.Query<GetWorkflowsQuery, GetWorkflowsQueryVariables> query={GetWorkflowsDocument} {...props} />
-    );
-    
-export type GetWorkflowsProps<TChildProps = {}, TDataName extends string = 'data'> = {
-      [key in TDataName]: ApolloReactHoc.DataValue<GetWorkflowsQuery, GetWorkflowsQueryVariables>
-    } & TChildProps;
-export function withGetWorkflows<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  GetWorkflowsQuery,
-  GetWorkflowsQueryVariables,
-  GetWorkflowsProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withQuery<TProps, GetWorkflowsQuery, GetWorkflowsQueryVariables, GetWorkflowsProps<TChildProps, TDataName>>(GetWorkflowsDocument, {
-      alias: 'getWorkflows',
-      ...operationOptions
-    });
-};
-
-/**
- * __useGetWorkflowsQuery__
- *
- * To run a query within a React component, call `useGetWorkflowsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWorkflowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWorkflowsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetWorkflowsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetWorkflowsQuery, GetWorkflowsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetWorkflowsQuery, GetWorkflowsQueryVariables>(GetWorkflowsDocument, baseOptions);
-      }
-export function useGetWorkflowsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetWorkflowsQuery, GetWorkflowsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetWorkflowsQuery, GetWorkflowsQueryVariables>(GetWorkflowsDocument, baseOptions);
-        }
-export type GetWorkflowsQueryHookResult = ReturnType<typeof useGetWorkflowsQuery>;
-export type GetWorkflowsLazyQueryHookResult = ReturnType<typeof useGetWorkflowsLazyQuery>;
-export type GetWorkflowsQueryResult = ApolloReactCommon.QueryResult<GetWorkflowsQuery, GetWorkflowsQueryVariables>;
 export const GetWorkflowDocument = gql`
     query GetWorkflow($serviceId: ID!) {
   workflow(serviceId: $serviceId) {

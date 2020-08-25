@@ -8,7 +8,7 @@ import {Kind, useGetServicesLazyQuery} from '../../generated/graphql';
 const Service: React.FC = () => {
     const [getServices, {data, loading, error}] = useGetServicesLazyQuery({
         variables: {
-            kind: Kind.Future
+            kind: Kind.Newest
         }
     });
 

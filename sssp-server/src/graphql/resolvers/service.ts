@@ -4,23 +4,45 @@
  */
 
 import mongoose from 'mongoose';
-import {AppInterface, Service, ServiceInterface, State} from '../../models/service';
-import {transformService} from './merge';
+import {FutureService, Service, State} from '../../models/service';
 import {ApolloError} from 'apollo-server';
 
 
+export enum Kind {
+    CURRENT = 'CURRENT',
+    FUTURE = 'FUTURE',
+    NEWEST = 'NEWEST'
+}
+
 const ServiceQueries = {
     services: async (parent: any, {kind}: any) => {
-        const services = await Service.find();
-        return services.map((service: ServiceInterface) => {
-            return transformService(service, kind);
+        let resultServices;
+
+        if (kind === Kind.FUTURE) resultServices = await FutureService.find();
+        else if(kind === Kind.CURRENT) resultServices = await Service.find();
+        else {
+            const futureServices = await FutureService.find();
+            const resultServicesIds = futureServices.map((service) => {
+                return service._id;
+            })
+            const services = await Service.find({
+                _id: { $nin: resultServicesIds}
+            });
+            resultServices = futureServices.concat(services);
+        }
+
+        return resultServices.map((service) => {
+            return service;
         });
     },
     service: async (parent: any, {serviceId, kind}: any) => {
-        const service = await Service.findById(serviceId);
-        if(!service) throw new ApolloError('Service not found', 'NOT_FOUND');
-        return transformService(service, kind);
 
+        const futureService = await FutureService.findById(serviceId);
+        const service = await Service.findById(serviceId);
+
+        if((kind === Kind.FUTURE || kind === Kind.NEWEST) && futureService) return futureService;
+        else if((kind === Kind.CURRENT || kind === Kind.NEWEST) && service) return service;
+        else throw new ApolloError('Service not found', 'NOT_FOUND');
     }
 };
 
@@ -29,86 +51,73 @@ const ServiceMutations = {
         const service = await Service.findOne({
             name: serviceInput.name
         });
-        if (service) {
+        const futureService = await FutureService.findOne({
+            name: serviceInput.name
+        });
+
+        if (service || futureService) {
             throw new ApolloError('Service already Exists');
         } else {
-
-            const newService = new Service({
+            const newService = new FutureService({
                 ...serviceInput,
                 _id: new mongoose.Types.ObjectId(),
-                state: State.IN_CREATION,
-                apps: serviceInput.apps.map(e => {
-                    return {
-                        ...e,
-                        _id: new mongoose.Types.ObjectId(),
-                        url: 'in creation'
-                    };
-                })
+                state: State.IN_CREATION
             });
-            const savedService = await newService.save();
-
-            return transformService(savedService);
+            return newService.save();
         }
     },
     updateService: async (parent: any, {serviceId, serviceInput}: any) => {
-        const service: ServiceInterface = await Service.findById(serviceId);
-        if(!service) throw new ApolloError('Service not found', 'NOT_FOUND');
-
-        if(service.state === State.ACTIVE || service.state === State.IN_MODIFICATION) {
-            const currentApps = service.apps.map(e => {
-                return e.name
-            });
-            const newApps = serviceInput.apps.map(e => {
-                return e.name
-            });
-
-            // Delete apps
-            const appsInCreation = newApps.filter(e => !currentApps.includes(e));
-
-            const updatedService = await Service.findByIdAndUpdate(serviceId, {
-                state: State.IN_MODIFICATION,
-                futureService: {
-                    ...serviceInput,
-                    revision: (service.futureService === null) ? service.revision + 1 : service.futureService.revision,
-                    apps: serviceInput.apps.map((e: AppInterface) => {
-                        if (appsInCreation.includes(e.name)) {
-                            return {
-                                ...e,
-                                _id: new mongoose.Types.ObjectId(),
-                                url: 'in creation'
-                            };
-                        } else {
-                            return {
-                                ...e,
-                                _id: new mongoose.Types.ObjectId()
-                            };
-                        }
-                    })
-                }
-            });
-            return transformService(updatedService.futureService);
+        const service = await Service.findById(serviceId);
+        const futureService = await FutureService.findById(serviceId);
+        if(!service && !futureService) {
+            throw new ApolloError('Service not found', 'NOT_FOUND');
         }
-        else {
-            const updatedService = await Service.findByIdAndUpdate(serviceId, {
-                ...serviceInput,
-                apps: serviceInput.apps.map(e => {
-                    return {
-                        ...e,
-                        _id: new mongoose.Types.ObjectId(),
-                        url: 'in creation'
-                    };
-                })
+        if(service && !futureService) {
+            Service.findByIdAndUpdate(serviceId, {
+                state: State.IN_MODIFICATION
             });
-            return transformService(updatedService);
+            const newService = new FutureService({
+                ...serviceInput,
+                _id: service._id,
+                state: State.IN_MODIFICATION,
+                revision: service.revision + 1
+            });
+
+            return newService.save();
+        }
+
+        else {
+            const futureServiceSaved = await FutureService.findByIdAndUpdate(serviceId, {
+                ...serviceInput
+            });
+            if(futureServiceSaved === service) {
+                FutureService.findByIdAndDelete(serviceId);
+                return Service.findByIdAndUpdate(serviceId, {
+                    state: State.ACTIVE
+                });
+            }
+            else return futureServiceSaved;
         }
     },
     deleteService: async (parent: any, {serviceId}: any) => {
-        if(await Service.exists({_id: serviceId})) throw new ApolloError('Service not found', 'NOT_FOUND');
-        const updatedService = await Service.findByIdAndUpdate(serviceId, {
-            state: State.IN_DELETION,
-            futureService: null
-        });
-        return transformService(updatedService);
+        const service = await Service.findById(serviceId);
+        const futureService = await FutureService.findById(serviceId);
+        if(!service && !futureService) {
+            throw new ApolloError('Service not found', 'NOT_FOUND');
+        }
+        if(!service) {
+            return FutureService.findByIdAndDelete(serviceId);
+        }
+        else {
+            Service.findByIdAndUpdate(serviceId, {
+                state: State.IN_DELETION
+            });
+
+            return FutureService.findByIdAndUpdate(serviceId, {
+                ...service._doc,
+                state: State.IN_DELETION
+            });
+        }
     }
 };
 

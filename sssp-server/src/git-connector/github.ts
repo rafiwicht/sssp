@@ -55,8 +55,6 @@ class GithubConnector implements GitConnectorInterface {
 }
 
 const template = async(name: string, type: AppType) => {
-    console.log('Template-----');
-    console.log(type);
     await axiosRequest(
         `/repos/${organisation}/${name}/contents/README.md`,
         {

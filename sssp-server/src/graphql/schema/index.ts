@@ -12,11 +12,11 @@ const typeDefs = gql`
     enum Kind {
         CURRENT
         FUTURE
+        NEWEST
     }
     type Query {
         services(kind: Kind = CURRENT): [Service!]!
         service(serviceId: ID!, kind: Kind = CURRENT): Service!
-        workflows: [Workflow!]!
         workflow(serviceId: ID!): Workflow!
     }
     type Mutation {
@@ -33,7 +33,7 @@ const typeDefs = gql`
         IN_MODIFICATION
     }
     type Workflow {
-        new: Service
+        new: Service!
         current: Service
     }
     type Service {

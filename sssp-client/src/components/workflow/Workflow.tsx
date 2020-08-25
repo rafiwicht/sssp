@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useGetWorkflowsLazyQuery} from '../../generated/graphql';
+import {Kind, useGetServicesLazyQuery} from '../../generated/graphql';
 import {useHistory} from 'react-router-dom';
 import {Typography} from '@material-ui/core';
 import ServiceList, {ServiceSimple} from '../service/ServiceList';
@@ -7,7 +7,11 @@ import ServiceList, {ServiceSimple} from '../service/ServiceList';
 
 const Workflow: React.FC = () => {
 
-    const [getWorkflows, {data, loading, error}] = useGetWorkflowsLazyQuery();
+    const [getServices, {data, loading, error}] = useGetServicesLazyQuery({
+        variables: {
+            kind: Kind.Future
+        }
+    });
 
     let history = useHistory();
 
@@ -16,7 +20,7 @@ const Workflow: React.FC = () => {
     }
 
     useEffect(() => {
-        getWorkflows();
+        getServices();
     },[]);
 
     if (loading) {
@@ -27,27 +31,15 @@ const Workflow: React.FC = () => {
         return <div>ERROR</div>;
     }
 
-    const services: Array<ServiceSimple> = [];
-
-    data.workflows.forEach((e) => {
-        if (e.new) {
-            services.push({
-                _id: e.new._id,
-                name: e.new.name,
-                owner: e.new.owner,
-                state: e.new.state,
-                dataClassification: e.new.dataClassification
-            });
-        } else if (e.current) {
-            services.push({
-                _id: e.current._id,
-                name: e.current.name,
-                owner: e.current.owner,
-                state: e.current.state,
-                dataClassification: e.current.dataClassification
-            });
-        }
-    });
+    const services: Array<ServiceSimple> = data.services.map((e) => {
+        return {
+            _id: e._id,
+            name: e.name,
+            owner: e.owner,
+            state: e.state,
+            dataClassification: e.dataClassification
+        };
+    })
 
     return (
         <div>
