@@ -1,3 +1,9 @@
+/**
+ * Loader for keycloak public key
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
+
 import axios from 'axios';
 import config from "./index";
 

@@ -1,6 +1,13 @@
+/**
+ * Template files, added to new created repositories
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
+
 import {AppType} from "../models/service";
 
 
+// Default app conf
 export const appConf = (name: string, type: AppType) => {
     const nameShort = name.split('-')[-1];
 
@@ -26,6 +33,8 @@ check_for_updates = 0
     };
 }
 
+// default.meta for permissions
+// Does not support access permissions
 export const defaultMeta = (name: string, type: AppType) => {
     return {
         path: 'metadata/default.meta',
@@ -37,6 +46,8 @@ ${type === AppType.UI ? "export = none" : "export = system"}
 `
     };
 }
+
+// navigation default for Apps with a UI
 export const navDefault = () => {
     return {
         path: 'default/data/ui/nav/default.xml',
@@ -62,6 +73,8 @@ export const navDefault = () => {
 `
     };
 }
+
+// defautl page for UI apps
 export const viewAppInfo = () => {
     return {
         path: 'default/data/ui/views/app_info.xml',
@@ -81,6 +94,9 @@ export const viewAppInfo = () => {
     };
 }
 
+/**
+ * Allocation of template to type of apps
+ */
 
 export const templates = [
     appConf,

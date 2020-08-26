@@ -19,13 +19,11 @@ export default gql`
             dataClassification
             description
             indexes {
-                _id
                 name
                 maxTotalDataSizeMB
                 frozenTimePeriodInSecs
             }
             apps {
-                _id
                 name
                 type
                 url

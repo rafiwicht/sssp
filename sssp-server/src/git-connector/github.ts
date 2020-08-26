@@ -1,3 +1,10 @@
+/**
+ * Git connector for github
+ * Does not support changing access permissions
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
+
 import axios, {AxiosPromise, AxiosResponse, Method} from 'axios';
 
 import {AppType} from "../models/service";

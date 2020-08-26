@@ -1,3 +1,10 @@
+/**
+ * Git connector for gitlab
+ * Does not support changing access permissions
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
+
 import GitConnectorInterface from "./index";
 import {AppType} from "../models/service";
 import axios, {AxiosPromise, AxiosResponse, Method} from "axios";

@@ -35,14 +35,12 @@ const ServiceDetails: React.FC = () => {
     const { id }: ServiceDetailsParams = useParams();
     const classes = useStyles();
 
-    const [kind, setKind] = useState<Kind>(Kind.Future);
-
     let history = useHistory();
 
     const [getService, {data, error, loading}] = useGetServiceLazyQuery( {
         variables: {
             serviceId: id,
-            kind: kind
+            kind: Kind.Newest
         }
     });
 
@@ -64,19 +62,6 @@ const ServiceDetails: React.FC = () => {
 
     return (
         <div>
-            { data.service.state === State.InModification &&
-            <FormControl className={classes.margin}>
-                <InputLabel htmlFor='modState'>Modification state</InputLabel>
-                <Select
-                    id="modState"
-                    value={kind}
-                    onChange={(e: any) => setKind(e.target.value)}
-                >
-                    <MenuItem value={Kind.Future}>Future modifications</MenuItem>
-                    <MenuItem value={Kind.Current}>Active state</MenuItem>
-                </Select>
-            </FormControl>
-            }
             <Typography variant='h3'>Service Details</Typography>
             <ServiceDisplay
                 service={data.service} />

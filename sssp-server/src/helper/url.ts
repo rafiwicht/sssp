@@ -1,4 +1,7 @@
-
+/**
+ * Helper functions for url encoding
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
 
 export const encode = (url: string) => {
     return url

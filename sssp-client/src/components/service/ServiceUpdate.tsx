@@ -23,7 +23,8 @@ const ServiceUpdate: React.FC = () => {
         }, {
             query: GetServiceDocument,
             variables: {
-                serviceId: id
+                serviceId: id,
+                kind: Kind.Newest
             }
         }]
     });

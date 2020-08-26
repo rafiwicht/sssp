@@ -1,6 +1,6 @@
 /**
- * Bootstrap your app
- * @author Anurag Garg <garganurag893@gmail.com>
+ * Bootstrap sssp
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
 import connect from './config/connect';

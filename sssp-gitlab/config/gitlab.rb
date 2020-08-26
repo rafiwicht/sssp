@@ -1353,7 +1353,7 @@ puma['port'] = 8081
 ##! Docs: https://docs.gitlab.com/omnibus/settings/logs.html#logrotate
 ##! You can disable built in logrotate feature.
 ################################################################################
-# logrotate['enable'] = true
+logrotate['enable'] = false
 # logrotate['log_directory'] = "/var/log/gitlab/logrotate"
 
 ################################################################################

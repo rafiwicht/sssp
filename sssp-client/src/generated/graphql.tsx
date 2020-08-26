@@ -186,10 +186,10 @@ export type GetServiceQuery = (
     & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
     & { indexes: Array<(
       { __typename?: 'Index' }
-      & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
+      & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
     )>, apps: Array<(
       { __typename?: 'App' }
-      & Pick<App, '_id' | 'name' | 'type' | 'url'>
+      & Pick<App, 'name' | 'type' | 'url'>
     )> }
   ) }
 );
@@ -248,20 +248,20 @@ export type GetWorkflowQuery = (
       & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
       & { indexes: Array<(
         { __typename?: 'Index' }
-        & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
+        & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
       )>, apps: Array<(
         { __typename?: 'App' }
-        & Pick<App, '_id' | 'name' | 'type' | 'url'>
+        & Pick<App, 'name' | 'type' | 'url'>
       )> }
     )>, new: (
       { __typename?: 'Service' }
       & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
       & { indexes: Array<(
         { __typename?: 'Index' }
-        & Pick<Index, '_id' | 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
+        & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
       )>, apps: Array<(
         { __typename?: 'App' }
-        & Pick<App, '_id' | 'name' | 'type' | 'url'>
+        & Pick<App, 'name' | 'type' | 'url'>
       )> }
     ) }
   ) }
@@ -360,13 +360,11 @@ export const GetServiceDocument = gql`
     dataClassification
     description
     indexes {
-      _id
       name
       maxTotalDataSizeMB
       frozenTimePeriodInSecs
     }
     apps {
-      _id
       name
       type
       url
@@ -587,13 +585,11 @@ export const GetWorkflowDocument = gql`
       dataClassification
       description
       indexes {
-        _id
         name
         maxTotalDataSizeMB
         frozenTimePeriodInSecs
       }
       apps {
-        _id
         name
         type
         url
@@ -609,13 +605,11 @@ export const GetWorkflowDocument = gql`
       dataClassification
       description
       indexes {
-        _id
         name
         maxTotalDataSizeMB
         frozenTimePeriodInSecs
       }
       apps {
-        _id
         name
         type
         url

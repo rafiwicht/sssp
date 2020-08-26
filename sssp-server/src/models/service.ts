@@ -1,9 +1,10 @@
 /**
- * Model for Index
+ * Model for the services
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 import mongoose, { Schema, Document } from "mongoose";
-import splunk from '../config/splunk';
+import config from '../config';
+
 
 export enum AppType {
     FA = 'FA',
@@ -17,7 +18,8 @@ export enum State {
     IN_CREATION= 'IN_CREATION',
     ACTIVE = 'ACTIVE',
     IN_DELETION = 'IN_DELETION',
-    IN_MODIFICATION = 'IN_MODIFICATION'
+    IN_MODIFICATION = 'IN_MODIFICATION',
+    ARCHIVED = 'ARCHIVED'
 }
 
 export interface AppInterface extends Document {
@@ -45,13 +47,17 @@ export interface ServiceInterface extends Document {
     state: State;
 }
 
+// No id's, because object does not have to be accessible directly
 const IndexSchema: Schema = new Schema({
+    _id : false,
     name: { type: String, required: true},
-    maxTotalDataSizeMB: { type: Number, default: splunk.maxTotalDataSizeMB},
-    frozenTimePeriodInSecs: { type: Number, default: splunk.frozenTimePeriodInSecs}
+    maxTotalDataSizeMB: { type: Number, default: config.maxTotalDataSizeMB},
+    frozenTimePeriodInSecs: { type: Number, default: config.frozenTimePeriodInSecs}
 });
 
+// No id's, because object does not have to be accessible directly
 const AppSchema: Schema = new Schema({
+    _id : false,
     name: { type: String, required: true},
     type: { type: AppType, default: AppType.TA},
     url: { type: String, default: 'in creation'}
@@ -70,7 +76,10 @@ const ServiceSchema: Schema = new Schema({
     state: { type: State, default: State.IN_CREATION }
 });
 
+// Saving active state
 const Service = mongoose.model<ServiceInterface>('Service', ServiceSchema);
+// Saving modifications until approval
 const FutureService = mongoose.model<ServiceInterface>('FutureService', ServiceSchema);
+// Saving revisions for roll backs
 const RevisionService = mongoose.model<ServiceInterface>('RevisionService', ServiceSchema);
 export {Service, FutureService, RevisionService};

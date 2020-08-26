@@ -9,7 +9,7 @@ import {
     TableRow
 } from "@material-ui/core";
 
-import {App, Index} from "../../generated/graphql";
+import {App} from "../../generated/graphql";
 
 
 
@@ -30,8 +30,8 @@ const AppList: React.FunctionComponent<AppListProps> = ({data}: AppListProps) =>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row: App) => (
-                        <TableRow key={row._id}>
+                    {data.map((row: App, key: number) => (
+                        <TableRow key={key}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align='right'>{row.type}</TableCell>
                             {row.url === 'in creation' &&

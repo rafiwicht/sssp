@@ -138,8 +138,8 @@ gitlab:
   		-v "./sssp-gitlab/logs:/var/log/gitlab:Z" \
   		-v "./sssp-gitlab/data:/var/opt/gitlab:Z" \
 		${GITLAB_IMG}
-	sleep 300
-	podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
+	#sleep 300
+	#podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
 
 rm-gitlab:
 	-podman kill ${GITLAB}

@@ -1,5 +1,5 @@
 /**
- * Primary file for GraphQL Schema
+ * GraphQL Schema for SSSP
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
@@ -98,6 +98,7 @@ const schema: ApolloServerExpressConfig = {
     resolvers,
     introspection: true,
     context: ({req}: any) => {
+        // Add authentication to the graphql context
         if (!req.userId) throw new AuthenticationError('Unauthenticated!');
         return {
             userId: req.userId,

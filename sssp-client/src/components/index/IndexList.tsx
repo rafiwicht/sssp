@@ -30,8 +30,8 @@ const IndexList: React.FunctionComponent<IndexListProps> = ({data}: IndexListPro
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row: Index) => (
-                        <TableRow key={row._id}>
+                    {data.map((row: Index, key: number) => (
+                        <TableRow key={key}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align='right'>{row.maxTotalDataSizeMB}</TableCell>
                             <TableCell align='right'>{row.frozenTimePeriodInSecs}</TableCell>
