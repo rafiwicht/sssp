@@ -510,17 +510,17 @@
       {
         "id": "43975d0a-f6db-46d6-a6ab-81a3c7a15516",
         "clientId": "sssp-client",
-        "rootUrl": "https://sssp.rwicht.ch:8000/",
+        "rootUrl": "https://test.sssp.local:8000/",
         "baseUrl": "",
         "surrogateAuthRequired": false,
         "enabled": true,
         "clientAuthenticatorType": "client-secret",
         "secret": "**********",
         "redirectUris": [
-          "https://sssp.rwicht.ch:8000/*"
+          "https://test.sssp.local:8000/*"
         ],
         "webOrigins": [
-          "https://sssp.rwicht.ch:8000"
+          "https://test.sssp.local:8000"
         ],
         "notBefore": 0,
         "bearerOnly": false,

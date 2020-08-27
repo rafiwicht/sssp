@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js';
 
 const keycloak = Keycloak({
-    url: "https://sssp.rwicht.ch:8000/auth/",
+    url: "https://test.sssp.local:8000/auth/",
     realm: "sssp",
     clientId: "sssp-client"
 });

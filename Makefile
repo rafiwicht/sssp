@@ -1,6 +1,4 @@
-# Used docker image
-include .env
-
+# Image names
 NODE_IMG ?= node
 NGINX_IMG ?= nginx
 MONGO_IMG ?= mongo
@@ -8,7 +6,7 @@ KEYCLOAK_IMG ?= jboss/keycloak
 LDAP_IMG ?= osixia/openldap:1.4.0
 GITLAB_IMG ?= gitlab/gitlab-ce
 
-
+# Container names
 SERVER ?= sssp-server
 CLIENT ?= sssp-client
 MONGO ?= sssp-mongo
@@ -16,6 +14,11 @@ PROXY ?= sssp-proxy
 KEYCLOAK ?= sssp-keycloak
 LDAP ?= sssp-ldap
 GITLAB ?= sssp-gitlab
+
+# Default variables
+MONGO_USER=root
+KEYCLOAK_USER=root
+PASSWORD=Welcome.2020
 
 ############## Local run ##############
 
@@ -97,6 +100,7 @@ rm-client:
 refresh-client: rm-client client
 
 proxy:
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout sssp-proxy/nginx-selfsigned.key -out sssp-proxy/nginx-selfsigned.crt -subj '/CN=test.sssp.local'
 	podman run -dt \
 		--pod sssp \
 		--env DEV_MODE=true \
@@ -138,8 +142,8 @@ gitlab:
   		-v "./sssp-gitlab/logs:/var/log/gitlab:Z" \
   		-v "./sssp-gitlab/data:/var/opt/gitlab:Z" \
 		${GITLAB_IMG}
-	#sleep 300
-	#podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
+	sleep 300
+	podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
 
 rm-gitlab:
 	-podman kill ${GITLAB}
@@ -154,3 +158,18 @@ run: pod ldap mongo keycloak server client proxy gitlab
 stop: rm-pod
 
 refresh: stop run
+
+
+############## Docker image build ##############
+
+build-server:
+	cd sssp-server
+	yarn build
+	podman build -t sssp/server .
+	cd ..
+
+build-client:
+	cd sssp-client
+	yarn build
+	podman build -t sssp/client .
+	cd ..

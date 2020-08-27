@@ -1,5 +1,4 @@
 overwrite: true
-#schema: https://sssp.rwicht.ch:8000/graphql/
 schema: ../sssp-server/src/graphql/schema/index.ts
 documents: "src/components/**/query.ts"
 generates:
@@ -10,6 +9,3 @@ generates:
       - "typescript-react-apollo"
     config:
       withHooks: true
-      #avoidOptionals: 
-      #  inputValue: true
-      #maybeValue: T

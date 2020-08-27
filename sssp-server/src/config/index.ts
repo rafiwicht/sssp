@@ -28,7 +28,7 @@ export default {
     gitlabToken: process.env.GITLAB_TOKEN,
     gitlabUrl: process.env.GITLAB_URL || 'http://127.0.0.1',
     gitlabUser: process.env.GITLAB_USER || 'root',
-    gitlabPubUrl: process.env.GITLAB_PUB_URL || process.env.GITLAB_URL || 'http://sssp.rwicht.ch:7080',
+    gitlabPubUrl: process.env.GITLAB_PUB_URL || process.env.GITLAB_URL || 'http://test.sssp.local:7080',
 
     // Splunk index defaults
     maxTotalDataSizeMB: process.env.MAX_TOTAL_DATA_SIZE_MB || 100000000,
