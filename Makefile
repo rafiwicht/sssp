@@ -20,7 +20,7 @@ MONGO_USER=root
 KEYCLOAK_USER=root
 PASSWORD=Welcome.2020
 
-############## Local run ##############
+############## Podman development ##############
 
 pod:
 	podman pod create -p 8000 -p 27017 -p 7080:80 -p 7443:443 -p 7022:22 --name sssp
@@ -57,9 +57,8 @@ rm-mongo:
 refresh-mongo: rm-mongo mongo
 
 server:
-	cd sssp-server
-	yarn
-	cd ..
+	cd sssp-client ; \
+	yarn 
 	podman run -dt \
 		--pod sssp \
 		--env DEV_MODE=true \
@@ -80,9 +79,8 @@ rm-server:
 refresh-server: rm-server server
 
 client:
-	cd sssp-client
-	yarn
-	cd ..
+	cd sssp-client ; \
+	yarn 
 	podman run -dt \
 		--pod sssp \
 		--env DEV_MODE=true \
@@ -159,14 +157,16 @@ stop: rm-pod
 
 refresh: stop run
 
+############## Podman test ##############
 
-############## Docker image build ##############
+
+############## Podman image build ##############
 
 build-server:
-	cd sssp-server
-	yarn build
-	podman build -t sssp/server .
-	cd ..
+	cd sssp-server ; \
+	yarn build ; \
+	podman build -t docker.io/wichtr/sssp-server:0.0.1 . ; \
+	podman tag docker.io/wichtr/sssp-server:0.0.1 wichtr/sssp-server:latest
 
 build-client:
 	cd sssp-client
