@@ -49,7 +49,6 @@ const typeDefs = gql`
         state: State!
     }
     type Index {
-        _id: ID!
         name: String!
         maxTotalDataSizeMB: Int!
         frozenTimePeriodInSecs: Int!
@@ -62,15 +61,9 @@ const typeDefs = gql`
         UI
     }
     type App {
-        _id: ID!
         name: String!
         type: AppType!
         url: String!
-    }
-    type KeyValue {
-        _id: ID!
-        key: String!
-        value: String!
     }
     input ServiceInput {
         name: String!

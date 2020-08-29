@@ -109,7 +109,6 @@ export type Service = {
 
 export type Index = {
   __typename?: 'Index';
-  _id: Scalars['ID'];
   name: Scalars['String'];
   maxTotalDataSizeMB: Scalars['Int'];
   frozenTimePeriodInSecs: Scalars['Int'];
@@ -125,17 +124,9 @@ export enum AppType {
 
 export type App = {
   __typename?: 'App';
-  _id: Scalars['ID'];
   name: Scalars['String'];
   type: AppType;
   url: Scalars['String'];
-};
-
-export type KeyValue = {
-  __typename?: 'KeyValue';
-  _id: Scalars['ID'];
-  key: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type ServiceInput = {

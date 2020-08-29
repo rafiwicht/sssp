@@ -23,22 +23,19 @@
     "fontsource-roboto": "^2.1.4",
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
-    "highlight.js": "^10.1.2",
     "history": "^5.0.0",
     "keycloak-js": "^10.0.2",
-    "material-table": "^1.65.0",
-    "prismjs": "^1.21.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.13",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-syntax-highlighter": "^13.3.1",
     "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "webpack-dev-server --env.WDS_SOCKET_PORT=8000 --hot",
-    "codegen": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml"
+    "codegen": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml",
+    "build": "NODE_ENV=production webpack --mode production"
   },
   "eslintConfig": {
     "extends": "react-app"

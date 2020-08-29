@@ -6,6 +6,10 @@ KEYCLOAK_IMG ?= jboss/keycloak
 LDAP_IMG ?= osixia/openldap:1.4.0
 GITLAB_IMG ?= gitlab/gitlab-ce
 
+# Podman images for test
+SERVER_IMG ?= wichtr/sssp-server
+CLIENT_IMG ?= wichtr/sssp-client
+
 # Container names
 SERVER ?= sssp-server
 CLIENT ?= sssp-client
@@ -20,7 +24,7 @@ MONGO_USER=root
 KEYCLOAK_USER=root
 PASSWORD=Welcome.2020
 
-############## Podman development ##############
+############## Podman development/test support applications ##############
 
 pod:
 	podman pod create -p 8000 -p 27017 -p 7080:80 -p 7443:443 -p 7022:22 --name sssp
@@ -55,47 +59,6 @@ rm-mongo:
 	-podman rm ${MONGO}
 
 refresh-mongo: rm-mongo mongo
-
-server:
-	cd sssp-client ; \
-	yarn 
-	podman run -dt \
-		--pod sssp \
-		--env DEV_MODE=true \
-		--env MONGO_USER=${MONGO_USER} \
-		--env MONGO_SECRET=${PASSWORD} \
-		--env MONGO=127.0.0.1 \
-		--env GITLAB_TOKEN=${GITLAB_TOKEN} \
-		-v "./sssp-server:/sssp-server:Z" \
-		-w "/sssp-server" \
-		--name ${SERVER} \
-		${NODE_IMG} \
-		npm run-script dev
-
-rm-server:
-	-podman kill ${SERVER}
-	-podman rm ${SERVER}
-
-refresh-server: rm-server server
-
-client:
-	cd sssp-client ; \
-	yarn 
-	podman run -dt \
-		--pod sssp \
-		--env DEV_MODE=true \
-		--env WDS_SOCKET_PORT=8000 \
-		-v "./sssp-client:/sssp-client:Z" \
-		-w "/sssp-client" \
-		--name ${CLIENT} \
-		${NODE_IMG} \
-		npm start
-
-rm-client:
-	-podman kill ${CLIENT}
-	-podman rm ${CLIENT}
-
-refresh-client: rm-client client
 
 proxy:
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout sssp-proxy/nginx-selfsigned.key -out sssp-proxy/nginx-selfsigned.crt -subj '/CN=test.sssp.local'
@@ -151,25 +114,107 @@ rm-gitlab:
 
 refresh-gitlab: rm-gitlab gitlab
 
-run: pod ldap mongo keycloak server client proxy gitlab
+############## Podman development ##############
 
-stop: rm-pod
+dev-run: pod ldap mongo keycloak dev-server dev-client proxy gitlab
 
-refresh: stop run
+dev-stop: rm-pod
+
+dev-refresh: stop run
+
+dev-server:
+	cd sssp-client ; \
+	yarn 
+	podman run -dt \
+		--pod sssp \
+		--env DEV_MODE=true \
+		--env MONGO_USER=${MONGO_USER} \
+		--env MONGO_SECRET=${PASSWORD} \
+		--env MONGO=127.0.0.1 \
+		--env GITLAB_TOKEN=${GITLAB_TOKEN} \
+		-v "./sssp-server:/sssp-server:Z" \
+		-w "/sssp-server" \
+		--name ${SERVER} \
+		${NODE_IMG} \
+		npm run-script dev
+
+dev-rm-server:
+	-podman kill ${SERVER}
+	-podman rm ${SERVER}
+
+dev-refresh-server: dev-rm-server dev-server
+
+dev-client:
+	cd sssp-client ; \
+	yarn 
+	podman run -dt \
+		--pod sssp \
+		--env DEV_MODE=true \
+		--env WDS_SOCKET_PORT=8000 \
+		-v "./sssp-client:/sssp-client:Z" \
+		-w "/sssp-client" \
+		--name ${CLIENT} \
+		${NODE_IMG} \
+		npm start
+
+dev-rm-client:
+	-podman kill ${CLIENT}
+	-podman rm ${CLIENT}
+
+dev-refresh-client: dev-rm-client dev-client
 
 ############## Podman test ##############
 
+test-run: pod ldap mongo keycloak test-server test-client proxy gitlab
+
+test-stop: rm-pod
+
+test-refresh: stop run
+
+test-server:
+	podman run -dt \
+		--pod sssp \
+		--env MONGO_USER=${MONGO_USER} \
+		--env MONGO_SECRET=${PASSWORD} \
+		--env MONGO=127.0.0.1 \
+		--env GITLAB_TOKEN=${GITLAB_TOKEN} \
+		--name ${SERVER} \
+		${SERVER_IMG} \
+		npm run-script dev
+
+test-rm-server:
+	-podman kill ${SERVER}
+	-podman rm ${SERVER}
+
+test-refresh-server: test-rm-server test-server
+
+test-client:
+	podman run -dt \
+		--pod sssp \
+		--name ${CLIENT} \
+		${CLIENT_IMG} 
+
+test-rm-client:
+	-podman kill ${CLIENT}
+	-podman rm ${CLIENT}
+
+test-refresh-client: test-rm-client test-client
 
 ############## Podman image build ##############
 
+build: build-server build-client
+
 build-server:
 	cd sssp-server ; \
+	yarn ; \
 	yarn build ; \
 	podman build -t docker.io/wichtr/sssp-server:0.0.1 . ; \
-	podman tag docker.io/wichtr/sssp-server:0.0.1 wichtr/sssp-server:latest
+	podman tag docker.io/wichtr/sssp-server:0.0.1 docker.io/wichtr/sssp-server:latest
 
 build-client:
-	cd sssp-client
-	yarn build
-	podman build -t sssp/client .
-	cd ..
+	cd sssp-client ; \
+	yarn ; \
+	yarn build ; \
+	podman build -f Dockerfile -t docker.io/wichtr/sssp-client:0.0.1 . ; \
+	podman tag docker.io/wichtr/sssp-client:0.0.1 docker.io/wichtr/sssp-client:latest
+
