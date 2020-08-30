@@ -7,8 +7,8 @@ LDAP_IMG ?= osixia/openldap:1.4.0
 GITLAB_IMG ?= gitlab/gitlab-ce
 
 # Podman images for test
-SERVER_IMG ?= wichtr/sssp-server
-CLIENT_IMG ?= wichtr/sssp-client
+SERVER_IMG ?= docker.io/wichtr/sssp-server
+CLIENT_IMG ?= docker.io/wichtr/sssp-client
 
 # Container names
 SERVER ?= sssp-server
@@ -23,6 +23,7 @@ GITLAB ?= sssp-gitlab
 MONGO_USER ?= root
 KEYCLOAK_USER ?= root
 PASSWORD ?= Welcome.2020
+VERSION ?= 0.0.1
 
 ############## Podman development/test support applications ##############
 
@@ -208,14 +209,14 @@ build-server:
 	cd sssp-server ; \
 	yarn ; \
 	yarn build ; \
-	podman build -t docker.io/wichtr/sssp-server:0.0.1 . ; \
-	podman tag docker.io/wichtr/sssp-server:0.0.1 docker.io/wichtr/sssp-server:latest
+	podman build -t ${SERVER_IMG}:${VERSION} . ; \
+	podman tag ${SERVER_IMG}:${VERSION} ${SERVER_IMG}:latest
 
 build-client:
 	cd sssp-client ; \
 	-rm .envProd ; \
 	yarn ; \
 	yarn build ; \
-	podman build -f Dockerfile -t docker.io/wichtr/sssp-client:0.0.1 . ; \
-	podman tag docker.io/wichtr/sssp-client:0.0.1 docker.io/wichtr/sssp-client:latest ; \
+	podman build -f Dockerfile -t ${CLIENT_IMG}:${VERSION} . ; \
+	podman tag ${CLIENT_IMG}:${VERSION} ${CLIENT_IMG}:latest ; \
 	rm .envProd
