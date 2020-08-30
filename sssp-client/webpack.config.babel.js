@@ -2,9 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const dotenv = require('dotenv');
+const fs = require('fs');
 
-module.exports = {
-    mode: 'development',
+let config = {
     entry: ['./src/index'],
     output: {
         path: path.join(__dirname, 'dist'),
@@ -71,3 +72,33 @@ module.exports = {
         },
     }
 };
+
+module.exports = (env, argv) => {
+
+    let envConfig;
+
+    if(argv.mode === 'production') {
+        envConfig = { 
+            path: '.envProd'
+        };
+    }
+    else {
+        envConfig = { 
+            path: '.envDev'
+        };
+    }
+
+    try {
+        if (fs.existsSync(envConfig.path)) {
+            const envFile = dotenv.config(envConfig).parsed;
+            const envKeys = Object.keys(envFile).reduce((prev, next) => {
+                prev[`process.env.${next}`] = JSON.stringify(envFile[next]);
+                return prev;
+              }, {});
+            config.plugins.push(new webpack.DefinePlugin(envKeys));
+        }
+        return config;
+      } catch(err) {
+        console.error(err);
+      }
+}

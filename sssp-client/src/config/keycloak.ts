@@ -1,9 +1,10 @@
 import Keycloak from 'keycloak-js';
+import config from '.';
 
 const keycloak = Keycloak({
-    url: "https://test.sssp.local:8000/auth/",
-    realm: "sssp",
-    clientId: "sssp-client"
+    url: config.keycloakUrl,
+    realm: config.keycloakRealm,
+    clientId: config.keycloakClientId
 });
 
 export default keycloak;

@@ -20,9 +20,9 @@ LDAP ?= sssp-ldap
 GITLAB ?= sssp-gitlab
 
 # Default variables
-MONGO_USER=root
-KEYCLOAK_USER=root
-PASSWORD=Welcome.2020
+MONGO_USER ?= root
+KEYCLOAK_USER ?= root
+PASSWORD ?= Welcome.2020
 
 ############## Podman development/test support applications ##############
 
@@ -213,8 +213,9 @@ build-server:
 
 build-client:
 	cd sssp-client ; \
+	-rm .envProd ; \
 	yarn ; \
 	yarn build ; \
 	podman build -f Dockerfile -t docker.io/wichtr/sssp-client:0.0.1 . ; \
-	podman tag docker.io/wichtr/sssp-client:0.0.1 docker.io/wichtr/sssp-client:latest
-
+	podman tag docker.io/wichtr/sssp-client:0.0.1 docker.io/wichtr/sssp-client:latest ; \
+	rm .envProd

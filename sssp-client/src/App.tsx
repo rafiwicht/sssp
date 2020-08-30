@@ -8,6 +8,7 @@ import Main from "./components/Main";
 import client from "./config/apollo";
 import {Snackbar} from "@material-ui/core";
 import Alert from "./components/Alert";
+import config from './config';
 
 
 
@@ -16,6 +17,8 @@ import Alert from "./components/Alert";
 const App: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [messages, setMessages] = useState<Array<string>>([]);
+
+    console.log(config.firm);
 
     const setErrors = (errorMessages: Array<string>) => {
         setMessages(errorMessages);
