@@ -124,8 +124,8 @@ dev-stop: rm-pod
 dev-refresh: stop run
 
 dev-server:
-	cd sssp-client ; \
-	yarn 
+	cd sssp-server ; \
+	yarn
 	podman run -dt \
 		--pod sssp \
 		--env DEV_MODE=true \
@@ -147,7 +147,7 @@ dev-refresh-server: dev-rm-server dev-server
 
 dev-client:
 	cd sssp-client ; \
-	yarn 
+	yarn
 	podman run -dt \
 		--pod sssp \
 		--env DEV_MODE=true \

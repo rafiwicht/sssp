@@ -17,9 +17,7 @@ import config from './config';
 const App: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [messages, setMessages] = useState<Array<string>>([]);
-
-    console.log(config.firm);
-
+    
     const setErrors = (errorMessages: Array<string>) => {
         setMessages(errorMessages);
         setOpen(true);

@@ -3,7 +3,7 @@ This is an open source self service portal for splunk use cases. It can also be 
 
 ## Features
 
-- Save confogurations for apps/addons, indexes
+- Save confogurations for services, apps/addons and indexes
 - Creating git repositories on Github and Gitlab
 - Workflow for dual control principle
 
@@ -20,7 +20,7 @@ For installation, refer to the documentation.
 
 ## Support
 
-This product has only developer support. If you find any bugs or have a feature request. Don't hestitate to ask in the issue or writing me an email.
+This product has only developer support. If you find any bugs or have a feature request. Don't hestitate to ask in the issue section or writing me an email.
 
 ## Documentation
 
@@ -30,7 +30,6 @@ The documentation of the SSSP is located on the website [sssp.github.io](sssp.gi
 ## Fork and Contribute
 
 The best way to support the project is to implement missing feature or solve bugfixes. If you are very experienced using React, Express or Graphql, let me know. The project can use some code review.
-
 
 ## About
 

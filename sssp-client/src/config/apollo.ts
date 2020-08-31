@@ -16,8 +16,7 @@ export default ({setErrors}: ApolloProps) => {
         if (graphQLErrors) {
             graphQLErrors.map(({ message, locations, path, extensions }) => {
                 if(extensions?.code === 'UNAUTHENTICATED') {
-                    console.log('refresh token --------------------------------');
-                    keycloak.updateToken(5).then(() => {
+                    keycloak.updateToken(120).then(() => {
                         operation.setContext({
                             headers: {
                                 authorization: `Bearer ${keycloak.token}`,
