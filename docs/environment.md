@@ -34,49 +34,13 @@ Keep in mind, you cannot use a test and a development environemnt at the same ti
 After everything is up and running. You can access the software on [https://test.sssp.local:8000/](https://test.sssp.local:8000/). The test environment comes with default users. The default mongodb user and password can you get from the makefile. \
 **This are hardcoded passphrases. Please do not use this in production!!**
 
-<html>
-<table>
-    <thead>
-        <tr>
-            <th>Software</th>
-            <th>Username</th>
-            <th>Password</th>
-            <th>Additional Information</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>LDAP only</td>
-            <td>cn=admin,dc=rwicht,dc=ch</td>
-            <td>admin</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td rowspan=2>Systemwide using LDAP (Gitlab, Keycloak, SSSP)
-            <td>test1</td>
-            <td>Welcome.2020</td>
-            <td>SSSP Admin User</td>
-        </tr>
-        <tr>
-            <td>test2</td>
-            <td>Welcome.2020</td>
-            <td>SSSP Standard User</td>
-        </tr>
-        <tr>
-            <td>Keycloak only</td>
-            <td>root</td>
-            <td>Welcome.2020</td>
-            <td>For the keycloak admin interface</td>
-        </tr>
-        <tr>
-            <td>Gitlab only</td>
-            <td>root</td>
-            <td>Welcome.2020</td>
-            <td>Contains the repositories for the SSSP</td>
-        </tr>
-    </tbody>
-</table>
-</html>
+| Software | Username | Password | Additional Information |
+|---|---|---|---|
+| LDAP only | cn=admin,dc=rwicht,dc=ch | admin | |
+| Systemwide using LDAP (Gitlab, Keycloak, SSSP) | test1 | Welcome.2020 | SSSP Admin User |
+| | test2 | Welcome.2020 | SSSP Standard User |
+| Keycloak only | root | Welcome.2020 | For the keycloak admin interface |
+| Gitlab only | root | Welcome.2020 | Contains the repositories for the SSSP |
 
 ## Devlopment environment
 
