@@ -1,5 +1,6 @@
 # Splunk Self Service Portal
-This is an open source self service portal for splunk use cases. It can also be customized for other tools.
+
+This is an open source self service portal for splunk use cases. It's still in development and therefore not safe for production. The current version is 0.1.0.
 
 ## Features
 
