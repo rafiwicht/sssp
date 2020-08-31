@@ -23,7 +23,7 @@ Before you can build the image, you have to create the file `sssp-client/.envPro
 |---|---|---|
 FIRM |A short name of the firm. Used in the name of the apps/addons. | SSSP
 ADMIN_ROLE | The LDAP role for the SSSP Admins| sssp-admin
-KEYOAK_URL | URL to the keycloak backend. | https://test.sssp.local:8000/auth/
+KEYCLOAK_URL | URL to the keycloak backend. | https://test.sssp.local:8000/auth/
 KEYCLOAK_REALM | The keycloak realm used for the SSSP | sssp
 KEYCLOAK_CLIENT_ID | The keycloak client for the SSSP | sssp-client
 
