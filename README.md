@@ -24,7 +24,7 @@ This product has only developer support. If you find any bugs or have a feature 
 
 ## Documentation
 
-The documentation of the SSSP is located on the website [sssp.github.io](https://rafiwicht.github.io/sssp/) or in the doc directory.
+The documentation of the SSSP is located on the website [https://rafiwicht.github.io/sssp/](https://rafiwicht.github.io/sssp/) or in the doc directory.
 
 
 ## Fork and Contribute
