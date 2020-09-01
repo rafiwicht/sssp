@@ -23,7 +23,7 @@ GITLAB ?= sssp-gitlab
 MONGO_USER ?= root
 KEYCLOAK_USER ?= root
 PASSWORD ?= Welcome.2020
-VERSION ?= 0.0.1
+VERSION ?= 0.1.1
 
 ############## Podman development/test support applications ##############
 
@@ -121,7 +121,7 @@ dev-run: pod ldap mongo keycloak dev-server dev-client proxy gitlab
 
 dev-stop: rm-pod
 
-dev-refresh: stop run
+dev-refresh: dev-stop dev-run
 
 dev-server:
 	cd sssp-server ; \
@@ -170,7 +170,7 @@ test-run: pod ldap mongo keycloak test-server test-client proxy gitlab
 
 test-stop: rm-pod
 
-test-refresh: stop run
+test-refresh: test-stop test-run
 
 test-server:
 	podman run -dt \

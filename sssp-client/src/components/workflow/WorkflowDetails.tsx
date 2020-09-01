@@ -8,6 +8,7 @@ import {
 import {Button} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import ServiceDisplay from "../service/ServiceDisplay";
+import ServiceDisplayCombined from './ServiceDisplayCombined';
 
 type WorkflowDetailsParams = {
     id: string
@@ -81,7 +82,7 @@ const WorkflowDetails: React.FC = () => {
     let content;
 
     if(data.workflow.new && data.workflow.current) {
-
+        content = (<ServiceDisplayCombined serviceNew={data.workflow.new} serviceCurrent={data.workflow.current} />)
     }
     else if(data.workflow.new) {
         content = (<ServiceDisplay service={data.workflow.new} />);
