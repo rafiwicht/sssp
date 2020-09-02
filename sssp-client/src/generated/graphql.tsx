@@ -89,8 +89,16 @@ export enum State {
 
 export type Workflow = {
   __typename?: 'Workflow';
-  new: Service;
-  current?: Maybe<Service>;
+  _id: Scalars['ID'];
+  name: Array<Scalars['String']>;
+  owner: Array<Scalars['String']>;
+  description: Array<Scalars['String']>;
+  dataClassification: Array<Scalars['String']>;
+  read: Array<Array<Scalars['String']>>;
+  write: Array<Array<Scalars['String']>>;
+  indexes: Array<Array<Index>>;
+  apps: Array<Array<App>>;
+  state: State;
 };
 
 export type Service = {
@@ -234,27 +242,14 @@ export type GetWorkflowQuery = (
   { __typename?: 'Query' }
   & { workflow: (
     { __typename?: 'Workflow' }
-    & { current?: Maybe<(
-      { __typename?: 'Service' }
-      & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
-      & { indexes: Array<(
-        { __typename?: 'Index' }
-        & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
-      )>, apps: Array<(
-        { __typename?: 'App' }
-        & Pick<App, 'name' | 'type' | 'url'>
-      )> }
-    )>, new: (
-      { __typename?: 'Service' }
-      & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
-      & { indexes: Array<(
-        { __typename?: 'Index' }
-        & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
-      )>, apps: Array<(
-        { __typename?: 'App' }
-        & Pick<App, 'name' | 'type' | 'url'>
-      )> }
-    ) }
+    & Pick<Workflow, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
+    & { indexes: Array<Array<(
+      { __typename?: 'Index' }
+      & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
+    )>>, apps: Array<Array<(
+      { __typename?: 'App' }
+      & Pick<App, 'name' | 'type' | 'url'>
+    )>> }
   ) }
 );
 
@@ -568,46 +563,24 @@ export type DeleteServiceMutationOptions = ApolloReactCommon.BaseMutationOptions
 export const GetWorkflowDocument = gql`
     query GetWorkflow($serviceId: ID!) {
   workflow(serviceId: $serviceId) {
-    current {
-      _id
+    _id
+    name
+    owner
+    state
+    dataClassification
+    description
+    indexes {
       name
-      owner
-      state
-      dataClassification
-      description
-      indexes {
-        name
-        maxTotalDataSizeMB
-        frozenTimePeriodInSecs
-      }
-      apps {
-        name
-        type
-        url
-      }
-      read
-      write
+      maxTotalDataSizeMB
+      frozenTimePeriodInSecs
     }
-    new {
-      _id
+    apps {
       name
-      owner
-      state
-      dataClassification
-      description
-      indexes {
-        name
-        maxTotalDataSizeMB
-        frozenTimePeriodInSecs
-      }
-      apps {
-        name
-        type
-        url
-      }
-      read
-      write
+      type
+      url
     }
+    read
+    write
   }
 }
     `;

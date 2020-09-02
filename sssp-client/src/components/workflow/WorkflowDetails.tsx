@@ -2,8 +2,7 @@ import React, {useEffect} from 'react';
 import {useHistory, useParams} from "react-router-dom";
 import {
     GetServicesDocument, useAcceptWorkflowMutation, useDeclineWorkflowMutation,
-    useGetWorkflowLazyQuery,
-
+    useGetWorkflowLazyQuery, Kind, State
 } from "../../generated/graphql";
 import {Button} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
@@ -68,6 +67,8 @@ const WorkflowDetails: React.FC = () => {
         }
     });
 
+    
+
     useEffect(() => {
         getWorkflow();
     }, []);
@@ -79,24 +80,18 @@ const WorkflowDetails: React.FC = () => {
     if (error || !data) {
         return <div>ERROR</div>;
     }
-    let content;
 
-    if(data.workflow.new && data.workflow.current) {
-        content = (<ServiceDisplayCombined serviceNew={data.workflow.new} serviceCurrent={data.workflow.current} />)
-    }
-    else if(data.workflow.new) {
-        content = (<ServiceDisplay service={data.workflow.new} />);
-    }
+    console.log(data);
 
-    else if(data.workflow.current) {
-        content = (<ServiceDisplay service={data.workflow.current} />);
-    }
-
-    let buttons;
-
-    if(data.workflow.new || data.workflow.current) {
-        buttons = (
+    return (
+        <div>
+            <ServiceDisplayCombined workflow={data.workflow} />
             <div>
+                <Button
+                    variant='contained'
+                    className={classes.marginButton}
+                    onClick={() => handleCancel()}
+                >Cancel</Button>
                 <Button
                     variant='contained'
                     color='primary'
@@ -110,19 +105,9 @@ const WorkflowDetails: React.FC = () => {
                     onClick={() => handleDecline()}
                 >Decline</Button>
             </div>
-        );
-    }
-
-    return (
-        <div>
-            {content}
-            <Button
-                variant='contained'
-                className={classes.marginButton}
-                onClick={() => handleCancel()}
-            >Cancel</Button>
-            {buttons}
         </div>
+            
+        
     );
 }
 

@@ -4,7 +4,7 @@ import IndexList from "../index/IndexList";
 import AppList from "../app/AppList";
 import UserList from "../user/UserList";
 import {createStyles, makeStyles} from "@material-ui/styles";
-import {Service} from "../../generated/graphql";
+import {Index, App, State} from "../../generated/graphql";
 
 
 const useStyles = makeStyles(() =>
@@ -16,12 +16,21 @@ const useStyles = makeStyles(() =>
 );
 
 type ServiceDisplayProps = {
-    serviceNew: Service,
-    serviceCurrent: Service
+    workflow:{
+        _id: string,
+        name: Array<string>,
+        owner: Array<string>,
+        description: Array<string>,
+        dataClassification: Array<string>,
+        read: Array<Array<string>>,
+        write: Array<Array<string>>,
+        indexes: Array<Array<Index>>,
+        apps: Array<Array<App>>,
+        state: State
+    }
 }
 
-
-const ServiceDisplayCombined: React.FunctionComponent<ServiceDisplayProps> = ({serviceNew, serviceCurrent}: ServiceDisplayProps) => {
+const ServiceDisplayCombined: React.FunctionComponent<ServiceDisplayProps> = ({workflow}: ServiceDisplayProps) => {
     const classes = useStyles();
     return (
         <div>
@@ -40,90 +49,75 @@ const ServiceDisplayCombined: React.FunctionComponent<ServiceDisplayProps> = ({s
                     Name
                 </Grid>
                 <Grid item md={4}>
-                    {serviceCurrent.name}
+                    {workflow.name[0]}
                 </Grid>
-                <Grid item md={2}>
-                    Name
-                </Grid>
-                <Grid item md={4}>
-                    {serviceNew.name}
+                <Grid item md={6}>
+                    {workflow.name[1]}
                 </Grid>
                 <Grid item md={2}>
                     Owner
                 </Grid>
                 <Grid item md={4}>
-                    {serviceCurrent.owner}
+                    {workflow.owner[0]}
                 </Grid>
-                <Grid item md={2}>
-                    Owner
-                </Grid>
-                <Grid item md={4}>
-                    {serviceNew.owner}
+                <Grid item md={6}>
+                    {workflow.owner[1]}
                 </Grid>
                 <Grid item md={2}>
                     State
                 </Grid>
                 <Grid item md={4}>
-                    {serviceCurrent.state}
+                    {workflow.state}
                 </Grid>
-                <Grid item md={2}>
-                    State
-                </Grid>
-                <Grid item md={4}>
-                    {serviceNew.state}
+                <Grid item md={6}>
+                    ACTIVE
                 </Grid>
                 <Grid item md={2}>
                     Description
                 </Grid>
                 <Grid item md={4}>
-                    {serviceCurrent.description}
+                    {workflow.description[0]}
                 </Grid>
-                <Grid item md={2}>
-                    Description
-                </Grid>
-                <Grid item md={4}>
-                    {serviceNew.description}
+                <Grid item md={6}>
+                    {workflow.description[1]}
                 </Grid>
                 <Grid item md={2}>
                     Data classification
                 </Grid>
                 <Grid item md={4}>
-                    {serviceCurrent.dataClassification}
+                    {workflow.dataClassification[0]}
                 </Grid>
-                <Grid item md={2}>
-                    Data classification
-                </Grid>
-                <Grid item md={4}>
-                    {serviceNew.dataClassification}
+                <Grid item md={6}>
+                    {workflow.dataClassification[1]}
                 </Grid>
             </Grid>
             <Typography variant='h5'>Indexes</Typography>
             <Divider className={classes.marginDivider}/>
             <Grid container spacing={2}>
                 <Grid item md={6}>
-                    <IndexList data={serviceCurrent.indexes} />
+                    <IndexList data={workflow.indexes[0]} />
                 </Grid>
                 <Grid item md={6}>
-                    <IndexList data={serviceNew.indexes} />
+                    <IndexList data={workflow.indexes[1]} />
                 </Grid>
             </Grid>
             <Typography variant='h5'>Apps and addons</Typography>
             <Grid container spacing={2}>
                 <Grid item md={6}>
-                    <AppList data={serviceCurrent.apps} />
+                    <AppList data={workflow.apps[0]} />
                 </Grid>
                 <Grid item md={6}>
-                    <AppList data={serviceNew.apps} />
+                    <AppList data={workflow.apps[1]} />
                 </Grid>
             </Grid>
             <Typography variant='h5'>Access options</Typography>
             <Divider className={classes.marginDivider}/>
             <Grid container spacing={2}>
                 <Grid item md={6}>
-                    <UserList read={serviceCurrent.read} write={serviceCurrent.write} />
+                    <UserList read={workflow.read[0]} write={workflow.write[0]} />
                 </Grid>
                 <Grid item md={6}>
-                    <UserList read={serviceNew.read} write={serviceNew.write} />
+                    <UserList read={workflow.read[1]} write={workflow.write[1]} />
                 </Grid>
             </Grid>
             <Divider className={classes.marginDivider}/>
