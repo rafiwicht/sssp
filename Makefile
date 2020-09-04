@@ -24,6 +24,7 @@ MONGO_USER ?= root
 KEYCLOAK_USER ?= root
 PASSWORD ?= Welcome.2020
 VERSION ?= 0.1.1
+GITLAB_TOKEN ?= token-for-automation
 
 ############## Podman development/test support applications ##############
 

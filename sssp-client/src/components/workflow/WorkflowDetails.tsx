@@ -85,7 +85,19 @@ const WorkflowDetails: React.FC = () => {
 
     return (
         <div>
-            <ServiceDisplayCombined workflow={data.workflow} />
+            {data.workflow.name.length === 1 ? <ServiceDisplay service={{
+                _id: data.workflow._id,
+                name: data.workflow.name[0],
+                owner: data.workflow.owner[0],
+                description: data.workflow.description[0],
+                dataClassification: data.workflow.dataClassification[0],
+                indexes: data.workflow.indexes[0],
+                apps: data.workflow.apps[0],
+                read: data.workflow.read[0],
+                write: data.workflow.write[0],
+                state: data.workflow.state
+            }} /> : <ServiceDisplayCombined workflow={data.workflow} />}
+            
             <div>
                 <Button
                     variant='contained'

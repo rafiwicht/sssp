@@ -45,6 +45,9 @@ class GitlabConnector implements GitConnectorInterface {
         axiosRequest(
             '/projects'
         ).then((r: AxiosResponse) => {
+            // Todo still a bug
+            console.log(name);
+            console.log(r.data.filter(e => e.name === name));
             const id = r.data.filter(e => e.name === name)[0].id;
             axiosRequest(
                 `/projects/${id}`,

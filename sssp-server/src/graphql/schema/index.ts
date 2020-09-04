@@ -33,8 +33,16 @@ const typeDefs = gql`
         IN_MODIFICATION
     }
     type Workflow {
-        new: Service!
-        current: Service
+        _id: ID!
+        name: [String!]!
+        owner: [String!]!
+        description: [String!]!
+        dataClassification: [String!]!
+        read: [[String!]!]!
+        write: [[String!]!]!
+        indexes: [[Index!]!]!
+        apps: [[App!]!]!
+        state: State!
     }
     type Service {
         _id: ID!

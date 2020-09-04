@@ -6,7 +6,8 @@
 import mongoose from 'mongoose';
 import {FutureService, Service, State} from '../../models/service';
 import {ApolloError} from 'apollo-server';
-import {deepEqual} from "../../helper/equality";
+import {deepEqual} from '../../helper/equality';
+import {AppInterface} from '../../models/service'
 
 
 export enum Kind {
@@ -41,8 +42,14 @@ const ServiceQueries = {
         const futureService = await FutureService.findById(serviceId);
         const service = await Service.findById(serviceId);
 
-        if((kind === Kind.FUTURE || kind === Kind.NEWEST) && futureService) return futureService;
-        else if((kind === Kind.CURRENT || kind === Kind.NEWEST) && service) return service;
+        if((kind === Kind.FUTURE || kind === Kind.NEWEST) && futureService) {
+            console.log(futureService);
+            return futureService;
+        }
+        else if((kind === Kind.CURRENT || kind === Kind.NEWEST) && service) {
+            console.log(service);
+            return service;
+        }
         else throw new ApolloError('Service not found', 'NOT_FOUND');
     }
 };
@@ -77,7 +84,19 @@ const ServiceMutations = {
 
         if(futureService && (futureService.state === State.IN_CREATION || futureService.state === State.IN_DELETION)) {
             return await FutureService.findByIdAndUpdate(serviceId, {
-                ...serviceInput
+                ...serviceInput,
+                apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
+                    const currentApp = futureService.apps.filter((f: AppInterface) => f.name === e.name);
+                    if(currentApp.length > 0) {
+                        return {
+                            ...e,
+                            url: currentApp[0].url
+                        }
+                    }
+                    else {
+                        return e;
+                    }
+                })
             })
         }
         else {
@@ -86,7 +105,19 @@ const ServiceMutations = {
 
             if(futureService) {
                 futureServiceSaved = await FutureService.findByIdAndUpdate(serviceId, {
-                    ...serviceInput
+                    ...serviceInput,
+                    apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
+                        const currentApp = futureService.apps.filter((f: AppInterface) => f.name === e.name);
+                        if(currentApp.length > 0) {
+                            return {
+                                ...e,
+                                url: currentApp[0].url
+                            }
+                        }
+                        else {
+                            return e;
+                        }
+                    })
                 },{
                     new: true
                 });
@@ -103,7 +134,19 @@ const ServiceMutations = {
                     ...serviceInput,
                     _id: service._id,
                     state: State.IN_MODIFICATION,
-                    revision: serviceSaved.revision
+                    revision: serviceSaved.revision,
+                    apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
+                        const currentApp = service.apps.filter((f: AppInterface) => f.name === e.name);
+                        if(currentApp.length > 0) {
+                            return {
+                                ...e,
+                                url: currentApp[0].url
+                            }
+                        }
+                        else {
+                            return e;
+                        }
+                    })
                 });
                 futureServiceSaved = await newFutureService.save();
             }

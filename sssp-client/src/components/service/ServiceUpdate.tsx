@@ -43,7 +43,9 @@ const ServiceUpdate: React.FC = () => {
                 serviceInput: serviceInput
             }
         }).then(() => {
-                history.push('/service')
+            history.push('/service');
+        }).catch(() => {
+            console.log('gugus');
         });
     }
 
@@ -68,13 +70,7 @@ const ServiceUpdate: React.FC = () => {
                     owner: data.service.owner,
                     description: data.service.description,
                     dataClassification: data.service.dataClassification,
-                    indexes: data.service.indexes.map((e : Index) => {
-                        return {
-                            name: e.name,
-                            maxTotalDataSizeMB: e.maxTotalDataSizeMB,
-                            frozenTimePeriodInSecs: e.frozenTimePeriodInSecs
-                        }
-                    }),
+                    indexes: data.service.indexes,
                     apps: data.service.apps.map((e) => {
                        return {
                            name: e.name,

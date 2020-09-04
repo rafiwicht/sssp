@@ -5,12 +5,12 @@
  */
 
 import mongoose from 'mongoose';
-import {FutureService, RevisionService, Service, ServiceInterface, State} from '../../models/service';
+import {FutureService, IndexInterface, RevisionService, Service, AppInterface, State, ServiceInterface} from '../../models/service';
 import {ApolloError, ForbiddenError} from 'apollo-server';
-import GitConnectorInterface from "../../git-connector";
+import GitConnectorInterface from '../../git-connector';
 import config from '../../config';
-import GithubConnector from "../../git-connector/github";
-import GitlabConnector from "../../git-connector/gitlab";
+import GithubConnector from '../../git-connector/github';
+import GitlabConnector from '../../git-connector/gitlab';
 
 
 // Connector to the git backend
@@ -23,8 +23,16 @@ else {
 }
 
 type WorkflowResult = {
-    new: ServiceInterface,
-    current?: ServiceInterface
+    _id: string,
+    name: Array<string>,
+    owner: Array<string>,
+    description: Array<string>,
+    dataClassification: Array<string>,
+    read: Array<Array<string>>,
+    write: Array<Array<string>>,
+    indexes: Array<Array<IndexInterface>>,
+    apps: Array<Array<AppInterface>>,
+    state: State
 }
 
 const WorkflowQueries = {
@@ -35,10 +43,27 @@ const WorkflowQueries = {
         if(!futureService) throw new ApolloError('Service not found', 'NOT_FOUND');
 
         let result: WorkflowResult = {
-            new: futureService
+            _id: futureService._id,
+            name: [futureService.name],
+            owner: [futureService.owner],
+            description: [futureService.description],
+            dataClassification: [futureService.dataClassification],
+            read: [futureService.read],
+            write: [futureService.write],
+            indexes: [futureService.indexes],
+            apps: [futureService.apps],
+            state: futureService.state
         };
         if(futureService.state !== State.IN_CREATION) {
-            result.current = await Service.findById(serviceId);
+            const service = await Service.findById(serviceId);
+            result.name.unshift(service.name);
+            result.owner.unshift(service.owner);
+            result.description.unshift(service.description);
+            result.dataClassification.unshift(service.dataClassification);
+            result.read.unshift(service.read);
+            result.write.unshift(service.write);
+            result.indexes.unshift(service.indexes);
+            result.apps.unshift(service.apps);
         }
         return result;
     }
@@ -86,12 +111,12 @@ const WorkflowMutations = {
             }
             else {
                 // Get git repositories difference
-                const newApps = futureService.apps.map(e => {return e.name;});
-                const currentApps = service.apps.map(e => {return e.name;});
-                const appsToDelete = currentApps.filter(e => !newApps.includes(e));
+                const newApps = futureService.apps.map((e: ServiceInterface) => {return e.name;});
+                const currentApps = service.apps.map((e: ServiceInterface) => {return e.name;});
+                const appsToDelete = currentApps.filter((e: string) => !newApps.includes(e));
 
                 // Delete git repositories
-                appsToDelete.apps.forEach(e => {
+                appsToDelete.forEach(e => {
                     gitConnector.deleteRepo(e.name);
                 });
 
