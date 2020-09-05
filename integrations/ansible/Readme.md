@@ -14,3 +14,4 @@ pip install -r requirements.txt
  source venv/bin/activate
  ansible-playbook get_services.yml
  ```
+ 
