@@ -41,7 +41,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
          indexes: serviceMod?.indexes || [],
          apps: serviceMod?.apps || [],
          read: serviceMod?.read || [],
-         write: serviceMod?.read || [localStorage.getItem('userId') || '']
+         write: serviceMod?.write || []
     });
 
     const classes = useStyles();
@@ -55,9 +55,9 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         history.push('/service')
     }
 
-    const handleAccessChange = (userId: string, event: ChangeEvent<HTMLInputElement>) => {
+    const handleAccessChange = (objId: string, accessType: boolean) => {
         let from, to;
-        if(event.target.checked) {
+        if(accessType) {
             from = serviceInput.read;
             to = serviceInput.write;
         }
@@ -65,10 +65,10 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
             from = serviceInput.write;
             to = serviceInput.read;
         }
-        const index = from.indexOf(userId);
+        const index = from.indexOf(objId);
         from.splice(index, 1);
-        to.push(userId);
-        if(event.target.checked) {
+        to.push(objId);
+        if(accessType) {
             setServiceInput({
                 ...serviceInput,
                 read: from,
@@ -84,21 +84,21 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         }
     }
 
-    const handlePermissionAdd = (userId: string) => {
-        if(!serviceInput.read.includes(userId) && !serviceInput.write.includes(userId)) {
-            setServiceInput({...serviceInput, read: [...serviceInput.read, userId]});
+    const handlePermissionAdd = (objId: string) => {
+        if(!serviceInput.read.includes(objId) && !serviceInput.write.includes(objId)) {
+            setServiceInput({...serviceInput, read: [...serviceInput.read, objId]});
         }
     };
 
-    const handlePermissionDelete = (userId: string) => {
-        if(serviceInput.read.includes(userId)) {
-            const index = serviceInput.read.indexOf(userId);
+    const handlePermissionDelete = (objId: string) => {
+        if(serviceInput.read.includes(objId)) {
+            const index = serviceInput.read.indexOf(objId);
             if (index > -1) {
                 serviceInput.read.splice(index, 1);
             }
         }
-        else if (serviceInput.write.includes(userId)) {
-            const index = serviceInput.write.indexOf(userId);
+        else if (serviceInput.write.includes(objId)) {
+            const index = serviceInput.write.indexOf(objId);
             if (index > -1) {
                 serviceInput.write.splice(index, 1);
             }

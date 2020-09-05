@@ -72,6 +72,7 @@ const typeDefs = gql`
         name: String!
         type: AppType!
         url: String!
+        version: String!
     }
     input ServiceInput {
         name: String!
@@ -91,6 +92,7 @@ const typeDefs = gql`
     input AppInput {
         name: String!
         type: AppType!
+        version: String!
     }
 `;
 

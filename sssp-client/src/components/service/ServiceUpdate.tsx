@@ -79,7 +79,8 @@ const ServiceUpdate: React.FC = () => {
                     apps: data.service.apps.map((e: App): AppInput => {
                        return {
                            name: e.name,
-                           type: e.type
+                           type: e.type,
+                           version: e.version
                        };
                     }),
                     read: data.service.read,

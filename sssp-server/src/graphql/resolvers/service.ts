@@ -33,9 +33,7 @@ const ServiceQueries = {
             resultServices = futureServices.concat(services);
         }
 
-        return resultServices.map((service) => {
-            return service;
-        });
+        return resultServices;
     },
     service: async (parent: any, {serviceId, kind}: any) => {
 
@@ -83,6 +81,7 @@ const ServiceMutations = {
         if(futureService && (futureService.state === State.IN_CREATION || futureService.state === State.IN_DELETION)) {
             return await FutureService.findByIdAndUpdate(serviceId, {
                 ...serviceInput,
+                // Add urls of existing apps
                 apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
                     const currentApp = futureService.apps.filter((f: AppInterface) => f.name === e.name);
                     if(currentApp.length > 0) {
@@ -104,6 +103,7 @@ const ServiceMutations = {
             if(futureService) {
                 futureServiceSaved = await FutureService.findByIdAndUpdate(serviceId, {
                     ...serviceInput,
+                    // Add url of existing apps
                     apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
                         const currentApp = futureService.apps.filter((f: AppInterface) => f.name === e.name);
                         if(currentApp.length > 0) {

@@ -135,6 +135,7 @@ export type App = {
   name: Scalars['String'];
   type: AppType;
   url: Scalars['String'];
+  version: Scalars['String'];
 };
 
 export type ServiceInput = {
@@ -157,6 +158,7 @@ export type IndexInput = {
 export type AppInput = {
   name: Scalars['String'];
   type: AppType;
+  version: Scalars['String'];
 };
 
 export type GetServicesQueryVariables = Exact<{
@@ -188,7 +190,7 @@ export type GetServiceQuery = (
       & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
     )>, apps: Array<(
       { __typename?: 'App' }
-      & Pick<App, 'name' | 'type' | 'url'>
+      & Pick<App, 'name' | 'type' | 'url' | 'version'>
     )> }
   ) }
 );
@@ -248,7 +250,7 @@ export type GetWorkflowQuery = (
       & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
     )>>, apps: Array<Array<(
       { __typename?: 'App' }
-      & Pick<App, 'name' | 'type' | 'url'>
+      & Pick<App, 'name' | 'type' | 'url' | 'version'>
     )>> }
   ) }
 );
@@ -354,6 +356,7 @@ export const GetServiceDocument = gql`
       name
       type
       url
+      version
     }
     read
     write
@@ -578,6 +581,7 @@ export const GetWorkflowDocument = gql`
       name
       type
       url
+      version
     }
     read
     write

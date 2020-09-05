@@ -46,7 +46,7 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({submitUser}: UserForm
                 variant='contained'
                 color='primary'
                 onClick={() => handleOpen()}
-            >Add user</Button>
+            >Add permission</Button>
         );
     }
 

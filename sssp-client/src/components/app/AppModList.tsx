@@ -26,6 +26,7 @@ const AppModList: React.FunctionComponent<AppModListProps> = ({handleDelete, dat
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
+                        <TableCell align='right'>Version</TableCell>
                         <TableCell align='right'>Type</TableCell>
                         <TableCell align='right'>Action</TableCell>
                     </TableRow>
@@ -34,6 +35,7 @@ const AppModList: React.FunctionComponent<AppModListProps> = ({handleDelete, dat
                     {data.map((row: AppInput, index: number) => (
                         <TableRow key={index}>
                             <TableCell>{row.name}</TableCell>
+                            <TableCell align='right'>{row.version}</TableCell>
                             <TableCell align='right'>{row.type}</TableCell>
                             <TableCell align='right'>
                                 <Button

@@ -27,7 +27,8 @@ const useStyles = makeStyles(() =>
 const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProps) => {
     const [appInput, setAppInput] = useState<AppInput>({
         name: '',
-        type: AppType.Ta
+        type: AppType.Ta,
+        version: 'latest'
     });
     const [hidden, setHidden] = useState<boolean>(true);
     const classes = useStyles();
@@ -44,14 +45,16 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
         setHidden(true);
         setAppInput({
             name: '',
-            type: AppType.Ta
+            type: AppType.Ta,
+            version: 'latest'
         });
     }
 
     const handleSubmit = () => {
         submitApp({
             name: `${appInput.type}-${config.firm}-${appInput.name}`,
-            type: appInput.type
+            type: appInput.type,
+            version: appInput.version
         });
         reset();
     }
@@ -79,6 +82,16 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
                     onChange={handleChange('name')}
                 />
             </FormControl>
+            <FormControl className={classes.margin} required>
+                <InputLabel htmlFor='version'>Version</InputLabel>
+                <Input
+                    id='version'
+                    type='text'
+                    required
+                    value={appInput.version}
+                    onChange={handleChange('version')}
+                />
+            </FormControl>
             <FormControl className={classes.margin}>
                 <InputLabel htmlFor='type'>Type</InputLabel>
                 <Select
@@ -103,7 +116,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProp
                 color='primary'
                 className={classes.margin}
                 onClick={() => handleSubmit()}
-                disabled={appInput.name === ''}
+                disabled={appInput.name === '' || appInput.version === ''}
             >Submit</Button>
         </div>
     );

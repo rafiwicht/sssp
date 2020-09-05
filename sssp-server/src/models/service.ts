@@ -59,8 +59,9 @@ const IndexSchema: Schema = new Schema({
 const AppSchema: Schema = new Schema({
     _id : false,
     name: { type: String, required: true},
-    type: { type: AppType, default: AppType.TA},
-    url: { type: String, default: 'in creation'}
+    type: { type: AppType, default: AppType.TA },
+    url: { type: String, default: 'in creation' },
+    version: { type: String, default: 'latest' }
 });
 
 const ServiceSchema: Schema = new Schema({

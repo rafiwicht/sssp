@@ -27,6 +27,7 @@ export default gql`
                 name
                 type
                 url
+                version
             }
             read
             write

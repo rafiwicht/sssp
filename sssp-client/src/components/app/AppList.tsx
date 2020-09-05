@@ -27,6 +27,7 @@ const AppList: React.FunctionComponent<AppListProps> = ({data}: AppListProps) =>
                         <TableCell>Name</TableCell>
                         <TableCell align='right'>Type</TableCell>
                         <TableCell align='right'>URL</TableCell>
+                        <TableCell align='right'>Version</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -40,7 +41,7 @@ const AppList: React.FunctionComponent<AppListProps> = ({data}: AppListProps) =>
                             {row.url !== 'in creation' &&
                                 <TableCell align='right'><a href={row.url}>{row.url}</a></TableCell>
                             }
-
+                            <TableCell align='right'>{row.version}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

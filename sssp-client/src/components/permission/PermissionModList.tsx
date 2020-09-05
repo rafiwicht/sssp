@@ -16,7 +16,7 @@ import {createStyles, makeStyles} from "@material-ui/styles";
 type UserModListProps = {
     read: Array<string>,
     write: Array<string>,
-    handleAccessChange: (userId: string, accessType: ChangeEvent<HTMLInputElement>) => void,
+    handleAccessChange: (userId: string, accessType: boolean) => void,
     handlePermissionDelete: (userId: string) => void
 }
 
@@ -50,7 +50,7 @@ const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, ha
                                 <Checkbox checked disabled />
                             </TableCell>
                             <TableCell align='right'>
-                                <Checkbox checked onChange={(event) => handleAccessChange(userId, event)} />
+                                <Checkbox checked onChange={(event) => handleAccessChange(userId, event.target.checked)} />
                             </TableCell>
                             <TableCell align='right'>
                                 <Button
@@ -69,7 +69,7 @@ const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, ha
                                 <Checkbox checked disabled />
                             </TableCell>
                             <TableCell align='right'>
-                                <Checkbox onChange={(event) => handleAccessChange(userId, event)} />
+                                <Checkbox onChange={(event) => handleAccessChange(userId, event.target.checked)} />
                             </TableCell>
                             <TableCell align='right'>
                                 <Button
