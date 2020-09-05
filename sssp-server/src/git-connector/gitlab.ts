@@ -47,13 +47,19 @@ class GitlabConnector implements GitConnectorInterface {
         ).then((r: AxiosResponse) => {
             // Todo still a bug
             console.log(name);
-            console.log(r.data.filter(e => e.name === name));
-            const id = r.data.filter(e => e.name === name)[0].id;
-            axiosRequest(
-                `/projects/${id}`,
-                null,
-                'DELETE'
-            );
+            const repo = r.data.find(e => e.name === name);
+            console.log(repo);
+            if(repo) {
+                console.log(1);
+                axiosRequest(
+                    `/projects/${repo.id}`,
+                    null,
+                    'DELETE'
+                );
+            }
+            else {
+                console.log("Repo was already deleted!")
+            }
         }).catch(r => {
             console.log(r);
         });

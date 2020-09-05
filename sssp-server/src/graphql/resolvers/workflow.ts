@@ -117,7 +117,7 @@ const WorkflowMutations = {
 
                 // Delete git repositories
                 appsToDelete.forEach(e => {
-                    gitConnector.deleteRepo(e.name);
+                    gitConnector.deleteRepo(e);
                 });
 
                 await Service.findByIdAndUpdate(serviceId, {

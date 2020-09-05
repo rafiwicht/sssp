@@ -30,9 +30,6 @@ export default ({setErrors}: ApolloProps) => {
                 }
             });
         }
-        if (networkError) {
-            errors.push(networkError.message);
-        }
         setErrors(errors);
     })
 

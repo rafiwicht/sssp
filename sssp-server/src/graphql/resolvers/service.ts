@@ -43,11 +43,9 @@ const ServiceQueries = {
         const service = await Service.findById(serviceId);
 
         if((kind === Kind.FUTURE || kind === Kind.NEWEST) && futureService) {
-            console.log(futureService);
             return futureService;
         }
         else if((kind === Kind.CURRENT || kind === Kind.NEWEST) && service) {
-            console.log(service);
             return service;
         }
         else throw new ApolloError('Service not found', 'NOT_FOUND');
@@ -121,8 +119,6 @@ const ServiceMutations = {
                 },{
                     new: true
                 });
-
-                console.log(futureService);
             }
             else {
                 serviceSaved = await Service.findByIdAndUpdate(serviceId, {

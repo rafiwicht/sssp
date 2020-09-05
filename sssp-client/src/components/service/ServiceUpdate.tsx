@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {
+    App, IndexInput, AppInput,
     GetServiceDocument,
     GetServicesDocument, Index, Kind,
     ServiceInput, useGetServiceLazyQuery,
@@ -44,8 +45,6 @@ const ServiceUpdate: React.FC = () => {
             }
         }).then(() => {
             history.push('/service');
-        }).catch(() => {
-            console.log('gugus');
         });
     }
 
@@ -70,12 +69,18 @@ const ServiceUpdate: React.FC = () => {
                     owner: data.service.owner,
                     description: data.service.description,
                     dataClassification: data.service.dataClassification,
-                    indexes: data.service.indexes,
-                    apps: data.service.apps.map((e) => {
+                    indexes: data.service.indexes.map((e: Index): IndexInput => {
+                        return {
+                            name: e.name,
+                            maxTotalDataSizeMB: e.maxTotalDataSizeMB,
+                            frozenTimePeriodInSecs: e.frozenTimePeriodInSecs
+                        };
+                    }),
+                    apps: data.service.apps.map((e: App): AppInput => {
                        return {
                            name: e.name,
                            type: e.type
-                       }
+                       };
                     }),
                     read: data.service.read,
                     write: data.service.write

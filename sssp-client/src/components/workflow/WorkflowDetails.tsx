@@ -81,8 +81,6 @@ const WorkflowDetails: React.FC = () => {
         return <div>ERROR</div>;
     }
 
-    console.log(data);
-
     return (
         <div>
             {data.workflow.name.length === 1 ? <ServiceDisplay service={{
