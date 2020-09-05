@@ -1,11 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useHistory, useParams} from "react-router-dom";
-import {Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, Typography} from "@material-ui/core";
-import {Kind, State, useGetServiceLazyQuery} from "../../generated/graphql";
+import {Button, Typography} from "@material-ui/core";
+import {Kind, useGetServiceLazyQuery} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
-import IndexList from "../index/IndexList";
-import UserList from "../user/UserList";
-import AppList from "../app/AppList";
 import ServiceDisplay from "./ServiceDisplay";
 
 const useStyles = makeStyles(() =>

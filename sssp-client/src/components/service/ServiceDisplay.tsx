@@ -2,7 +2,7 @@ import React from 'react';
 import {Divider, Grid, Typography} from "@material-ui/core";
 import IndexList from "../index/IndexList";
 import AppList from "../app/AppList";
-import UserList from "../user/UserList";
+import PermissionList from "../permission/PermissionList";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import {Service} from "../../generated/graphql";
 
@@ -66,7 +66,7 @@ const ServiceDisplay: React.FunctionComponent<ServiceDisplayProps> = ({service}:
                 data={service.apps} />
             <Typography variant='h5'>Access options</Typography>
             <Divider className={classes.marginDivider}/>
-            <UserList read={service.read} write={service.write} />
+            <PermissionList read={service.read} write={service.write} />
             <Divider className={classes.marginDivider}/>
         </div>
     )

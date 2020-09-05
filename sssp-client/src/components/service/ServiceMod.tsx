@@ -1,21 +1,15 @@
 import React, {ChangeEvent, useState} from 'react';
-import {AppInput, AppType, IndexInput, ServiceInput} from "../../generated/graphql";
-import {Button, Divider, FormControl, Input, InputLabel, MenuItem, Select, Typography} from "@material-ui/core";
-import IndexModList from "../index/IndexModList";
-import IndexForm from "../index/IndexForm";
-import UserModList from "../user/UserModList";
-import UserForm from "../user/UserForm";
+import {AppInput, IndexInput, ServiceInput} from "../../generated/graphql";
+import {Button, Divider, Typography} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import { useHistory } from 'react-router-dom';
-import AppModList from "../app/AppModList";
-import AppForm from "../app/AppForm";
+import ServiceModStepBasic from './ServiceModStepBasic';
+import ServiceModStepIndexApp from './ServiceModStepIndexApp';
+import ServiceModStepPermission from './ServiceModStepPermission';
+
 
 const useStyles = makeStyles(() =>
     createStyles({
-        marginFields: {
-            marginTop: 5,
-            marginBottom: 5
-        },
         marginButton: {
             marginTop: 5,
             marginBottom: 5,
@@ -29,8 +23,18 @@ type ServiceModProps = {
     serviceMod?: ServiceInput
 }
 
+export enum Step {
+    BASIC,
+    INDEX_APP,
+    PERMISSION
+}
+
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod}: ServiceModProps) => {
-     const [serviceInput, setServiceInput] = useState({
+    const [step, setStep] = useState<Step>(Step.BASIC);
+
+    console.log(step);
+
+    const [serviceInput, setServiceInput] = useState({
          name: serviceMod?.name || '',
          owner: serviceMod?.owner || '',
          description: serviceMod?.description || '',
@@ -81,13 +85,13 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         }
     }
 
-    const handleUserAdd = (userId: string) => {
+    const handlePermissionAdd = (userId: string) => {
         if(!serviceInput.read.includes(userId) && !serviceInput.write.includes(userId)) {
             setServiceInput({...serviceInput, read: [...serviceInput.read, userId]});
         }
     };
 
-    const handleUserDelete = (userId: string) => {
+    const handlePermissionDelete = (userId: string) => {
         if(serviceInput.read.includes(userId)) {
             const index = serviceInput.read.indexOf(userId);
             if (index > -1) {
@@ -102,7 +106,6 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         }
         setServiceInput({...serviceInput});
     };
-
 
     const handleIndexDelete = (id: number) => {
         if(id < serviceInput.indexes.length) {
@@ -134,74 +137,27 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
         <div>
             <Typography variant='h3'>Create Service</Typography>
             <form autoComplete='off' onSubmit={() => handleSubmit(serviceInput)}>
-                <Typography variant='h5'>Service options</Typography>
-                <Divider />
-                <FormControl fullWidth className={classes.marginFields} required>
-                    <InputLabel htmlFor='name'>Name</InputLabel>
-                    <Input
-                        id='name'
-                        type='text'
-                        required
-                        value={serviceInput.name}
-                        onChange={handleChange('name')}
-                    />
-                </FormControl>
-                <FormControl fullWidth className={classes.marginFields} required>
-                    <InputLabel htmlFor='owner'>Owner</InputLabel>
-                    <Input
-                        id='owner'
-                        type='text'
-                        required
-                        value={serviceInput.owner}
-                        onChange={handleChange('owner')}
-                    />
-                </FormControl>
-                <FormControl fullWidth className={classes.marginFields} required>
-                    <InputLabel htmlFor='description'>Description</InputLabel>
-                    <Input
-                        id='description'
-                        type='text'
-                        required
-                        value={serviceInput.description}
-                        onChange={handleChange('description')}
-                    />
-                </FormControl>
-                <FormControl fullWidth className={classes.marginFields} required>
-                    <InputLabel htmlFor='dataClassification'>Data classification</InputLabel>
-                    <Select
-                        id="dataClassification"
-                        required
-                        value={serviceInput.dataClassification}
-                        onChange={handleChange('dataClassification')}
-                    >
-                        <MenuItem value='Standard'>Standard</MenuItem>
-                        <MenuItem value='DSGVO'>DSGVO</MenuItem>
-                        <MenuItem value='PCI'>PCI</MenuItem>
-                    </Select>
-                </FormControl>
-                <Typography variant='h5'>Indexes</Typography>
-                <Divider />
-                <IndexModList
-                    handleDelete={handleIndexDelete}
-                    data={serviceInput.indexes} />
-                <IndexForm
-                    submitIndex={handleIndexAdd}/>
-                <Typography variant='h5'>Apps and addons</Typography>
-                <Divider />
-                <AppModList
-                    data={serviceInput.apps}
-                    handleDelete={handleAppDelete} />
-                <AppForm
-                    submitApp={handleAppAdd} />
-                <Typography variant='h5'>Access options</Typography>
-                <Divider />
-                <UserModList
-                    read={serviceInput.read}
-                    write={serviceInput.write}
-                    handleAccessChange={handleAccessChange}
-                    handleUserDelete={handleUserDelete} />
-                <UserForm
-                    submitUser= {handleUserAdd} />
+                {step === Step.BASIC && 
+                    <ServiceModStepBasic 
+                        handleChange={handleChange} 
+                        serviceInput={serviceInput} />
+                }
+                {step === Step.INDEX_APP &&
+                    <ServiceModStepIndexApp
+                        serviceInput={serviceInput}
+                        handleIndexAdd={handleIndexAdd} 
+                        handleIndexDelete={handleIndexDelete}
+                        handleAppAdd={handleAppAdd}
+                        handleAppDelete={handleAppDelete} />
+                }
+                {step === Step.PERMISSION && 
+                    <ServiceModStepPermission 
+                        serviceInput={serviceInput}
+                        handleAccessChange={handleAccessChange}
+                        handlePermissionAdd={handlePermissionAdd}
+                        handlePermissionDelete={handlePermissionDelete} />
+                }
+                <Divider /> 
             </form>
             <Divider />
             <Button
@@ -211,10 +167,18 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
             >Cancel</Button>
             <Button
                 variant='contained'
+                className={classes.marginButton}
+                onClick={() => {
+                    setStep(step + 1)
+                }}
+                disabled={step === Step.PERMISSION || serviceInput.name === '' || serviceInput.owner === '' || serviceInput.description === '' || serviceInput.dataClassification === ''}
+            >Next</Button>
+            <Button
+                variant='contained'
                 color='primary'
                 className={classes.marginButton}
                 onClick={() => handleSubmit(serviceInput)}
-                disabled={serviceInput.name === '' || serviceInput.owner === '' || serviceInput.description === '' || serviceInput.dataClassification === ''}
+                disabled={step !== Step.PERMISSION}
             >Submit</Button>
         </div>
 

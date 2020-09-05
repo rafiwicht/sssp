@@ -2,7 +2,7 @@ import React from 'react';
 import {Divider, Grid, Typography} from "@material-ui/core";
 import IndexList from "../index/IndexList";
 import AppList from "../app/AppList";
-import UserList from "../user/UserList";
+import PermissionList from "../permission/PermissionList";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import {Index, App, State} from "../../generated/graphql";
 
@@ -114,10 +114,10 @@ const ServiceDisplayCombined: React.FunctionComponent<ServiceDisplayProps> = ({w
             <Divider className={classes.marginDivider}/>
             <Grid container spacing={2}>
                 <Grid item md={6}>
-                    <UserList read={workflow.read[0]} write={workflow.write[0]} />
+                    <PermissionList read={workflow.read[0]} write={workflow.write[0]} />
                 </Grid>
                 <Grid item md={6}>
-                    <UserList read={workflow.read[1]} write={workflow.write[1]} />
+                    <PermissionList read={workflow.read[1]} write={workflow.write[1]} />
                 </Grid>
             </Grid>
             <Divider className={classes.marginDivider}/>

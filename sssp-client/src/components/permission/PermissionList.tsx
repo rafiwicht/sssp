@@ -9,15 +9,13 @@ import {
     TableRow
 } from "@material-ui/core";
 
-import {Index} from "../../generated/graphql";
 
-
-type UserListProps = {
+type PermissionListProps = {
     read: Array<string>,
     write: Array<string>
 }
 
-const UserList: React.FunctionComponent<UserListProps> = ({read, write}: UserListProps) => {
+const PermissionList: React.FunctionComponent<PermissionListProps> = ({read, write}: PermissionListProps) => {
 
     return (
         <TableContainer component={Paper}>
@@ -49,4 +47,4 @@ const UserList: React.FunctionComponent<UserListProps> = ({read, write}: UserLis
         </TableContainer>
     );
 }
-export default UserList;
+export default PermissionList;

@@ -17,7 +17,7 @@ type UserModListProps = {
     read: Array<string>,
     write: Array<string>,
     handleAccessChange: (userId: string, accessType: ChangeEvent<HTMLInputElement>) => void,
-    handleUserDelete: (userId: string) => void
+    handlePermissionDelete: (userId: string) => void
 }
 
 const useStyles = makeStyles(() =>
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, handleAccessChange, handleUserDelete}: UserModListProps) => {
+const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, handleAccessChange, handlePermissionDelete}: UserModListProps) => {
     const classes = useStyles();
 
     return (
@@ -57,7 +57,7 @@ const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, ha
                                     variant='contained'
                                     color='secondary'
                                     className={classes.marginButton}
-                                    onClick={() => handleUserDelete(userId)}
+                                    onClick={() => handlePermissionDelete(userId)}
                                 >Delete</Button>
                             </TableCell>
                         </TableRow>
@@ -76,7 +76,7 @@ const UserModList: React.FunctionComponent<UserModListProps> = ({read, write, ha
                                     variant='contained'
                                     color='secondary'
                                     className={classes.marginButton}
-                                    onClick={() => handleUserDelete(userId)}
+                                    onClick={() => handlePermissionDelete(userId)}
                                 >Delete</Button>
                             </TableCell>
                         </TableRow>
