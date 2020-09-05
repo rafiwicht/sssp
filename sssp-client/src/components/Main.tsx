@@ -66,6 +66,7 @@ const Main: React.FC = () => {
                 <Bar
                     open={open}
                     handleDrawerOpen={handleDrawerOpen}
+                    userId={userId}
                 />
                 <Menu
                     open={open}
