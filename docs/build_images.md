@@ -26,6 +26,8 @@ Before you can build the image, you have to create the file `sssp-client/.envPro
 | KEYCLOAK_URL | URL to the keycloak backend. | https://test.sssp.local:8000/auth/ | 
 | KEYCLOAK_REALM | The keycloak realm used for the SSSP | sssp | 
 | KEYCLOAK_CLIENT_ID | The keycloak client for the SSSP | sssp-client | 
+| ADD_LDAP_GROUPS | If ldap groups should added to service permissions | true |
+| PREFIX_LDAP_GROUPS | Prefix of the AD groups `<praefix><servicename>_<user|power>` | "svc_" |
 
 ```
 make build-client
@@ -33,3 +35,30 @@ make build-client CLIENT_IMG=<own name> VERSION=<own version>
 ```
 
 The build commands create by default two images: `docker.io/wichtr/sssp-client:<current version>` and `docker.io/wichtr/sssp-client:latest`. You can override both variables with your own values.
+
+## Server
+
+For production you can use the prebuild image [docker.io/wichtr/sssp-server](https://hub.docker.com/r/wichtr/sssp-server). For production, you can set the environment variables in the container:
+
+|Name|Description|Default value|
+|---|---|---|
+| PORT | The port for the server application | 5000 |
+| MONGO_USER | The user used for mongodb | (no default) |
+| MONGO_SECRET | The passphrase of the mongodb user | (no default) |
+| MONGO | The server adress of the mongodb instance | (no default) |
+| MONGO_PORT | The port of the mongodb instance | 27017 |
+| ADMIN_ROLE | The LDAP-group with the sssp admins | sssp-admin |
+| JWT_CERT_URL | The URL, where the public certificate can be downloaded | http://127.0.0.1:8080/auth/realms/sssp/protocol/openid-connect/certs |
+| GITHUB_TOKEN | Token for token-based authentication, if set Github will be used | (no default) |
+| GITHUB_ORG | The github organization where the repositories are created | sssp-test |
+| GITLAB_TOKEN | Token for token-based authentication, if set Gitlab will be used | (no default) |
+| GITLAB_USER | The Gitlab user who owns all repositories | root |
+| GITLAB_PUB_URL | The public url of Github, does not have to be the same as API | GITLAB_URL -> http://test.sssp.local:7080 |
+| MAX_TOTAL_DATA_SIZE_MB | Splunk index default | 100000000 |
+| FROZEN_TIME_PERION_IN_SECONDS | Splunk index default | 7776000 |
+
+You can also build the images using the makefile.
+```
+make build-server
+make build-server SERVER_IMG=<own name> VERSION=<own version>
+```

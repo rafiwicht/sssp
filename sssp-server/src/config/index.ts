@@ -10,15 +10,14 @@ export default {
     port: process.env.PORT || 5000,
 
     // Mongodb connection
-    db: `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_SECRET}@${process.env.MONGO}:27017`,
+    db: `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_SECRET}@${process.env.MONGO}:${process.env.MONGO_PORT || 27017}`,
 
 
     // Ldap admin role
     adminRole: process.env.ADMIN_ROLE || 'sssp-admin',
 
     // Keycloak offline validation
-    jwtCertUrl: 'http://127.0.0.1:8080/auth/realms/sssp/protocol/openid-connect/certs',
-    jwtFileName: 'certs',
+    jwtCertUrl: process.env.JWT_CERT_URL || 'http://127.0.0.1:8080/auth/realms/sssp/protocol/openid-connect/certs',
 
     // Github connector
     githubToken: process.env.GITHUB_TOKEN,
