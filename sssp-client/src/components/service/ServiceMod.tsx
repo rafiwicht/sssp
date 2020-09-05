@@ -1,11 +1,12 @@
 import React, {ChangeEvent, useState} from 'react';
 import {AppInput, IndexInput, ServiceInput} from "../../generated/graphql";
-import {Button, Divider, Typography} from "@material-ui/core";
+import {Button, Divider, LinearProgress, Typography} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import { useHistory } from 'react-router-dom';
 import ServiceModStepBasic from './ServiceModStepBasic';
 import ServiceModStepIndexApp from './ServiceModStepIndexApp';
 import ServiceModStepPermission from './ServiceModStepPermission';
+import Progress from './Progress';
 
 
 const useStyles = makeStyles(() =>
@@ -134,6 +135,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
     return (
         <div>
             <Typography variant='h3'>Create Service</Typography>
+            <Progress current={step}/>
             <form autoComplete='off' onSubmit={() => handleSubmit(serviceInput)}>
                 {step === Step.BASIC && 
                     <ServiceModStepBasic 
