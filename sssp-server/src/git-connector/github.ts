@@ -32,9 +32,10 @@ class GithubConnector implements GitConnectorInterface {
                     },
                     'POST'
                 )
-                    .then(() => {
-                        template(name, type);
-                    }).catch(r => {
+                .then(() => {
+                    template(name, type);
+                })
+                .catch(r => {
                     console.log(r);
                 });
             }

@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {
+    App, IndexInput, AppInput,
     GetServiceDocument,
     GetServicesDocument, Index, Kind,
     ServiceInput, useGetServiceLazyQuery,
@@ -43,7 +44,7 @@ const ServiceUpdate: React.FC = () => {
                 serviceInput: serviceInput
             }
         }).then(() => {
-                history.push('/service')
+            history.push('/service');
         });
     }
 
@@ -68,18 +69,18 @@ const ServiceUpdate: React.FC = () => {
                     owner: data.service.owner,
                     description: data.service.description,
                     dataClassification: data.service.dataClassification,
-                    indexes: data.service.indexes.map((e : Index) => {
+                    indexes: data.service.indexes.map((e: Index): IndexInput => {
                         return {
                             name: e.name,
                             maxTotalDataSizeMB: e.maxTotalDataSizeMB,
                             frozenTimePeriodInSecs: e.frozenTimePeriodInSecs
-                        }
+                        };
                     }),
-                    apps: data.service.apps.map((e) => {
+                    apps: data.service.apps.map((e: App): AppInput => {
                        return {
                            name: e.name,
                            type: e.type
-                       }
+                       };
                     }),
                     read: data.service.read,
                     write: data.service.write

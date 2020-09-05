@@ -3,46 +3,24 @@ import gql from "graphql-tag";
 export default gql`
     query GetWorkflow($serviceId: ID!) {
         workflow(serviceId: $serviceId) {
-            current {
-                _id
+            _id
+            name
+            owner
+            state
+            dataClassification
+            description
+            indexes {
                 name
-                owner
-                state
-                dataClassification
-                description
-                indexes {
-                    name
-                    maxTotalDataSizeMB
-                    frozenTimePeriodInSecs
-                }
-                apps {
-                    name
-                    type
-                    url
-                }
-                read
-                write
+                maxTotalDataSizeMB
+                frozenTimePeriodInSecs
             }
-            new  {
-                _id
+            apps {
                 name
-                owner
-                state
-                dataClassification
-                description
-                indexes {
-                    name
-                    maxTotalDataSizeMB
-                    frozenTimePeriodInSecs
-                }
-                apps {
-                    name
-                    type
-                    url
-                }
-                read
-                write
+                type
+                url
             }
+            read
+            write
         }
     }
    mutation AcceptWorkflow($serviceId: ID!) {

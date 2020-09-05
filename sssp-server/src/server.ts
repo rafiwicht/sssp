@@ -7,6 +7,7 @@ import connect from './config/connect';
 import config from './config';
 import Express from './config/express';
 
+
 /**
  * Connect database
  * @param db: string

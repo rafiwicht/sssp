@@ -2,12 +2,12 @@ import React, {useEffect} from 'react';
 import {useHistory, useParams} from "react-router-dom";
 import {
     GetServicesDocument, useAcceptWorkflowMutation, useDeclineWorkflowMutation,
-    useGetWorkflowLazyQuery,
-
+    useGetWorkflowLazyQuery, Kind, State
 } from "../../generated/graphql";
 import {Button} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import ServiceDisplay from "../service/ServiceDisplay";
+import ServiceDisplayCombined from './ServiceDisplayCombined';
 
 type WorkflowDetailsParams = {
     id: string
@@ -67,6 +67,8 @@ const WorkflowDetails: React.FC = () => {
         }
     });
 
+    
+
     useEffect(() => {
         getWorkflow();
     }, []);
@@ -78,24 +80,28 @@ const WorkflowDetails: React.FC = () => {
     if (error || !data) {
         return <div>ERROR</div>;
     }
-    let content;
 
-    if(data.workflow.new && data.workflow.current) {
-
-    }
-    else if(data.workflow.new) {
-        content = (<ServiceDisplay service={data.workflow.new} />);
-    }
-
-    else if(data.workflow.current) {
-        content = (<ServiceDisplay service={data.workflow.current} />);
-    }
-
-    let buttons;
-
-    if(data.workflow.new || data.workflow.current) {
-        buttons = (
+    return (
+        <div>
+            {data.workflow.name.length === 1 ? <ServiceDisplay service={{
+                _id: data.workflow._id,
+                name: data.workflow.name[0],
+                owner: data.workflow.owner[0],
+                description: data.workflow.description[0],
+                dataClassification: data.workflow.dataClassification[0],
+                indexes: data.workflow.indexes[0],
+                apps: data.workflow.apps[0],
+                read: data.workflow.read[0],
+                write: data.workflow.write[0],
+                state: data.workflow.state
+            }} /> : <ServiceDisplayCombined workflow={data.workflow} />}
+            
             <div>
+                <Button
+                    variant='contained'
+                    className={classes.marginButton}
+                    onClick={() => handleCancel()}
+                >Cancel</Button>
                 <Button
                     variant='contained'
                     color='primary'
@@ -109,19 +115,9 @@ const WorkflowDetails: React.FC = () => {
                     onClick={() => handleDecline()}
                 >Decline</Button>
             </div>
-        );
-    }
-
-    return (
-        <div>
-            {content}
-            <Button
-                variant='contained'
-                className={classes.marginButton}
-                onClick={() => handleCancel()}
-            >Cancel</Button>
-            {buttons}
         </div>
+            
+        
     );
 }
 
