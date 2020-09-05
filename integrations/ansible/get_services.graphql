@@ -1,0 +1,23 @@
+query {
+  services {
+    _id
+    name
+    owner
+    state
+    dataClassification
+    description
+    indexes {
+        name
+        maxTotalDataSizeMB
+        frozenTimePeriodInSecs
+    }
+    apps {
+        name
+        type
+        url
+        version
+    }
+    read
+    write
+  }
+}
