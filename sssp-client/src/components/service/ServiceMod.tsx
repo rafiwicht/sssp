@@ -32,8 +32,6 @@ export enum Step {
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, serviceMod}: ServiceModProps) => {
     const [step, setStep] = useState<Step>(Step.BASIC);
 
-    console.log(step);
-
     const [serviceInput, setServiceInput] = useState({
          name: serviceMod?.name || '',
          owner: serviceMod?.owner || '',
@@ -165,6 +163,14 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, ser
                 className={classes.marginButton}
                 onClick={() => handleCancel()}
             >Cancel</Button>
+            <Button
+                variant='contained'
+                className={classes.marginButton}
+                onClick={() => {
+                    setStep(step - 1)
+                }}
+                disabled={step === Step.BASIC}
+            >Back</Button>
             <Button
                 variant='contained'
                 className={classes.marginButton}
