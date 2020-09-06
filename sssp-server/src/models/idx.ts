@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import config from '../config';
+import { State } from './index';
 
 export interface IndexInterface extends Document {
     _id: string;
@@ -7,6 +8,7 @@ export interface IndexInterface extends Document {
     maxTotalDataSizeMB: number;
     frozenTimePeriodInSecs: number;
     environmentIds: [string];
+    state: State;
     changes?: {
         maxTotalDataSizeMB: number;
         frozenTimePeriodInSecs: number;
@@ -16,10 +18,11 @@ export interface IndexInterface extends Document {
 
 const IndexSchema: Schema = new Schema({
     _id: { type: String, required: true },
-    serviceId: { type: String, required: true },
+    serviceId: { type: String, required: true, index: true },
     maxTotalDataSizeMB: { type: Number, default: config.maxTotalDataSizeMB },
     frozenTimePeriodInSecs: { type: Number, default: config.frozenTimePeriodInSecs },
     environmentIds : {type: [String], default: []},
+    state: { type: State, default: State.IN_CREATION },
     changes: {
         type: {
             maxTotalDataSizeMB: { type: Number, default: config.maxTotalDataSizeMB},

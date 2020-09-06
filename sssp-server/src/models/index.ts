@@ -1,0 +1,8 @@
+
+
+export enum State {
+    IN_CREATION= 'IN_CREATION',
+    ACTIVE = 'ACTIVE',
+    IN_DELETION = 'IN_DELETION',
+    IN_MODIFICATION = 'IN_MODIFICATION',
+}

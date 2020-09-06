@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { State } from './index';
 
 export enum Protocol {
     TCP = 'TCP',
@@ -14,6 +15,7 @@ export interface SyslogInterface extends Document {
     protocol: Protocol;
     hosts?: [string];
     environmentIds: [string];
+    state: State;
     changes?: {
         index: string;
         sourcetype: string;
@@ -27,13 +29,14 @@ export interface SyslogInterface extends Document {
 
 const SyslogSchema: Schema = new Schema({
     _id: { type: String, required: true },
-    serviceId: { type: String, required: true },
+    serviceId: { type: String, required: true, index: true },
     index: { type: String, required: true },
     sourcetype: { type: String, required: true },
     port: { type: Number, required: 514 },
     protocol: { type: Protocol, default: Protocol.UDP },
     hosts: { type: [String] },
     environmentIds : {type: [String], default: []},
+    state: { type: State, default: State.IN_CREATION },
     changes: {
         type: {
             index: { type: String, required: true },
