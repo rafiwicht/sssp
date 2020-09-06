@@ -18,13 +18,8 @@ export default gql`
             state
         }
     }
-    mutation CreateService($serviceInput: ServiceInput!)  {
-        createService(serviceInput: $serviceInput) {
-            _id
-        }
-    }
-    mutation UpdateService($serviceInput: ServiceInput!)  {
-        updateService(serviceInput: $serviceInput) {
+    mutation PutService($serviceId: String!, $serviceInput: ServiceInput!)  {
+        putService(serviceId: $serviceId, serviceInput: $serviceInput) {
             _id
         }
     }

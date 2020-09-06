@@ -7,13 +7,8 @@ export default gql`
             userAccess
         }
     }
-    mutation CreateEnvironment($environmentInput: EnvironmentInput!)  {
-        createEnvironment(environmentInput: $environmentInput) {
-            _id
-        }
-    }
-    mutation UpdateEnvironment($environmentInput: EnvironmentInput!)  {
-        updateEnvironment(environmentInput: $environmentInput) {
+    mutation PutEnvironment($environmentId: String!, $environmentInput: EnvironmentInput!)  {
+        putEnvironment(environmentId: $environmentId environmentInput: $environmentInput) {
             _id
         }
     }

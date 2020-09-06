@@ -14,8 +14,7 @@ import {createStyles, makeStyles} from "@material-ui/styles";
 import {
     Environment,
     GetEnvironmentsDocument,
-    useDeleteEnvironmentMutation,
-    useUpdateEnvironmentMutation
+    useDeleteEnvironmentMutation, usePutEnvironmentMutation
 } from "../../generated/graphql";
 
 
@@ -45,7 +44,7 @@ const EnvironmentList: React.FunctionComponent<EnvironmentListProps> = ({data}: 
         refetchQueries: [{query: GetEnvironmentsDocument}]
     })
 
-    const [updateEnvironment] = useUpdateEnvironmentMutation({
+    const [putEnvironment] = usePutEnvironmentMutation({
         refetchQueries: [{query: GetEnvironmentsDocument}]
     })
 
@@ -56,9 +55,9 @@ const EnvironmentList: React.FunctionComponent<EnvironmentListProps> = ({data}: 
     }
 
     const handleChange = (environmentId: string) => (event: any) => {
-        updateEnvironment({ variables: {
+        putEnvironment({ variables: {
+            environmentId: environmentId,
             environmentInput: {
-                _id: environmentId,
                 userAccess: event.target.checked
             }
         }})

@@ -1,21 +1,26 @@
 import React from 'react';
-import {GetServicesDocument, ServiceInput, useCreateServiceMutation} from '../../generated/graphql';
+import {
+    GetServicesDocument,
+    MutationPutServiceArgs,
+    ServiceInput,
+    usePutServiceMutation
+} from '../../generated/graphql';
 import ServiceMod from './ServiceMod';
 import { useHistory } from 'react-router-dom';
 
 
+
+
 const ServiceCreate: React.FC = () => {
-    const [createService] = useCreateServiceMutation({
+    const [putService] = usePutServiceMutation({
         refetchQueries: [{query: GetServicesDocument}]
     });
 
     let history = useHistory();
 
-    const handleSubmit = (serviceInput: ServiceInput) => {
-        createService({
-            variables: {
-                serviceInput: serviceInput
-            },
+    const handleSubmit = (args : MutationPutServiceArgs) => {
+        putService({
+            variables: args
         }).then(() => {
             history.push('/service');
         });

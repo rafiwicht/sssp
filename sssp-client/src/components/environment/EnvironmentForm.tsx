@@ -3,7 +3,7 @@ import {Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel} from
 import {
     EnvironmentInput,
     GetEnvironmentsDocument,
-    useCreateEnvironmentMutation
+    usePutEnvironmentMutation
 } from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 
@@ -18,13 +18,20 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+type EnvironmentState = {
+    environmentId: string,
+    environmentInput: EnvironmentInput
+}
+
 const EnvironmentForm: React.FC = () => {
-    const [environmentInput, setEnvironmentInput] = useState<EnvironmentInput>({
-        _id: '',
-        userAccess: false
+    const [state, setState] = useState<EnvironmentState>({
+        environmentId: '',
+        environmentInput: {
+            userAccess: false
+        }
     });
 
-    const [createEnvironment] = useCreateEnvironmentMutation({
+    const [putEnvironment] = usePutEnvironmentMutation({
         refetchQueries: [{query: GetEnvironmentsDocument}]
     });
 
@@ -36,25 +43,36 @@ const EnvironmentForm: React.FC = () => {
     }
 
     const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEnvironmentInput({ ...environmentInput, _id: event.target.value });
+        setState({
+            ...state,
+            environmentId: event.target.value
+        });
     };
 
     const handleAccessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEnvironmentInput({ ...environmentInput, userAccess: event.target.checked });
+        setState({
+            ...state,
+            environmentInput: {
+                ...state.environmentInput,
+                userAccess: event.target.checked
+            }
+        });
     };
 
     const reset = () => {
         setHidden(true);
-        setEnvironmentInput({
-            _id: '',
-            userAccess: false
+        setState({
+            environmentId: '',
+            environmentInput: {
+                userAccess: false
+            }
         });
     }
 
     const handleSubmit = () => {
-        createEnvironment({variables: {
-            environmentInput: environmentInput
-        }}).then(() => {
+        putEnvironment({
+            variables: state
+        }).then(() => {
             reset();
         });
     }
@@ -77,7 +95,7 @@ const EnvironmentForm: React.FC = () => {
                     id='_id'
                     type='text'
                     required
-                    value={environmentInput._id}
+                    value={state.environmentId}
                     onChange={handleNameChange}
                 />
             </FormControl>
@@ -101,7 +119,6 @@ const EnvironmentForm: React.FC = () => {
                 color='primary'
                 className={classes.margin}
                 onClick={() => handleSubmit()}
-                disabled={environmentInput._id === ''}
             >Submit</Button>
         </div>
     );

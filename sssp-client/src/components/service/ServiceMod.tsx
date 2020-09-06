@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ServiceInput} from "../../generated/graphql";
+import {MutationPutServiceArgs, Service, ServiceInput} from "../../generated/graphql";
 import {Button, Divider, FormControl, InputLabel, Typography, Input, Select, MenuItem} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
 
@@ -19,9 +19,9 @@ const useStyles = makeStyles(() =>
 );
 
 type ServiceModProps = {
-    handleSubmit: (serviceInput: ServiceInput) => void,
+    handleSubmit: (args: MutationPutServiceArgs) => void,
     handleCancel: () => void,
-    serviceMod?: ServiceInput
+    serviceMod?: Service
 }
 
 export enum Step {
@@ -31,25 +31,39 @@ export enum Step {
 }
 
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, handleCancel, serviceMod}: ServiceModProps) => {
-    const [step, setStep] = useState<Step>(Step.BASIC);
 
-    const [serviceInput, setServiceInput] = useState({
-         _id: serviceMod?._id || '',
-         owner: serviceMod?.owner || '',
-         description: serviceMod?.description || '',
-         dataClassification: serviceMod?.dataClassification || '',
+    const [state, setState] = useState<MutationPutServiceArgs>({
+        serviceId: serviceMod?._id || '',
+        serviceInput: {
+            owner: serviceMod?.owner || '',
+            description: serviceMod?.description || '',
+            dataClassification: serviceMod?.dataClassification || ''
+        }
     });
 
     const classes = useStyles();
 
+    const handleIdChange = (event: any) => {
+        setState({
+            ...state,
+            serviceId: event.target.value
+        });
+    }
+
     const handleChange = (prop: keyof ServiceInput) => (event: any) => {
-        setServiceInput({ ...serviceInput, [prop]: event.target.value });
+        setState({
+            ...state,
+            serviceInput: {
+                ...state.serviceInput,
+                [prop]: event.target.value
+            }
+        });
     };
 
     return (
         <div>
             <Typography variant='h5'>Service options</Typography>
-            <form autoComplete='off' onSubmit={() => handleSubmit(serviceInput)}>
+            <form autoComplete='off' onSubmit={() => handleSubmit(state)}>
                 <Divider />
                 <FormControl fullWidth className={classes.marginFields} required>
                     <InputLabel htmlFor='_id'>Name</InputLabel>
@@ -57,8 +71,8 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
                         id='_id'
                         type='text'
                         required
-                        value={serviceInput._id}
-                        onChange={handleChange('_id')}
+                        value={state.serviceId}
+                        onChange={handleIdChange}
                         disabled={serviceMod !== undefined}
                     />
                 </FormControl>
@@ -68,7 +82,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
                         id='owner'
                         type='text'
                         required
-                        value={serviceInput.owner}
+                        value={state.serviceInput.owner}
                         onChange={handleChange('owner')}
                     />
                 </FormControl>
@@ -78,7 +92,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
                         id='description'
                         type='text'
                         required
-                        value={serviceInput.description}
+                        value={state.serviceInput.description}
                         onChange={handleChange('description')}
                     />
                 </FormControl>
@@ -87,7 +101,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
                     <Select
                         id="dataClassification"
                         required
-                        value={serviceInput.dataClassification}
+                        value={state.serviceInput.dataClassification}
                         onChange={handleChange('dataClassification')}
                     >
                         <MenuItem value='Standard'>Standard</MenuItem>
@@ -107,8 +121,11 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
                 variant='contained'
                 color='primary'
                 className={classes.marginButton}
-                onClick={() => handleSubmit(serviceInput)}
-                disabled={serviceInput._id === '' || serviceInput.owner === '' || serviceInput.description === '' || serviceInput.dataClassification === ''}
+                onClick={() => handleSubmit(state)}
+                disabled={state.serviceId === ''
+                    || state.serviceInput.owner === ''
+                    || state.serviceInput.description === ''
+                    || state.serviceInput.dataClassification === ''}
             >Submit</Button>
         </div>
 

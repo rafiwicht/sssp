@@ -18,9 +18,39 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  apps: Array<App>;
+  app: App;
+  environments: Array<Environment>;
+  https: Array<Http>;
+  http: Http;
+  indexes: Array<Index>;
+  index: Index;
+  servers: Array<Server>;
+  server: Server;
   services: Array<Service>;
   service: Service;
-  environments: Array<Environment>;
+  syslogs: Array<Syslog>;
+  syslog: Syslog;
+};
+
+
+export type QueryAppArgs = {
+  appId: Scalars['String'];
+};
+
+
+export type QueryHttpArgs = {
+  httpId: Scalars['String'];
+};
+
+
+export type QueryIndexArgs = {
+  indexId: Scalars['String'];
+};
+
+
+export type QueryServerArgs = {
+  serverId: Scalars['String'];
 };
 
 
@@ -28,44 +58,52 @@ export type QueryServiceArgs = {
   serviceId: Scalars['String'];
 };
 
+
+export type QuerySyslogArgs = {
+  syslogId: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  createService: Service;
-  updateService: Service;
-  deleteService: Service;
-  createEnvironment: Environment;
-  updateEnvironment: Environment;
+  putApp: App;
+  deleteApp: App;
+  putEnvironment: Environment;
   deleteEnvironment: Environment;
+  putService: Service;
+  deleteService: Service;
 };
 
 
-export type MutationCreateServiceArgs = {
-  serviceInput: ServiceInput;
+export type MutationPutAppArgs = {
+  appId: Scalars['String'];
+  appInput: AppInput;
 };
 
 
-export type MutationUpdateServiceArgs = {
-  serviceInput: ServiceInput;
+export type MutationDeleteAppArgs = {
+  appId: Scalars['String'];
 };
 
 
-export type MutationDeleteServiceArgs = {
-  serviceId: Scalars['String'];
-};
-
-
-export type MutationCreateEnvironmentArgs = {
-  environmentInput: EnvironmentInput;
-};
-
-
-export type MutationUpdateEnvironmentArgs = {
+export type MutationPutEnvironmentArgs = {
+  environmentId: Scalars['String'];
   environmentInput: EnvironmentInput;
 };
 
 
 export type MutationDeleteEnvironmentArgs = {
   environmentId: Scalars['String'];
+};
+
+
+export type MutationPutServiceArgs = {
+  serviceId: Scalars['String'];
+  serviceInput: ServiceInput;
+};
+
+
+export type MutationDeleteServiceArgs = {
+  serviceId: Scalars['String'];
 };
 
 export enum State {
@@ -94,7 +132,6 @@ export type App = {
 };
 
 export type AppInput = {
-  _id: Scalars['String'];
   serviceId: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
@@ -108,7 +145,6 @@ export type Environment = {
 };
 
 export type EnvironmentInput = {
-  _id: Scalars['String'];
   userAccess?: Maybe<Scalars['Boolean']>;
 };
 
@@ -129,7 +165,6 @@ export type Http = {
 };
 
 export type HttpInput = {
-  _id: Scalars['String'];
   serviceId: Scalars['String'];
   token: Scalars['String'];
   environmentIds?: Maybe<Array<Scalars['String']>>;
@@ -154,7 +189,6 @@ export type Index = {
 };
 
 export type IndexInput = {
-  _id: Scalars['String'];
   serviceId: Scalars['String'];
   maxTotalDataSizeMB?: Maybe<Scalars['Int']>;
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
@@ -180,7 +214,6 @@ export type Server = {
 };
 
 export type ServerInput = {
-  _id: Scalars['String'];
   serviceId: Scalars['String'];
   hosts?: Maybe<Array<Scalars['String']>>;
   appIds?: Maybe<Array<Scalars['String']>>;
@@ -205,7 +238,6 @@ export type Service = {
 };
 
 export type ServiceInput = {
-  _id: Scalars['String'];
   owner: Scalars['String'];
   description: Scalars['String'];
   dataClassification: Scalars['String'];
@@ -241,7 +273,6 @@ export type Syslog = {
 };
 
 export type SyslogInput = {
-  _id: Scalars['String'];
   serviceId: Scalars['String'];
   index: Scalars['String'];
   sourcetype: Scalars['String'];
@@ -262,27 +293,15 @@ export type GetEnvironmentsQuery = (
   )> }
 );
 
-export type CreateEnvironmentMutationVariables = Exact<{
+export type PutEnvironmentMutationVariables = Exact<{
+  environmentId: Scalars['String'];
   environmentInput: EnvironmentInput;
 }>;
 
 
-export type CreateEnvironmentMutation = (
+export type PutEnvironmentMutation = (
   { __typename?: 'Mutation' }
-  & { createEnvironment: (
-    { __typename?: 'Environment' }
-    & Pick<Environment, '_id'>
-  ) }
-);
-
-export type UpdateEnvironmentMutationVariables = Exact<{
-  environmentInput: EnvironmentInput;
-}>;
-
-
-export type UpdateEnvironmentMutation = (
-  { __typename?: 'Mutation' }
-  & { updateEnvironment: (
+  & { putEnvironment: (
     { __typename?: 'Environment' }
     & Pick<Environment, '_id'>
   ) }
@@ -325,27 +344,15 @@ export type GetServiceQuery = (
   ) }
 );
 
-export type CreateServiceMutationVariables = Exact<{
+export type PutServiceMutationVariables = Exact<{
+  serviceId: Scalars['String'];
   serviceInput: ServiceInput;
 }>;
 
 
-export type CreateServiceMutation = (
+export type PutServiceMutation = (
   { __typename?: 'Mutation' }
-  & { createService: (
-    { __typename?: 'Service' }
-    & Pick<Service, '_id'>
-  ) }
-);
-
-export type UpdateServiceMutationVariables = Exact<{
-  serviceInput: ServiceInput;
-}>;
-
-
-export type UpdateServiceMutation = (
-  { __typename?: 'Mutation' }
-  & { updateService: (
+  & { putService: (
     { __typename?: 'Service' }
     & Pick<Service, '_id'>
   ) }
@@ -417,108 +424,58 @@ export function useGetEnvironmentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetEnvironmentsQueryHookResult = ReturnType<typeof useGetEnvironmentsQuery>;
 export type GetEnvironmentsLazyQueryHookResult = ReturnType<typeof useGetEnvironmentsLazyQuery>;
 export type GetEnvironmentsQueryResult = ApolloReactCommon.QueryResult<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>;
-export const CreateEnvironmentDocument = gql`
-    mutation CreateEnvironment($environmentInput: EnvironmentInput!) {
-  createEnvironment(environmentInput: $environmentInput) {
+export const PutEnvironmentDocument = gql`
+    mutation PutEnvironment($environmentId: String!, $environmentInput: EnvironmentInput!) {
+  putEnvironment(environmentId: $environmentId, environmentInput: $environmentInput) {
     _id
   }
 }
     `;
-export type CreateEnvironmentMutationFn = ApolloReactCommon.MutationFunction<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>;
-export type CreateEnvironmentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>, 'mutation'>;
+export type PutEnvironmentMutationFn = ApolloReactCommon.MutationFunction<PutEnvironmentMutation, PutEnvironmentMutationVariables>;
+export type PutEnvironmentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutEnvironmentMutation, PutEnvironmentMutationVariables>, 'mutation'>;
 
-    export const CreateEnvironmentComponent = (props: CreateEnvironmentComponentProps) => (
-      <ApolloReactComponents.Mutation<CreateEnvironmentMutation, CreateEnvironmentMutationVariables> mutation={CreateEnvironmentDocument} {...props} />
+    export const PutEnvironmentComponent = (props: PutEnvironmentComponentProps) => (
+      <ApolloReactComponents.Mutation<PutEnvironmentMutation, PutEnvironmentMutationVariables> mutation={PutEnvironmentDocument} {...props} />
     );
     
-export type CreateEnvironmentProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>
+export type PutEnvironmentProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutEnvironmentMutation, PutEnvironmentMutationVariables>
     } & TChildProps;
-export function withCreateEnvironment<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+export function withPutEnvironment<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
   TProps,
-  CreateEnvironmentMutation,
-  CreateEnvironmentMutationVariables,
-  CreateEnvironmentProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, CreateEnvironmentMutation, CreateEnvironmentMutationVariables, CreateEnvironmentProps<TChildProps, TDataName>>(CreateEnvironmentDocument, {
-      alias: 'createEnvironment',
+  PutEnvironmentMutation,
+  PutEnvironmentMutationVariables,
+  PutEnvironmentProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutEnvironmentMutation, PutEnvironmentMutationVariables, PutEnvironmentProps<TChildProps, TDataName>>(PutEnvironmentDocument, {
+      alias: 'putEnvironment',
       ...operationOptions
     });
 };
 
 /**
- * __useCreateEnvironmentMutation__
+ * __usePutEnvironmentMutation__
  *
- * To run a mutation, you first call `useCreateEnvironmentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateEnvironmentMutation` returns a tuple that includes:
+ * To run a mutation, you first call `usePutEnvironmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutEnvironmentMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createEnvironmentMutation, { data, loading, error }] = useCreateEnvironmentMutation({
+ * const [putEnvironmentMutation, { data, loading, error }] = usePutEnvironmentMutation({
  *   variables: {
+ *      environmentId: // value for 'environmentId'
  *      environmentInput: // value for 'environmentInput'
  *   },
  * });
  */
-export function useCreateEnvironmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>(CreateEnvironmentDocument, baseOptions);
+export function usePutEnvironmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutEnvironmentMutation, PutEnvironmentMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutEnvironmentMutation, PutEnvironmentMutationVariables>(PutEnvironmentDocument, baseOptions);
       }
-export type CreateEnvironmentMutationHookResult = ReturnType<typeof useCreateEnvironmentMutation>;
-export type CreateEnvironmentMutationResult = ApolloReactCommon.MutationResult<CreateEnvironmentMutation>;
-export type CreateEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>;
-export const UpdateEnvironmentDocument = gql`
-    mutation UpdateEnvironment($environmentInput: EnvironmentInput!) {
-  updateEnvironment(environmentInput: $environmentInput) {
-    _id
-  }
-}
-    `;
-export type UpdateEnvironmentMutationFn = ApolloReactCommon.MutationFunction<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>;
-export type UpdateEnvironmentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>, 'mutation'>;
-
-    export const UpdateEnvironmentComponent = (props: UpdateEnvironmentComponentProps) => (
-      <ApolloReactComponents.Mutation<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables> mutation={UpdateEnvironmentDocument} {...props} />
-    );
-    
-export type UpdateEnvironmentProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>
-    } & TChildProps;
-export function withUpdateEnvironment<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  UpdateEnvironmentMutation,
-  UpdateEnvironmentMutationVariables,
-  UpdateEnvironmentProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables, UpdateEnvironmentProps<TChildProps, TDataName>>(UpdateEnvironmentDocument, {
-      alias: 'updateEnvironment',
-      ...operationOptions
-    });
-};
-
-/**
- * __useUpdateEnvironmentMutation__
- *
- * To run a mutation, you first call `useUpdateEnvironmentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateEnvironmentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateEnvironmentMutation, { data, loading, error }] = useUpdateEnvironmentMutation({
- *   variables: {
- *      environmentInput: // value for 'environmentInput'
- *   },
- * });
- */
-export function useUpdateEnvironmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>(UpdateEnvironmentDocument, baseOptions);
-      }
-export type UpdateEnvironmentMutationHookResult = ReturnType<typeof useUpdateEnvironmentMutation>;
-export type UpdateEnvironmentMutationResult = ApolloReactCommon.MutationResult<UpdateEnvironmentMutation>;
-export type UpdateEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>;
+export type PutEnvironmentMutationHookResult = ReturnType<typeof usePutEnvironmentMutation>;
+export type PutEnvironmentMutationResult = ApolloReactCommon.MutationResult<PutEnvironmentMutation>;
+export type PutEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<PutEnvironmentMutation, PutEnvironmentMutationVariables>;
 export const DeleteEnvironmentDocument = gql`
     mutation DeleteEnvironment($environmentId: String!) {
   deleteEnvironment(environmentId: $environmentId) {
@@ -680,108 +637,58 @@ export function useGetServiceLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryH
 export type GetServiceQueryHookResult = ReturnType<typeof useGetServiceQuery>;
 export type GetServiceLazyQueryHookResult = ReturnType<typeof useGetServiceLazyQuery>;
 export type GetServiceQueryResult = ApolloReactCommon.QueryResult<GetServiceQuery, GetServiceQueryVariables>;
-export const CreateServiceDocument = gql`
-    mutation CreateService($serviceInput: ServiceInput!) {
-  createService(serviceInput: $serviceInput) {
+export const PutServiceDocument = gql`
+    mutation PutService($serviceId: String!, $serviceInput: ServiceInput!) {
+  putService(serviceId: $serviceId, serviceInput: $serviceInput) {
     _id
   }
 }
     `;
-export type CreateServiceMutationFn = ApolloReactCommon.MutationFunction<CreateServiceMutation, CreateServiceMutationVariables>;
-export type CreateServiceComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<CreateServiceMutation, CreateServiceMutationVariables>, 'mutation'>;
+export type PutServiceMutationFn = ApolloReactCommon.MutationFunction<PutServiceMutation, PutServiceMutationVariables>;
+export type PutServiceComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutServiceMutation, PutServiceMutationVariables>, 'mutation'>;
 
-    export const CreateServiceComponent = (props: CreateServiceComponentProps) => (
-      <ApolloReactComponents.Mutation<CreateServiceMutation, CreateServiceMutationVariables> mutation={CreateServiceDocument} {...props} />
+    export const PutServiceComponent = (props: PutServiceComponentProps) => (
+      <ApolloReactComponents.Mutation<PutServiceMutation, PutServiceMutationVariables> mutation={PutServiceDocument} {...props} />
     );
     
-export type CreateServiceProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<CreateServiceMutation, CreateServiceMutationVariables>
+export type PutServiceProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutServiceMutation, PutServiceMutationVariables>
     } & TChildProps;
-export function withCreateService<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+export function withPutService<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
   TProps,
-  CreateServiceMutation,
-  CreateServiceMutationVariables,
-  CreateServiceProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, CreateServiceMutation, CreateServiceMutationVariables, CreateServiceProps<TChildProps, TDataName>>(CreateServiceDocument, {
-      alias: 'createService',
+  PutServiceMutation,
+  PutServiceMutationVariables,
+  PutServiceProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutServiceMutation, PutServiceMutationVariables, PutServiceProps<TChildProps, TDataName>>(PutServiceDocument, {
+      alias: 'putService',
       ...operationOptions
     });
 };
 
 /**
- * __useCreateServiceMutation__
+ * __usePutServiceMutation__
  *
- * To run a mutation, you first call `useCreateServiceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateServiceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `usePutServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutServiceMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createServiceMutation, { data, loading, error }] = useCreateServiceMutation({
+ * const [putServiceMutation, { data, loading, error }] = usePutServiceMutation({
  *   variables: {
+ *      serviceId: // value for 'serviceId'
  *      serviceInput: // value for 'serviceInput'
  *   },
  * });
  */
-export function useCreateServiceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateServiceMutation, CreateServiceMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateServiceMutation, CreateServiceMutationVariables>(CreateServiceDocument, baseOptions);
+export function usePutServiceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutServiceMutation, PutServiceMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutServiceMutation, PutServiceMutationVariables>(PutServiceDocument, baseOptions);
       }
-export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
-export type CreateServiceMutationResult = ApolloReactCommon.MutationResult<CreateServiceMutation>;
-export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
-export const UpdateServiceDocument = gql`
-    mutation UpdateService($serviceInput: ServiceInput!) {
-  updateService(serviceInput: $serviceInput) {
-    _id
-  }
-}
-    `;
-export type UpdateServiceMutationFn = ApolloReactCommon.MutationFunction<UpdateServiceMutation, UpdateServiceMutationVariables>;
-export type UpdateServiceComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateServiceMutation, UpdateServiceMutationVariables>, 'mutation'>;
-
-    export const UpdateServiceComponent = (props: UpdateServiceComponentProps) => (
-      <ApolloReactComponents.Mutation<UpdateServiceMutation, UpdateServiceMutationVariables> mutation={UpdateServiceDocument} {...props} />
-    );
-    
-export type UpdateServiceProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<UpdateServiceMutation, UpdateServiceMutationVariables>
-    } & TChildProps;
-export function withUpdateService<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  UpdateServiceMutation,
-  UpdateServiceMutationVariables,
-  UpdateServiceProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, UpdateServiceMutation, UpdateServiceMutationVariables, UpdateServiceProps<TChildProps, TDataName>>(UpdateServiceDocument, {
-      alias: 'updateService',
-      ...operationOptions
-    });
-};
-
-/**
- * __useUpdateServiceMutation__
- *
- * To run a mutation, you first call `useUpdateServiceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateServiceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateServiceMutation, { data, loading, error }] = useUpdateServiceMutation({
- *   variables: {
- *      serviceInput: // value for 'serviceInput'
- *   },
- * });
- */
-export function useUpdateServiceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateServiceMutation, UpdateServiceMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateServiceMutation, UpdateServiceMutationVariables>(UpdateServiceDocument, baseOptions);
-      }
-export type UpdateServiceMutationHookResult = ReturnType<typeof useUpdateServiceMutation>;
-export type UpdateServiceMutationResult = ApolloReactCommon.MutationResult<UpdateServiceMutation>;
-export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateServiceMutation, UpdateServiceMutationVariables>;
+export type PutServiceMutationHookResult = ReturnType<typeof usePutServiceMutation>;
+export type PutServiceMutationResult = ApolloReactCommon.MutationResult<PutServiceMutation>;
+export type PutServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<PutServiceMutation, PutServiceMutationVariables>;
 export const DeleteServiceDocument = gql`
     mutation DeleteService($serviceId: String!) {
   deleteService(serviceId: $serviceId) {
