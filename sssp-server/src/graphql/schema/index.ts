@@ -9,22 +9,21 @@ import resolvers from '../resolvers';
 import {AuthenticationError} from 'apollo-server';
 
 const typeDefs = gql`
-    enum Kind {
-        CURRENT
-        FUTURE
-        NEWEST
-    }
     type Query {
-        services(kind: Kind = CURRENT): [Service!]!
-        service(serviceId: ID!, kind: Kind = CURRENT): Service!
-        workflow(serviceId: ID!): Workflow!
+        services: [Service!]!
+        service(serviceId: String!): Service!
+        environments: [Environment!]!
     }
     type Mutation {
+        ##### Service #####
         createService(serviceInput: ServiceInput!): Service!
-        updateService(serviceId: ID!, serviceInput: ServiceInput!): Service!
-        deleteService(serviceId: ID!): Service!
-        acceptWorkflow(serviceId: ID!): Service!
-        declineWorkflow(serviceId: ID!): Service!
+        updateService(serviceInput: ServiceInput!): Service!
+        deleteService(serviceId: String!): Service!
+
+        ##### Environment #####
+        createEnvironment(environmentInput: EnvironmentInput!): Environment!
+        updateEnvironment(environmentInput: EnvironmentInput!): Environment!
+        deleteEnvironment(environmentId: String!): Environment!
     }
     enum State {
         IN_CREATION
@@ -32,68 +31,164 @@ const typeDefs = gql`
         IN_DELETION
         IN_MODIFICATION
     }
-    type Workflow {
-        _id: ID!
-        name: [String!]!
-        owner: [String!]!
-        description: [String!]!
-        dataClassification: [String!]!
-        read: [[String!]!]!
-        write: [[String!]!]!
-        indexes: [[Index!]!]!
-        apps: [[App!]!]!
-        state: State!
-    }
-    type Service {
-        _id: ID!
-        name: String!
-        owner: String!
-        description: String!
-        dataClassification: String!
-        read: [String!]!
-        write: [String!]!
-        indexes: [Index!]!
-        apps: [App!]!
-        state: State!
-    }
-    type Index {
-        name: String!
-        maxTotalDataSizeMB: Int!
-        frozenTimePeriodInSecs: Int!
-    }
-    enum AppType {
-        FA
-        TA
-        SA
-        IA
-        UI
-    }
-    type App {
-        name: String!
-        type: AppType!
+
+    ##### App #####
+    type AppChanges {
         url: String!
         version: String!
+        environmentIds: [String!]!
     }
-    input ServiceInput {
-        name: String!
+    type App {
+        _id: String!
+        serviceId: String!
+        url: String!
+        version: String!
+        environmentIds: [String!]!
+        state: State!
+        changes: AppChanges
+    }
+    input AppInput {
+        _id: String!
+        serviceId: String!
+        url: String
+        version: String
+        environmentIds: [String!]
+    }
+    
+    ##### Environment #####
+    type Environment {
+        _id: String!
+        userAccess: Boolean!
+    }
+    input EnvironmentInput {
+        _id: String!
+        userAccess: Boolean
+    }
+    ##### Http #####
+    type HttpChanges {
+        token: String!
+        environmentIds: [String!]
+    }
+    type Http {
+        _id: String!
+        serviceId: String!
+        token: String!
+        environmentIds: [String!]
+        state: State!
+        changes: HttpChanges
+    }
+    input HttpInput {
+        _id: String!
+        serviceId: String!
+        token: String!
+        environmentIds: [String!]
+    }
+
+    ##### Index #####
+    type IndexChanges {
+        maxTotalDataSizeMB: Int!
+        frozenTimePeriodInSecs: Int!
+        environmentIds: [String!]!
+    }
+    type Index {
+        _id: String!
+        serviceId: String!
+        maxTotalDataSizeMB: Int!
+        frozenTimePeriodInSecs: Int!
+        environmentIds: [String!]!
+        state: State!
+        changes: IndexChanges
+    }
+    input IndexInput {
+        _id: String!
+        serviceId: String!
+        maxTotalDataSizeMB: Int
+        frozenTimePeriodInSecs: Int
+        environmentIds: [String!]
+    }
+
+    ##### Server #####
+    type ServerChanges {
+        hosts: [String!]!
+        appIds: [String!]!
+        environmentIds: [String!]!
+        
+    }
+    type Server {
+        _id: String!
+        serviceId: String!
+        hosts: [String!]!
+        appIds: [String!]!
+        environmentIds: [String!]!
+        state: State!
+        changes: ServerChanges
+    }
+    input ServerInput {
+        _id: String!
+        serviceId: String!
+        hosts: [String!]
+        appIds: [String!]
+        environmentIds: [String!]
+    }
+    
+    ##### Service #####
+    type ServiceChanges {
         owner: String!
         description: String!
         dataClassification: String!
-        read: [String!]
-        write: [String!]!
-        indexes: [IndexInput!]
-        apps: [AppInput!]
+}
+    type Service {
+        _id: String!
+        owner: String!
+        description: String!
+        dataClassification: String!
+        state: State!
+        changes: ServiceChanges
     }
-    input IndexInput {
-        name: String!
-        maxTotalDataSizeMB: Int
-        frozenTimePeriodInSecs: Int
+    input ServiceInput {
+        _id: String!
+        owner: String!
+        description: String!
+        dataClassification: String!
     }
-    input AppInput {
-        name: String!
-        type: AppType!
-        version: String!
+    
+    ##### Syslog #####
+    enum Protocol {
+        TCP
+        UDP
     }
+    type SyslogChanges {
+        index: String!
+        sourcetype: String!
+        port: Int
+        protocol: Protocol
+        hosts: [String!]
+        environmentIds: [String!]
+        
+    }
+    type Syslog {
+        _id: String!
+        serviceId: String!
+        index: String!
+        sourcetype: String!
+        port: Int!
+        protocol: Protocol!
+        hosts: [String!]!
+        environmentIds: [String!]!
+        state: State!
+        changes: SyslogChanges
+    }
+    input SyslogInput {
+        _id: String!
+        serviceId: String!
+        index: String!
+        sourcetype: String!
+        port: Int
+        protocol: Protocol
+        hosts: [String!]
+        environmentIds: [String!]
+    }
+    
 `;
 
 const schema: ApolloServerExpressConfig = {
@@ -105,7 +200,8 @@ const schema: ApolloServerExpressConfig = {
         if (!req.userId) throw new AuthenticationError('Unauthenticated!');
         return {
             userId: req.userId,
-            admin: req.admin
+            admin: req.admin,
+            services: req.services
         };
     },
     playground: true

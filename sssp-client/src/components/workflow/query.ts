@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-
+/*
 export default gql`
     query GetWorkflow($serviceId: ID!) {
         workflow(serviceId: $serviceId) {
@@ -35,3 +35,4 @@ export default gql`
         }
     }
 `;
+*/

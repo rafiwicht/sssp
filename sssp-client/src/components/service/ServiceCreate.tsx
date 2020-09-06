@@ -21,11 +21,15 @@ const ServiceCreate: React.FC = () => {
         });
     }
 
+    const handleCancel = () => {
+        history.push('/service')
+    }
 
     return (
         <div>
             <ServiceMod
                 handleSubmit={handleSubmit}
+                handleCancel={handleCancel}
             />
         </div>
 

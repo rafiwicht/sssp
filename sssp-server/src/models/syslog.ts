@@ -13,7 +13,7 @@ export interface SyslogInterface extends Document {
     sourcetype: string;
     port: number;
     protocol: Protocol;
-    hosts?: [string];
+    hosts: [string];
     environmentIds: [string];
     state: State;
     changes?: {
@@ -34,7 +34,7 @@ const SyslogSchema: Schema = new Schema({
     sourcetype: { type: String, required: true },
     port: { type: Number, required: 514 },
     protocol: { type: Protocol, default: Protocol.UDP },
-    hosts: { type: [String] },
+    hosts: { type: [String], required: true },
     environmentIds : {type: [String], default: []},
     state: { type: State, default: State.IN_CREATION },
     changes: {
@@ -43,7 +43,7 @@ const SyslogSchema: Schema = new Schema({
             sourcetype: { type: String, required: true },
             port: { type: Number, required: 514 },
             protocol: { type: Protocol, default: Protocol.UDP },
-            hosts: { type: [String] },
+            hosts: { type: [String], default: [] },
             environmentIds : {type: [String], default: []},
         }
     }

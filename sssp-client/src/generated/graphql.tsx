@@ -16,33 +16,16 @@ export type Scalars = {
   Float: number;
 };
 
-export enum Kind {
-  Current = 'CURRENT',
-  Future = 'FUTURE',
-  Newest = 'NEWEST'
-}
-
 export type Query = {
   __typename?: 'Query';
   services: Array<Service>;
   service: Service;
-  workflow: Workflow;
-};
-
-
-export type QueryServicesArgs = {
-  kind?: Maybe<Kind>;
+  environments: Array<Environment>;
 };
 
 
 export type QueryServiceArgs = {
-  serviceId: Scalars['ID'];
-  kind?: Maybe<Kind>;
-};
-
-
-export type QueryWorkflowArgs = {
-  serviceId: Scalars['ID'];
+  serviceId: Scalars['String'];
 };
 
 export type Mutation = {
@@ -50,8 +33,9 @@ export type Mutation = {
   createService: Service;
   updateService: Service;
   deleteService: Service;
-  acceptWorkflow: Service;
-  declineWorkflow: Service;
+  createEnvironment: Environment;
+  updateEnvironment: Environment;
+  deleteEnvironment: Environment;
 };
 
 
@@ -61,23 +45,27 @@ export type MutationCreateServiceArgs = {
 
 
 export type MutationUpdateServiceArgs = {
-  serviceId: Scalars['ID'];
   serviceInput: ServiceInput;
 };
 
 
 export type MutationDeleteServiceArgs = {
-  serviceId: Scalars['ID'];
+  serviceId: Scalars['String'];
 };
 
 
-export type MutationAcceptWorkflowArgs = {
-  serviceId: Scalars['ID'];
+export type MutationCreateEnvironmentArgs = {
+  environmentInput: EnvironmentInput;
 };
 
 
-export type MutationDeclineWorkflowArgs = {
-  serviceId: Scalars['ID'];
+export type MutationUpdateEnvironmentArgs = {
+  environmentInput: EnvironmentInput;
+};
+
+
+export type MutationDeleteEnvironmentArgs = {
+  environmentId: Scalars['String'];
 };
 
 export enum State {
@@ -87,96 +75,245 @@ export enum State {
   InModification = 'IN_MODIFICATION'
 }
 
-export type Workflow = {
-  __typename?: 'Workflow';
-  _id: Scalars['ID'];
-  name: Array<Scalars['String']>;
-  owner: Array<Scalars['String']>;
-  description: Array<Scalars['String']>;
-  dataClassification: Array<Scalars['String']>;
-  read: Array<Array<Scalars['String']>>;
-  write: Array<Array<Scalars['String']>>;
-  indexes: Array<Array<Index>>;
-  apps: Array<Array<App>>;
-  state: State;
+export type AppChanges = {
+  __typename?: 'AppChanges';
+  url: Scalars['String'];
+  version: Scalars['String'];
+  environmentIds: Array<Scalars['String']>;
 };
 
-export type Service = {
-  __typename?: 'Service';
-  _id: Scalars['ID'];
-  name: Scalars['String'];
-  owner: Scalars['String'];
-  description: Scalars['String'];
-  dataClassification: Scalars['String'];
-  read: Array<Scalars['String']>;
-  write: Array<Scalars['String']>;
-  indexes: Array<Index>;
-  apps: Array<App>;
+export type App = {
+  __typename?: 'App';
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  url: Scalars['String'];
+  version: Scalars['String'];
+  environmentIds: Array<Scalars['String']>;
   state: State;
+  changes?: Maybe<AppChanges>;
+};
+
+export type AppInput = {
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['String']>;
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type Environment = {
+  __typename?: 'Environment';
+  _id: Scalars['String'];
+  userAccess: Scalars['Boolean'];
+};
+
+export type EnvironmentInput = {
+  _id: Scalars['String'];
+  userAccess?: Maybe<Scalars['Boolean']>;
+};
+
+export type HttpChanges = {
+  __typename?: 'HttpChanges';
+  token: Scalars['String'];
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type Http = {
+  __typename?: 'Http';
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  token: Scalars['String'];
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+  state: State;
+  changes?: Maybe<HttpChanges>;
+};
+
+export type HttpInput = {
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  token: Scalars['String'];
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type IndexChanges = {
+  __typename?: 'IndexChanges';
+  maxTotalDataSizeMB: Scalars['Int'];
+  frozenTimePeriodInSecs: Scalars['Int'];
+  environmentIds: Array<Scalars['String']>;
 };
 
 export type Index = {
   __typename?: 'Index';
-  name: Scalars['String'];
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
   maxTotalDataSizeMB: Scalars['Int'];
   frozenTimePeriodInSecs: Scalars['Int'];
-};
-
-export enum AppType {
-  Fa = 'FA',
-  Ta = 'TA',
-  Sa = 'SA',
-  Ia = 'IA',
-  Ui = 'UI'
-}
-
-export type App = {
-  __typename?: 'App';
-  name: Scalars['String'];
-  type: AppType;
-  url: Scalars['String'];
-  version: Scalars['String'];
-};
-
-export type ServiceInput = {
-  name: Scalars['String'];
-  owner: Scalars['String'];
-  description: Scalars['String'];
-  dataClassification: Scalars['String'];
-  read?: Maybe<Array<Scalars['String']>>;
-  write: Array<Scalars['String']>;
-  indexes?: Maybe<Array<IndexInput>>;
-  apps?: Maybe<Array<AppInput>>;
+  environmentIds: Array<Scalars['String']>;
+  state: State;
+  changes?: Maybe<IndexChanges>;
 };
 
 export type IndexInput = {
-  name: Scalars['String'];
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
   maxTotalDataSizeMB?: Maybe<Scalars['Int']>;
   frozenTimePeriodInSecs?: Maybe<Scalars['Int']>;
+  environmentIds?: Maybe<Array<Scalars['String']>>;
 };
 
-export type AppInput = {
-  name: Scalars['String'];
-  type: AppType;
-  version: Scalars['String'];
+export type ServerChanges = {
+  __typename?: 'ServerChanges';
+  hosts: Array<Scalars['String']>;
+  appIds: Array<Scalars['String']>;
+  environmentIds: Array<Scalars['String']>;
 };
 
-export type GetServicesQueryVariables = Exact<{
-  kind?: Maybe<Kind>;
+export type Server = {
+  __typename?: 'Server';
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  hosts: Array<Scalars['String']>;
+  appIds: Array<Scalars['String']>;
+  environmentIds: Array<Scalars['String']>;
+  state: State;
+  changes?: Maybe<ServerChanges>;
+};
+
+export type ServerInput = {
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  hosts?: Maybe<Array<Scalars['String']>>;
+  appIds?: Maybe<Array<Scalars['String']>>;
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type ServiceChanges = {
+  __typename?: 'ServiceChanges';
+  owner: Scalars['String'];
+  description: Scalars['String'];
+  dataClassification: Scalars['String'];
+};
+
+export type Service = {
+  __typename?: 'Service';
+  _id: Scalars['String'];
+  owner: Scalars['String'];
+  description: Scalars['String'];
+  dataClassification: Scalars['String'];
+  state: State;
+  changes?: Maybe<ServiceChanges>;
+};
+
+export type ServiceInput = {
+  _id: Scalars['String'];
+  owner: Scalars['String'];
+  description: Scalars['String'];
+  dataClassification: Scalars['String'];
+};
+
+export enum Protocol {
+  Tcp = 'TCP',
+  Udp = 'UDP'
+}
+
+export type SyslogChanges = {
+  __typename?: 'SyslogChanges';
+  index: Scalars['String'];
+  sourcetype: Scalars['String'];
+  port?: Maybe<Scalars['Int']>;
+  protocol?: Maybe<Protocol>;
+  hosts?: Maybe<Array<Scalars['String']>>;
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type Syslog = {
+  __typename?: 'Syslog';
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  index: Scalars['String'];
+  sourcetype: Scalars['String'];
+  port: Scalars['Int'];
+  protocol: Protocol;
+  hosts: Array<Scalars['String']>;
+  environmentIds: Array<Scalars['String']>;
+  state: State;
+  changes?: Maybe<SyslogChanges>;
+};
+
+export type SyslogInput = {
+  _id: Scalars['String'];
+  serviceId: Scalars['String'];
+  index: Scalars['String'];
+  sourcetype: Scalars['String'];
+  port?: Maybe<Scalars['Int']>;
+  protocol?: Maybe<Protocol>;
+  hosts?: Maybe<Array<Scalars['String']>>;
+  environmentIds?: Maybe<Array<Scalars['String']>>;
+};
+
+export type GetEnvironmentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEnvironmentsQuery = (
+  { __typename?: 'Query' }
+  & { environments: Array<(
+    { __typename?: 'Environment' }
+    & Pick<Environment, '_id' | 'userAccess'>
+  )> }
+);
+
+export type CreateEnvironmentMutationVariables = Exact<{
+  environmentInput: EnvironmentInput;
 }>;
+
+
+export type CreateEnvironmentMutation = (
+  { __typename?: 'Mutation' }
+  & { createEnvironment: (
+    { __typename?: 'Environment' }
+    & Pick<Environment, '_id'>
+  ) }
+);
+
+export type UpdateEnvironmentMutationVariables = Exact<{
+  environmentInput: EnvironmentInput;
+}>;
+
+
+export type UpdateEnvironmentMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEnvironment: (
+    { __typename?: 'Environment' }
+    & Pick<Environment, '_id'>
+  ) }
+);
+
+export type DeleteEnvironmentMutationVariables = Exact<{
+  environmentId: Scalars['String'];
+}>;
+
+
+export type DeleteEnvironmentMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteEnvironment: (
+    { __typename?: 'Environment' }
+    & Pick<Environment, '_id'>
+  ) }
+);
+
+export type GetServicesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetServicesQuery = (
   { __typename?: 'Query' }
   & { services: Array<(
     { __typename?: 'Service' }
-    & Pick<Service, '_id' | 'name' | 'owner' | 'dataClassification' | 'state'>
+    & Pick<Service, '_id' | 'owner' | 'dataClassification' | 'state'>
   )> }
 );
 
 export type GetServiceQueryVariables = Exact<{
-  serviceId: Scalars['ID'];
-  kind?: Maybe<Kind>;
+  serviceId: Scalars['String'];
 }>;
 
 
@@ -184,14 +321,7 @@ export type GetServiceQuery = (
   { __typename?: 'Query' }
   & { service: (
     { __typename?: 'Service' }
-    & Pick<Service, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
-    & { indexes: Array<(
-      { __typename?: 'Index' }
-      & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
-    )>, apps: Array<(
-      { __typename?: 'App' }
-      & Pick<App, 'name' | 'type' | 'url' | 'version'>
-    )> }
+    & Pick<Service, '_id' | 'owner' | 'dataClassification' | 'description' | 'state'>
   ) }
 );
 
@@ -204,12 +334,11 @@ export type CreateServiceMutation = (
   { __typename?: 'Mutation' }
   & { createService: (
     { __typename?: 'Service' }
-    & Pick<Service, 'name'>
+    & Pick<Service, '_id'>
   ) }
 );
 
 export type UpdateServiceMutationVariables = Exact<{
-  serviceId: Scalars['ID'];
   serviceInput: ServiceInput;
 }>;
 
@@ -218,12 +347,12 @@ export type UpdateServiceMutation = (
   { __typename?: 'Mutation' }
   & { updateService: (
     { __typename?: 'Service' }
-    & Pick<Service, 'name'>
+    & Pick<Service, '_id'>
   ) }
 );
 
 export type DeleteServiceMutationVariables = Exact<{
-  serviceId: Scalars['ID'];
+  serviceId: Scalars['String'];
 }>;
 
 
@@ -231,62 +360,220 @@ export type DeleteServiceMutation = (
   { __typename?: 'Mutation' }
   & { deleteService: (
     { __typename?: 'Service' }
-    & Pick<Service, 'name'>
-  ) }
-);
-
-export type GetWorkflowQueryVariables = Exact<{
-  serviceId: Scalars['ID'];
-}>;
-
-
-export type GetWorkflowQuery = (
-  { __typename?: 'Query' }
-  & { workflow: (
-    { __typename?: 'Workflow' }
-    & Pick<Workflow, '_id' | 'name' | 'owner' | 'state' | 'dataClassification' | 'description' | 'read' | 'write'>
-    & { indexes: Array<Array<(
-      { __typename?: 'Index' }
-      & Pick<Index, 'name' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs'>
-    )>>, apps: Array<Array<(
-      { __typename?: 'App' }
-      & Pick<App, 'name' | 'type' | 'url' | 'version'>
-    )>> }
-  ) }
-);
-
-export type AcceptWorkflowMutationVariables = Exact<{
-  serviceId: Scalars['ID'];
-}>;
-
-
-export type AcceptWorkflowMutation = (
-  { __typename?: 'Mutation' }
-  & { acceptWorkflow: (
-    { __typename?: 'Service' }
-    & Pick<Service, 'name'>
-  ) }
-);
-
-export type DeclineWorkflowMutationVariables = Exact<{
-  serviceId: Scalars['ID'];
-}>;
-
-
-export type DeclineWorkflowMutation = (
-  { __typename?: 'Mutation' }
-  & { declineWorkflow: (
-    { __typename?: 'Service' }
-    & Pick<Service, 'name'>
+    & Pick<Service, '_id'>
   ) }
 );
 
 
-export const GetServicesDocument = gql`
-    query GetServices($kind: Kind) {
-  services(kind: $kind) {
+export const GetEnvironmentsDocument = gql`
+    query GetEnvironments {
+  environments {
     _id
-    name
+    userAccess
+  }
+}
+    `;
+export type GetEnvironmentsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>, 'query'>;
+
+    export const GetEnvironmentsComponent = (props: GetEnvironmentsComponentProps) => (
+      <ApolloReactComponents.Query<GetEnvironmentsQuery, GetEnvironmentsQueryVariables> query={GetEnvironmentsDocument} {...props} />
+    );
+    
+export type GetEnvironmentsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>
+    } & TChildProps;
+export function withGetEnvironments<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetEnvironmentsQuery,
+  GetEnvironmentsQueryVariables,
+  GetEnvironmentsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetEnvironmentsQuery, GetEnvironmentsQueryVariables, GetEnvironmentsProps<TChildProps, TDataName>>(GetEnvironmentsDocument, {
+      alias: 'getEnvironments',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetEnvironmentsQuery__
+ *
+ * To run a query within a React component, call `useGetEnvironmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEnvironmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEnvironmentsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetEnvironmentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>(GetEnvironmentsDocument, baseOptions);
+      }
+export function useGetEnvironmentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>(GetEnvironmentsDocument, baseOptions);
+        }
+export type GetEnvironmentsQueryHookResult = ReturnType<typeof useGetEnvironmentsQuery>;
+export type GetEnvironmentsLazyQueryHookResult = ReturnType<typeof useGetEnvironmentsLazyQuery>;
+export type GetEnvironmentsQueryResult = ApolloReactCommon.QueryResult<GetEnvironmentsQuery, GetEnvironmentsQueryVariables>;
+export const CreateEnvironmentDocument = gql`
+    mutation CreateEnvironment($environmentInput: EnvironmentInput!) {
+  createEnvironment(environmentInput: $environmentInput) {
+    _id
+  }
+}
+    `;
+export type CreateEnvironmentMutationFn = ApolloReactCommon.MutationFunction<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>;
+export type CreateEnvironmentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>, 'mutation'>;
+
+    export const CreateEnvironmentComponent = (props: CreateEnvironmentComponentProps) => (
+      <ApolloReactComponents.Mutation<CreateEnvironmentMutation, CreateEnvironmentMutationVariables> mutation={CreateEnvironmentDocument} {...props} />
+    );
+    
+export type CreateEnvironmentProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>
+    } & TChildProps;
+export function withCreateEnvironment<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  CreateEnvironmentMutation,
+  CreateEnvironmentMutationVariables,
+  CreateEnvironmentProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, CreateEnvironmentMutation, CreateEnvironmentMutationVariables, CreateEnvironmentProps<TChildProps, TDataName>>(CreateEnvironmentDocument, {
+      alias: 'createEnvironment',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useCreateEnvironmentMutation__
+ *
+ * To run a mutation, you first call `useCreateEnvironmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEnvironmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEnvironmentMutation, { data, loading, error }] = useCreateEnvironmentMutation({
+ *   variables: {
+ *      environmentInput: // value for 'environmentInput'
+ *   },
+ * });
+ */
+export function useCreateEnvironmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>(CreateEnvironmentDocument, baseOptions);
+      }
+export type CreateEnvironmentMutationHookResult = ReturnType<typeof useCreateEnvironmentMutation>;
+export type CreateEnvironmentMutationResult = ApolloReactCommon.MutationResult<CreateEnvironmentMutation>;
+export type CreateEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateEnvironmentMutation, CreateEnvironmentMutationVariables>;
+export const UpdateEnvironmentDocument = gql`
+    mutation UpdateEnvironment($environmentInput: EnvironmentInput!) {
+  updateEnvironment(environmentInput: $environmentInput) {
+    _id
+  }
+}
+    `;
+export type UpdateEnvironmentMutationFn = ApolloReactCommon.MutationFunction<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>;
+export type UpdateEnvironmentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>, 'mutation'>;
+
+    export const UpdateEnvironmentComponent = (props: UpdateEnvironmentComponentProps) => (
+      <ApolloReactComponents.Mutation<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables> mutation={UpdateEnvironmentDocument} {...props} />
+    );
+    
+export type UpdateEnvironmentProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>
+    } & TChildProps;
+export function withUpdateEnvironment<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  UpdateEnvironmentMutation,
+  UpdateEnvironmentMutationVariables,
+  UpdateEnvironmentProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables, UpdateEnvironmentProps<TChildProps, TDataName>>(UpdateEnvironmentDocument, {
+      alias: 'updateEnvironment',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useUpdateEnvironmentMutation__
+ *
+ * To run a mutation, you first call `useUpdateEnvironmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEnvironmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEnvironmentMutation, { data, loading, error }] = useUpdateEnvironmentMutation({
+ *   variables: {
+ *      environmentInput: // value for 'environmentInput'
+ *   },
+ * });
+ */
+export function useUpdateEnvironmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>(UpdateEnvironmentDocument, baseOptions);
+      }
+export type UpdateEnvironmentMutationHookResult = ReturnType<typeof useUpdateEnvironmentMutation>;
+export type UpdateEnvironmentMutationResult = ApolloReactCommon.MutationResult<UpdateEnvironmentMutation>;
+export type UpdateEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateEnvironmentMutation, UpdateEnvironmentMutationVariables>;
+export const DeleteEnvironmentDocument = gql`
+    mutation DeleteEnvironment($environmentId: String!) {
+  deleteEnvironment(environmentId: $environmentId) {
+    _id
+  }
+}
+    `;
+export type DeleteEnvironmentMutationFn = ApolloReactCommon.MutationFunction<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>;
+export type DeleteEnvironmentComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>, 'mutation'>;
+
+    export const DeleteEnvironmentComponent = (props: DeleteEnvironmentComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables> mutation={DeleteEnvironmentDocument} {...props} />
+    );
+    
+export type DeleteEnvironmentProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>
+    } & TChildProps;
+export function withDeleteEnvironment<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteEnvironmentMutation,
+  DeleteEnvironmentMutationVariables,
+  DeleteEnvironmentProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables, DeleteEnvironmentProps<TChildProps, TDataName>>(DeleteEnvironmentDocument, {
+      alias: 'deleteEnvironment',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteEnvironmentMutation__
+ *
+ * To run a mutation, you first call `useDeleteEnvironmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEnvironmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEnvironmentMutation, { data, loading, error }] = useDeleteEnvironmentMutation({
+ *   variables: {
+ *      environmentId: // value for 'environmentId'
+ *   },
+ * });
+ */
+export function useDeleteEnvironmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>(DeleteEnvironmentDocument, baseOptions);
+      }
+export type DeleteEnvironmentMutationHookResult = ReturnType<typeof useDeleteEnvironmentMutation>;
+export type DeleteEnvironmentMutationResult = ApolloReactCommon.MutationResult<DeleteEnvironmentMutation>;
+export type DeleteEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>;
+export const GetServicesDocument = gql`
+    query GetServices {
+  services {
+    _id
     owner
     dataClassification
     state
@@ -325,7 +612,6 @@ export function withGetServices<TProps, TChildProps = {}, TDataName extends stri
  * @example
  * const { data, loading, error } = useGetServicesQuery({
  *   variables: {
- *      kind: // value for 'kind'
  *   },
  * });
  */
@@ -339,27 +625,13 @@ export type GetServicesQueryHookResult = ReturnType<typeof useGetServicesQuery>;
 export type GetServicesLazyQueryHookResult = ReturnType<typeof useGetServicesLazyQuery>;
 export type GetServicesQueryResult = ApolloReactCommon.QueryResult<GetServicesQuery, GetServicesQueryVariables>;
 export const GetServiceDocument = gql`
-    query GetService($serviceId: ID!, $kind: Kind) {
-  service(serviceId: $serviceId, kind: $kind) {
+    query GetService($serviceId: String!) {
+  service(serviceId: $serviceId) {
     _id
-    name
     owner
-    state
     dataClassification
     description
-    indexes {
-      name
-      maxTotalDataSizeMB
-      frozenTimePeriodInSecs
-    }
-    apps {
-      name
-      type
-      url
-      version
-    }
-    read
-    write
+    state
   }
 }
     `;
@@ -396,7 +668,6 @@ export function withGetService<TProps, TChildProps = {}, TDataName extends strin
  * const { data, loading, error } = useGetServiceQuery({
  *   variables: {
  *      serviceId: // value for 'serviceId'
- *      kind: // value for 'kind'
  *   },
  * });
  */
@@ -412,7 +683,7 @@ export type GetServiceQueryResult = ApolloReactCommon.QueryResult<GetServiceQuer
 export const CreateServiceDocument = gql`
     mutation CreateService($serviceInput: ServiceInput!) {
   createService(serviceInput: $serviceInput) {
-    name
+    _id
   }
 }
     `;
@@ -461,9 +732,9 @@ export type CreateServiceMutationHookResult = ReturnType<typeof useCreateService
 export type CreateServiceMutationResult = ApolloReactCommon.MutationResult<CreateServiceMutation>;
 export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
 export const UpdateServiceDocument = gql`
-    mutation UpdateService($serviceId: ID!, $serviceInput: ServiceInput!) {
-  updateService(serviceId: $serviceId, serviceInput: $serviceInput) {
-    name
+    mutation UpdateService($serviceInput: ServiceInput!) {
+  updateService(serviceInput: $serviceInput) {
+    _id
   }
 }
     `;
@@ -501,7 +772,6 @@ export function withUpdateService<TProps, TChildProps = {}, TDataName extends st
  * @example
  * const [updateServiceMutation, { data, loading, error }] = useUpdateServiceMutation({
  *   variables: {
- *      serviceId: // value for 'serviceId'
  *      serviceInput: // value for 'serviceInput'
  *   },
  * });
@@ -513,9 +783,9 @@ export type UpdateServiceMutationHookResult = ReturnType<typeof useUpdateService
 export type UpdateServiceMutationResult = ApolloReactCommon.MutationResult<UpdateServiceMutation>;
 export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateServiceMutation, UpdateServiceMutationVariables>;
 export const DeleteServiceDocument = gql`
-    mutation DeleteService($serviceId: ID!) {
+    mutation DeleteService($serviceId: String!) {
   deleteService(serviceId: $serviceId) {
-    name
+    _id
   }
 }
     `;
@@ -563,175 +833,3 @@ export function useDeleteServiceMutation(baseOptions?: ApolloReactHooks.Mutation
 export type DeleteServiceMutationHookResult = ReturnType<typeof useDeleteServiceMutation>;
 export type DeleteServiceMutationResult = ApolloReactCommon.MutationResult<DeleteServiceMutation>;
 export type DeleteServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteServiceMutation, DeleteServiceMutationVariables>;
-export const GetWorkflowDocument = gql`
-    query GetWorkflow($serviceId: ID!) {
-  workflow(serviceId: $serviceId) {
-    _id
-    name
-    owner
-    state
-    dataClassification
-    description
-    indexes {
-      name
-      maxTotalDataSizeMB
-      frozenTimePeriodInSecs
-    }
-    apps {
-      name
-      type
-      url
-      version
-    }
-    read
-    write
-  }
-}
-    `;
-export type GetWorkflowComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetWorkflowQuery, GetWorkflowQueryVariables>, 'query'> & ({ variables: GetWorkflowQueryVariables; skip?: boolean; } | { skip: boolean; });
-
-    export const GetWorkflowComponent = (props: GetWorkflowComponentProps) => (
-      <ApolloReactComponents.Query<GetWorkflowQuery, GetWorkflowQueryVariables> query={GetWorkflowDocument} {...props} />
-    );
-    
-export type GetWorkflowProps<TChildProps = {}, TDataName extends string = 'data'> = {
-      [key in TDataName]: ApolloReactHoc.DataValue<GetWorkflowQuery, GetWorkflowQueryVariables>
-    } & TChildProps;
-export function withGetWorkflow<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  GetWorkflowQuery,
-  GetWorkflowQueryVariables,
-  GetWorkflowProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withQuery<TProps, GetWorkflowQuery, GetWorkflowQueryVariables, GetWorkflowProps<TChildProps, TDataName>>(GetWorkflowDocument, {
-      alias: 'getWorkflow',
-      ...operationOptions
-    });
-};
-
-/**
- * __useGetWorkflowQuery__
- *
- * To run a query within a React component, call `useGetWorkflowQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWorkflowQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWorkflowQuery({
- *   variables: {
- *      serviceId: // value for 'serviceId'
- *   },
- * });
- */
-export function useGetWorkflowQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetWorkflowQuery, GetWorkflowQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetWorkflowQuery, GetWorkflowQueryVariables>(GetWorkflowDocument, baseOptions);
-      }
-export function useGetWorkflowLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetWorkflowQuery, GetWorkflowQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetWorkflowQuery, GetWorkflowQueryVariables>(GetWorkflowDocument, baseOptions);
-        }
-export type GetWorkflowQueryHookResult = ReturnType<typeof useGetWorkflowQuery>;
-export type GetWorkflowLazyQueryHookResult = ReturnType<typeof useGetWorkflowLazyQuery>;
-export type GetWorkflowQueryResult = ApolloReactCommon.QueryResult<GetWorkflowQuery, GetWorkflowQueryVariables>;
-export const AcceptWorkflowDocument = gql`
-    mutation AcceptWorkflow($serviceId: ID!) {
-  acceptWorkflow(serviceId: $serviceId) {
-    name
-  }
-}
-    `;
-export type AcceptWorkflowMutationFn = ApolloReactCommon.MutationFunction<AcceptWorkflowMutation, AcceptWorkflowMutationVariables>;
-export type AcceptWorkflowComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<AcceptWorkflowMutation, AcceptWorkflowMutationVariables>, 'mutation'>;
-
-    export const AcceptWorkflowComponent = (props: AcceptWorkflowComponentProps) => (
-      <ApolloReactComponents.Mutation<AcceptWorkflowMutation, AcceptWorkflowMutationVariables> mutation={AcceptWorkflowDocument} {...props} />
-    );
-    
-export type AcceptWorkflowProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<AcceptWorkflowMutation, AcceptWorkflowMutationVariables>
-    } & TChildProps;
-export function withAcceptWorkflow<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  AcceptWorkflowMutation,
-  AcceptWorkflowMutationVariables,
-  AcceptWorkflowProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, AcceptWorkflowMutation, AcceptWorkflowMutationVariables, AcceptWorkflowProps<TChildProps, TDataName>>(AcceptWorkflowDocument, {
-      alias: 'acceptWorkflow',
-      ...operationOptions
-    });
-};
-
-/**
- * __useAcceptWorkflowMutation__
- *
- * To run a mutation, you first call `useAcceptWorkflowMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAcceptWorkflowMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [acceptWorkflowMutation, { data, loading, error }] = useAcceptWorkflowMutation({
- *   variables: {
- *      serviceId: // value for 'serviceId'
- *   },
- * });
- */
-export function useAcceptWorkflowMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AcceptWorkflowMutation, AcceptWorkflowMutationVariables>) {
-        return ApolloReactHooks.useMutation<AcceptWorkflowMutation, AcceptWorkflowMutationVariables>(AcceptWorkflowDocument, baseOptions);
-      }
-export type AcceptWorkflowMutationHookResult = ReturnType<typeof useAcceptWorkflowMutation>;
-export type AcceptWorkflowMutationResult = ApolloReactCommon.MutationResult<AcceptWorkflowMutation>;
-export type AcceptWorkflowMutationOptions = ApolloReactCommon.BaseMutationOptions<AcceptWorkflowMutation, AcceptWorkflowMutationVariables>;
-export const DeclineWorkflowDocument = gql`
-    mutation DeclineWorkflow($serviceId: ID!) {
-  declineWorkflow(serviceId: $serviceId) {
-    name
-  }
-}
-    `;
-export type DeclineWorkflowMutationFn = ApolloReactCommon.MutationFunction<DeclineWorkflowMutation, DeclineWorkflowMutationVariables>;
-export type DeclineWorkflowComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeclineWorkflowMutation, DeclineWorkflowMutationVariables>, 'mutation'>;
-
-    export const DeclineWorkflowComponent = (props: DeclineWorkflowComponentProps) => (
-      <ApolloReactComponents.Mutation<DeclineWorkflowMutation, DeclineWorkflowMutationVariables> mutation={DeclineWorkflowDocument} {...props} />
-    );
-    
-export type DeclineWorkflowProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
-      [key in TDataName]: ApolloReactCommon.MutationFunction<DeclineWorkflowMutation, DeclineWorkflowMutationVariables>
-    } & TChildProps;
-export function withDeclineWorkflow<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
-  TProps,
-  DeclineWorkflowMutation,
-  DeclineWorkflowMutationVariables,
-  DeclineWorkflowProps<TChildProps, TDataName>>) {
-    return ApolloReactHoc.withMutation<TProps, DeclineWorkflowMutation, DeclineWorkflowMutationVariables, DeclineWorkflowProps<TChildProps, TDataName>>(DeclineWorkflowDocument, {
-      alias: 'declineWorkflow',
-      ...operationOptions
-    });
-};
-
-/**
- * __useDeclineWorkflowMutation__
- *
- * To run a mutation, you first call `useDeclineWorkflowMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeclineWorkflowMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [declineWorkflowMutation, { data, loading, error }] = useDeclineWorkflowMutation({
- *   variables: {
- *      serviceId: // value for 'serviceId'
- *   },
- * });
- */
-export function useDeclineWorkflowMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeclineWorkflowMutation, DeclineWorkflowMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeclineWorkflowMutation, DeclineWorkflowMutationVariables>(DeclineWorkflowDocument, baseOptions);
-      }
-export type DeclineWorkflowMutationHookResult = ReturnType<typeof useDeclineWorkflowMutation>;
-export type DeclineWorkflowMutationResult = ApolloReactCommon.MutationResult<DeclineWorkflowMutation>;
-export type DeclineWorkflowMutationOptions = ApolloReactCommon.BaseMutationOptions<DeclineWorkflowMutation, DeclineWorkflowMutationVariables>;

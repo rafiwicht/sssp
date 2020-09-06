@@ -1,51 +1,36 @@
 import gql from "graphql-tag";
 
 export default gql`
-    query GetServices($kind: Kind) {
-        services(kind: $kind) {
+    query GetServices {
+        services {
             _id
-            name
             owner
             dataClassification
             state
         }
     }
-    query GetService($serviceId: ID!, $kind: Kind) {
-        service(serviceId: $serviceId, kind: $kind) {
+    query GetService($serviceId: String!) {
+        service(serviceId: $serviceId) {
             _id
-            name
             owner
-            state
             dataClassification
             description
-            indexes {
-                name
-                maxTotalDataSizeMB
-                frozenTimePeriodInSecs
-            }
-            apps {
-                name
-                type
-                url
-                version
-            }
-            read
-            write
+            state
         }
     }
     mutation CreateService($serviceInput: ServiceInput!)  {
         createService(serviceInput: $serviceInput) {
-            name
+            _id
         }
     }
-    mutation UpdateService($serviceId: ID!, $serviceInput: ServiceInput!)  {
-        updateService(serviceId: $serviceId, serviceInput: $serviceInput) {
-            name
+    mutation UpdateService($serviceInput: ServiceInput!)  {
+        updateService(serviceInput: $serviceInput) {
+            _id
         }
     }
-    mutation DeleteService($serviceId: ID!)  {
+    mutation DeleteService($serviceId: String!)  {
         deleteService(serviceId: $serviceId) {
-            name
+            _id
         }
     }
 `;

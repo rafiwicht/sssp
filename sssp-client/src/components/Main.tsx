@@ -11,6 +11,7 @@ import {useKeycloak} from "@react-keycloak/web";
 import {KeycloakTokenParsed} from "keycloak-js";
 import WorkflowRouter from "./workflow/WorkflowRouter";
 import config from '../config';
+import Admin from "./admin/Admin";
 
 type TokenParsed = KeycloakTokenParsed & {
     preferred_username: string
@@ -81,8 +82,8 @@ const Main: React.FC = () => {
                             <ServiceRouter />
                         </Route>
                         { isAdmin &&
-                            <Route path='/workflow'>
-                                <WorkflowRouter />
+                            <Route path='/admin'>
+                                <Admin />
                             </Route>
                         }
                         <Route path='/' exact>
