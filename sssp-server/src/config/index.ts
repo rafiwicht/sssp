@@ -8,10 +8,10 @@ export default {
     path: '/graphql',
     allowedOrigins: ['*'],
     port: process.env.PORT || 5000,
+    devToken: process.env.DEV_TOKEN,
 
     // Mongodb connection
     db: `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_SECRET}@${process.env.MONGO}:${process.env.MONGO_PORT || 27017}`,
-
 
     // Ldap admin role
     adminRole: process.env.ADMIN_ROLE || 'sssp-admin',
@@ -31,5 +31,8 @@ export default {
 
     // Splunk index defaults
     maxTotalDataSizeMB: process.env.MAX_TOTAL_DATA_SIZE_MB || 100000000,
-    frozenTimePeriodInSecs: process.env.FROZEN_TIME_PERION_IN_SECONDS || 7776000
+    frozenTimePeriodInSecs: process.env.FROZEN_TIME_PERION_IN_SECONDS || 7776000,
+
+    // Group mapping
+    prefixLDAPGroups: process.env.PREFIX_LDAP_GROUPS || "svc_",
 };

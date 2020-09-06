@@ -21,6 +21,13 @@ export default async (req: any, res: any, next: any) => {
     }
     const token = authHeader.split(' ')[1];
 
+    // For development
+    if(config.devToken && token === config.devToken) {
+        req.userId = 'test1'
+        req.admin = true;
+        return next();
+    }
+
     if (!token || token === '') {
         return next();
     }
@@ -35,5 +42,13 @@ export default async (req: any, res: any, next: any) => {
     }
     req.userId = decodedToken.preferred_username;
     req.admin = decodedToken.realm_access.roles.includes(config.adminRole);
+    req.services = decodedToken.realm_access.roles
+                        .filter((e: string) => e.startsWith(config.prefixLDAPGroups))
+                        .map((e: string) => {
+                            return e.replace(config.prefixLDAPGroups, '')
+                                    .replace('_user', '')
+                                    .replace('_power', '');
+                        })
+                        .filter((value, index, self) => self.index(value) === index);
     return next();
 };
