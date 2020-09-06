@@ -10,20 +10,49 @@ import {AuthenticationError} from 'apollo-server';
 
 const typeDefs = gql`
     type Query {
+
+        ##### App #####
+        apps: [App!]!
+        app(appId: String!): App!
+        
+        ##### Environment #####
+        environments: [Environment!]!
+        
+        ##### Http #####
+        https: [Http!]!
+        http(httpId: String!): Http!
+        
+        ##### Index #####
+        indexes: [Index!]!
+        index(indexId: String!): Index!
+        
+        ##### Server #####
+        servers: [Server!]!
+        server(serverId: String!): Server!
+        
+        ##### Service #####
         services: [Service!]!
         service(serviceId: String!): Service!
-        environments: [Environment!]!
+        
+        ##### Syslog #####
+        syslogs: [Syslog!]!
+        syslog(syslogId: String!): Syslog!
     }
     type Mutation {
-        ##### Service #####
-        createService(serviceInput: ServiceInput!): Service!
-        updateService(serviceInput: ServiceInput!): Service!
-        deleteService(serviceId: String!): Service!
+
+        ##### App #####
+        putApp(appId: String!, appInput: AppInput!): App!
+        deleteApp(appId: String!): App!
 
         ##### Environment #####
-        createEnvironment(environmentInput: EnvironmentInput!): Environment!
-        updateEnvironment(environmentInput: EnvironmentInput!): Environment!
+        putEnvironment(environmentId: String!, environmentInput: EnvironmentInput!): Environment!
         deleteEnvironment(environmentId: String!): Environment!
+        
+        ##### Service #####
+        putService(serviceId: String!, serviceInput: ServiceInput!): Service!
+        deleteService(serviceId: String!): Service!
+
+        
     }
     enum State {
         IN_CREATION
@@ -48,7 +77,6 @@ const typeDefs = gql`
         changes: AppChanges
     }
     input AppInput {
-        _id: String!
         serviceId: String!
         url: String
         version: String
@@ -61,7 +89,6 @@ const typeDefs = gql`
         userAccess: Boolean!
     }
     input EnvironmentInput {
-        _id: String!
         userAccess: Boolean
     }
     ##### Http #####
@@ -78,7 +105,6 @@ const typeDefs = gql`
         changes: HttpChanges
     }
     input HttpInput {
-        _id: String!
         serviceId: String!
         token: String!
         environmentIds: [String!]
@@ -100,7 +126,6 @@ const typeDefs = gql`
         changes: IndexChanges
     }
     input IndexInput {
-        _id: String!
         serviceId: String!
         maxTotalDataSizeMB: Int
         frozenTimePeriodInSecs: Int
@@ -124,7 +149,6 @@ const typeDefs = gql`
         changes: ServerChanges
     }
     input ServerInput {
-        _id: String!
         serviceId: String!
         hosts: [String!]
         appIds: [String!]
@@ -146,7 +170,6 @@ const typeDefs = gql`
         changes: ServiceChanges
     }
     input ServiceInput {
-        _id: String!
         owner: String!
         description: String!
         dataClassification: String!
@@ -179,7 +202,6 @@ const typeDefs = gql`
         changes: SyslogChanges
     }
     input SyslogInput {
-        _id: String!
         serviceId: String!
         index: String!
         sourcetype: String!

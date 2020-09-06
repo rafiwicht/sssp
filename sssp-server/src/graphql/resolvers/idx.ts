@@ -1,36 +1,13 @@
-import { ApolloError, ForbiddenError } from 'apollo-server';
-import App from "../../models/service";
-import Service from "../../models/service";
+import {getElement, getElements} from "./generator";
+import Index from "../../models/service";
 
-const AppQueries = {
-    apps: async (parent: any, {}: any, context: any) => {
-        let resultApps;
-
-        if(context.admin) {
-            resultApps = await App.find();
-        }
-        else {
-            resultApps = await App.find({
-                _id: { $in: context.services}
-            });
-        }
-
-        return resultApps.map((app) => {
-            return app._doc;
-        });
-    },
-    app: async (parent: any, {appId}: any, context: any) => {
-        const app = await App.findById(appId);
-
-        if(app && context.services.includes(app.serviceId)) {
-            return app._doc;
-        }
-        else return new ApolloError('Service not found', 'NOT_FOUND');
-    }
+const IndexQueries = {
+    indexes: async (parent: any, {}: any, context: any) => getElements(Index, context),
+    index: async (parent: any, {indexId}: any, context: any) => getElement(Index, {indexId}, context)
 };
 
-const AppMutations = {
+const IndexMutations = {
 
 };
 
-export {AppQueries, AppMutations};
+export {IndexQueries, IndexMutations};

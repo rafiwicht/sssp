@@ -1,35 +1,13 @@
-import { ApolloError } from 'apollo-server';
-import App from "../../models/service";
+import Server from "../../models/service";
+import {getElement, getElements} from "./generator";
 
-const AppQueries = {
-    apps: async (parent: any, {}: any, context: any) => {
-        let resultApps;
-
-        if(context.admin) {
-            resultApps = await App.find();
-        }
-        else {
-            resultApps = await App.find({
-                _id: { $in: context.services}
-            });
-        }
-
-        return resultApps.map((app) => {
-            return app._doc;
-        });
-    },
-    app: async (parent: any, {appId}: any, context: any) => {
-        const app = await App.findById(appId);
-
-        if(app && context.services.includes(app.serviceId)) {
-            return app._doc;
-        }
-        else return new ApolloError('Service not found', 'NOT_FOUND');
-    }
+const ServerQueries = {
+    apps: async (parent: any, {}: any, context: any) => getElements(Server, context),
+    app: async (parent: any, {serverId}: any, context: any) => getElement(Server, serverId, context)
 };
 
-const AppMutations = {
+const ServerMutations = {
 
 };
 
-export {AppQueries, AppMutations};
+export {ServerQueries, ServerMutations};

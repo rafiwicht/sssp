@@ -1,4 +1,4 @@
-import { ApolloError, ForbiddenError } from 'apollo-server';
+import { ForbiddenError } from 'apollo-server';
 import Environment from '../../models/environment';
 
 const EnvironmentQueries = {
@@ -12,13 +12,17 @@ const EnvironmentQueries = {
 };
 
 const EnvironmentMutations = {
-    createEnvironment: async (parent: any, {environmentInput}: any, context: any) => {
+    putEnvironment: async (parent: any,  {environmentId, environmentInput}: any, context: any) => {
         if(!context.admin) return new ForbiddenError('Not allowed!');
 
-        const environment = await Environment.findById(environmentInput._id);
+        const environment = await Environment.findById(environmentId);
 
         if (environment) {
-            return new ApolloError('Environment already exists');
+            return await Environment.findByIdAndUpdate(environmentId, {
+                ...environmentInput
+            }, {
+                new: true
+            });
         } 
         else {
             const environmentNew = new Environment({
@@ -26,15 +30,6 @@ const EnvironmentMutations = {
             });
             return environmentNew.save();
         }
-    },
-    updateEnvironment: async (parent: any, {environmentInput}: any, context: any) => {
-        if(!context.admin) return new ForbiddenError('Not allowed!');
-
-        return await Environment.findByIdAndUpdate(environmentInput._id, {
-            ...environmentInput
-        }, {
-            new: true
-        });
     },
     deleteEnvironment: async (parent: any, {environmentId}: any, context: any) => {
         if(!context.admin) return new ForbiddenError('Not allowed!');

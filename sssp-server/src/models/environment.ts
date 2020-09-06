@@ -7,7 +7,7 @@ export interface EnvironmentInterface extends Document {
 }
 
 const EnvironmentSchema: Schema = new Schema({
-    _id: { type: String, required: true, index: true },
+    _id: { type: String, required: true },
     userAccess: { type: Boolean, default: false }
 });
 

@@ -3,7 +3,36 @@
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
+/**
+ * Equality with subset of properties
+ * Subset of properties -> all properties from a
+ * @param a
+ * @param b
+ */
+export const subsetEqual = (a: object, b: object): boolean => {
+    if(a === null && b === null) return true;
+    if(a === null || b === null) return false;
 
+    let aProps = Object.keys(a);
+
+    for(let prop in aProps) {
+        const aVal = a[prop];
+        const bVal = b[prop];
+        const areObjects = isObject(aVal) && isObject(bVal);
+        if (
+            areObjects && !deepEqual(aVal, bVal) || !areObjects && aVal !== bVal
+        ) {
+            return false;
+        }
+    }
+    return true
+}
+
+/**
+ * Equality with recursion 1
+ * @param a
+ * @param b
+ */
 export const shallowEqual = (a: object, b: object): boolean => {
     if(a === null && b === null) return true;
     if(a === null || b === null) return false;
@@ -24,6 +53,11 @@ export const shallowEqual = (a: object, b: object): boolean => {
     return true;
 }
 
+/**
+ * Recursive equality
+ * @param a
+ * @param b
+ */
 export const deepEqual = (a: any, b: any): boolean => {
     if(a === null && b === null) return true;
     if(a === null || b === null) return false;
