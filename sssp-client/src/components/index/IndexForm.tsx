@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
-import {Button, FormControl, Input, InputLabel} from "@material-ui/core";
-import {IndexInput} from "../../generated/graphql";
+import React, {useEffect, useState} from 'react';
+import {Button, FormControl, Input, InputLabel, MenuItem, TableCell, TableRow, Select} from "@material-ui/core";
+import {Index, IndexInput, MutationPutIndexArgs, usePutIndexMutation, GetIndexesDocument, useGetEnvironmentsLazyQuery, Environment} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 
 
 type IndexFormProps = {
-    submitIndex: (indexInput: IndexInput) => void
+    serviceId: string,
+    indexMod?: Index
 }
 
 const useStyles = makeStyles(() =>
@@ -18,93 +19,133 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const IndexForm: React.FunctionComponent<IndexFormProps> = ({submitIndex}: IndexFormProps) => {
-    const [indexInput, setIndexInput] = useState<IndexInput>({
-        name: '',
-        maxTotalDataSizeMB: 100000000,
-        frozenTimePeriodInSecs: 7776000
+const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, indexMod}: IndexFormProps) => {
+    const [state, setState] = useState<MutationPutIndexArgs>({
+        indexId: indexMod?._id || '',
+        indexInput: {
+            serviceId: indexMod?.serviceId || serviceId,
+            maxTotalDataSizeMB: indexMod?.maxTotalDataSizeMB || 100000000,
+            frozenTimePeriodInSecs: indexMod?.frozenTimePeriodInSecs || 7776000,
+            environmentIds: indexMod?.environmentIds || []
+        }
     });
-    const [hidden, setHidden] = useState<boolean>(true);
     const classes = useStyles();
 
-    const handleOpen = () =>  {
-        setHidden(false);
-    }
+    const [putIndex] = usePutIndexMutation({
+        refetchQueries: [{query: GetIndexesDocument}]
+    })
 
-    const handleChange = (prop: keyof IndexInput) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIndexInput({ ...indexInput, [prop]: event.target.value });
+    const [getEnvironments, {data}] = useGetEnvironmentsLazyQuery();
+
+    useEffect(() => {
+        getEnvironments();
+    });
+
+    const handleIdChange = (event: any) => {
+        setState({
+            ...state,
+            indexId: event.target.value
+        });
+    };
+
+    const handleChange = (prop: keyof IndexInput) => (event: any) => {
+        setState({
+            ...state,
+            indexInput: {
+                ...state.indexInput, 
+                [prop]: event.target.value
+            }
+        });
+    };
+
+    const handleSumbit = () => {
+        putIndex({
+            variables: state
+        });
     };
 
     const reset = () => {
-        setHidden(true);
-        setIndexInput({
-            name: '',
-            maxTotalDataSizeMB: 100000000,
-            frozenTimePeriodInSecs: 7776000
+        setState({
+            indexId: '',
+            indexInput: {
+                serviceId: serviceId,
+                maxTotalDataSizeMB: 100000000,
+                frozenTimePeriodInSecs: 7776000,
+                environmentIds: []
+            }
         });
     }
 
-    const handleSubmit = () => {
-        submitIndex(indexInput);
-        reset();
-    }
-
-    if(hidden) {
-        return (
-            <Button
-                variant='contained'
-                color='primary'
-                onClick={() => handleOpen()}
-            >Add index</Button>
-        );
-    }
-
     return (
-        <div>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <Input
-                    id='name'
-                    type='text'
-                    required
-                    value={indexInput.name}
-                    onChange={handleChange('name')}
-                />
-            </FormControl>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>maxTotalDataSizeMB</InputLabel>
-                <Input
-                    id='name'
-                    type='number'
-                    required
-                    value={indexInput.maxTotalDataSizeMB}
-                    onChange={handleChange('name')}
-                />
-            </FormControl>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <Input
-                    id='frozenTimePeriodInSecs'
-                    type='text'
-                    required
-                    value={indexInput.frozenTimePeriodInSecs}
-                    onChange={handleChange('frozenTimePeriodInSecs')}
-                />
-            </FormControl>
-
-            <Button
-                variant='contained'
-                className={classes.margin}
-                onClick={() => reset()}
-            >Cancel</Button>
-            <Button
-                variant='contained'
-                color='primary'
-                className={classes.margin}
-                onClick={() => handleSubmit()}
-                disabled={indexInput.name === ''}
-            >Submit</Button>
-        </div>
+        <TableRow>
+            <TableCell>
+                <FormControl className={classes.margin} required>
+                    <InputLabel htmlFor='_id'>Name</InputLabel>
+                    <Input
+                        id='_id'
+                        type='text'
+                        required
+                        value={state.indexId}
+                        disabled={state.indexId === undefined}
+                        onChange={handleIdChange}
+                    />
+                </FormControl>
+            </TableCell>
+            <TableCell align='right'>{indexMod === undefined ? '' : indexMod.state}</TableCell>
+            <TableCell align='right'>
+                <FormControl className={classes.margin} required>
+                    <InputLabel htmlFor='maxTotalDataSizeMB'>maxTotalDataSizeMB</InputLabel>
+                    <Input
+                        id='maxTotalDataSizeMB'
+                        type='number'
+                        required
+                        value={state.indexInput.maxTotalDataSizeMB}
+                        onChange={handleChange('maxTotalDataSizeMB')}
+                    />
+                </FormControl>
+            </TableCell>
+            <TableCell align='right'>
+                <FormControl className={classes.margin} required>
+                    <InputLabel htmlFor='name'>Name</InputLabel>
+                    <Input
+                        id='frozenTimePeriodInSecs'
+                        type='number'
+                        required
+                        value={state.indexInput.frozenTimePeriodInSecs}
+                        onChange={handleChange('frozenTimePeriodInSecs')}
+                    />
+                </FormControl>
+            </TableCell>
+            <TableCell align='right'>
+                <FormControl className={classes.margin} required>
+                    <InputLabel htmlFor='environmentIds'>Data classification</InputLabel>
+                    <Select
+                        id="environmentIds"
+                        multiple={true}
+                        value={state.indexInput.environmentIds}
+                        onChange={handleChange('environmentIds')}
+                    >
+                        { data?.environments.map((e: Environment) => (
+                            <MenuItem value={e._id}>{e._id}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>    
+            </TableCell>
+            <TableCell align='right'>
+                <Button
+                    variant='contained'
+                    className={classes.margin}
+                    onClick={() => reset()}
+                >Cancel</Button>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    className={classes.margin}
+                    onClick={() => handleSumbit()}
+                    disabled={state.indexId === ''}
+                >Submit</Button>
+            </TableCell>
+        </TableRow>
     );
 }
 

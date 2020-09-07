@@ -69,8 +69,16 @@ export type Mutation = {
   deleteApp: App;
   putEnvironment: Environment;
   deleteEnvironment: Environment;
+  putHttp: Http;
+  deleteHttp: Http;
+  putIndex: Index;
+  deleteIndex: Index;
+  putServer: Server;
+  deleteServer: Server;
   putService: Service;
   deleteService: Service;
+  putSyslog: Syslog;
+  deleteSyslog: Syslog;
 };
 
 
@@ -96,6 +104,39 @@ export type MutationDeleteEnvironmentArgs = {
 };
 
 
+export type MutationPutHttpArgs = {
+  httpId: Scalars['String'];
+  httpInput: HttpInput;
+};
+
+
+export type MutationDeleteHttpArgs = {
+  httpId: Scalars['String'];
+};
+
+
+export type MutationPutIndexArgs = {
+  indexId: Scalars['String'];
+  indexInput: IndexInput;
+};
+
+
+export type MutationDeleteIndexArgs = {
+  indexId: Scalars['String'];
+};
+
+
+export type MutationPutServerArgs = {
+  serverId: Scalars['String'];
+  indexInput: ServerInput;
+};
+
+
+export type MutationDeleteServerArgs = {
+  serverId: Scalars['String'];
+};
+
+
 export type MutationPutServiceArgs = {
   serviceId: Scalars['String'];
   serviceInput: ServiceInput;
@@ -104,6 +145,17 @@ export type MutationPutServiceArgs = {
 
 export type MutationDeleteServiceArgs = {
   serviceId: Scalars['String'];
+};
+
+
+export type MutationPutSyslogArgs = {
+  syslogId: Scalars['String'];
+  syslogInput: SyslogInput;
+};
+
+
+export type MutationDeleteSyslogArgs = {
+  syslogId: Scalars['String'];
 };
 
 export enum State {
@@ -282,6 +334,44 @@ export type SyslogInput = {
   environmentIds?: Maybe<Array<Scalars['String']>>;
 };
 
+export type GetAppsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAppsQuery = (
+  { __typename?: 'Query' }
+  & { apps: Array<(
+    { __typename?: 'App' }
+    & Pick<App, '_id' | 'serviceId' | 'url' | 'version' | 'environmentIds' | 'state'>
+  )> }
+);
+
+export type PutAppMutationVariables = Exact<{
+  appId: Scalars['String'];
+  appInput: AppInput;
+}>;
+
+
+export type PutAppMutation = (
+  { __typename?: 'Mutation' }
+  & { putApp: (
+    { __typename?: 'App' }
+    & Pick<App, '_id'>
+  ) }
+);
+
+export type DeleteAppMutationVariables = Exact<{
+  appId: Scalars['String'];
+}>;
+
+
+export type DeleteAppMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteApp: (
+    { __typename?: 'App' }
+    & Pick<App, '_id'>
+  ) }
+);
+
 export type GetEnvironmentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -317,6 +407,44 @@ export type DeleteEnvironmentMutation = (
   & { deleteEnvironment: (
     { __typename?: 'Environment' }
     & Pick<Environment, '_id'>
+  ) }
+);
+
+export type GetIndexesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetIndexesQuery = (
+  { __typename?: 'Query' }
+  & { indexes: Array<(
+    { __typename?: 'Index' }
+    & Pick<Index, '_id' | 'serviceId' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs' | 'environmentIds' | 'state'>
+  )> }
+);
+
+export type PutIndexMutationVariables = Exact<{
+  indexId: Scalars['String'];
+  indexInput: IndexInput;
+}>;
+
+
+export type PutIndexMutation = (
+  { __typename?: 'Mutation' }
+  & { putIndex: (
+    { __typename?: 'Index' }
+    & Pick<Index, '_id'>
+  ) }
+);
+
+export type DeleteIndexMutationVariables = Exact<{
+  indexId: Scalars['String'];
+}>;
+
+
+export type DeleteIndexMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteIndex: (
+    { __typename?: 'Index' }
+    & Pick<Index, '_id'>
   ) }
 );
 
@@ -372,6 +500,165 @@ export type DeleteServiceMutation = (
 );
 
 
+export const GetAppsDocument = gql`
+    query GetApps {
+  apps {
+    _id
+    serviceId
+    url
+    version
+    environmentIds
+    state
+  }
+}
+    `;
+export type GetAppsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetAppsQuery, GetAppsQueryVariables>, 'query'>;
+
+    export const GetAppsComponent = (props: GetAppsComponentProps) => (
+      <ApolloReactComponents.Query<GetAppsQuery, GetAppsQueryVariables> query={GetAppsDocument} {...props} />
+    );
+    
+export type GetAppsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetAppsQuery, GetAppsQueryVariables>
+    } & TChildProps;
+export function withGetApps<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetAppsQuery,
+  GetAppsQueryVariables,
+  GetAppsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetAppsQuery, GetAppsQueryVariables, GetAppsProps<TChildProps, TDataName>>(GetAppsDocument, {
+      alias: 'getApps',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetAppsQuery__
+ *
+ * To run a query within a React component, call `useGetAppsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAppsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAppsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAppsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAppsQuery, GetAppsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAppsQuery, GetAppsQueryVariables>(GetAppsDocument, baseOptions);
+      }
+export function useGetAppsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAppsQuery, GetAppsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAppsQuery, GetAppsQueryVariables>(GetAppsDocument, baseOptions);
+        }
+export type GetAppsQueryHookResult = ReturnType<typeof useGetAppsQuery>;
+export type GetAppsLazyQueryHookResult = ReturnType<typeof useGetAppsLazyQuery>;
+export type GetAppsQueryResult = ApolloReactCommon.QueryResult<GetAppsQuery, GetAppsQueryVariables>;
+export const PutAppDocument = gql`
+    mutation PutApp($appId: String!, $appInput: AppInput!) {
+  putApp(appId: $appId, appInput: $appInput) {
+    _id
+  }
+}
+    `;
+export type PutAppMutationFn = ApolloReactCommon.MutationFunction<PutAppMutation, PutAppMutationVariables>;
+export type PutAppComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutAppMutation, PutAppMutationVariables>, 'mutation'>;
+
+    export const PutAppComponent = (props: PutAppComponentProps) => (
+      <ApolloReactComponents.Mutation<PutAppMutation, PutAppMutationVariables> mutation={PutAppDocument} {...props} />
+    );
+    
+export type PutAppProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutAppMutation, PutAppMutationVariables>
+    } & TChildProps;
+export function withPutApp<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  PutAppMutation,
+  PutAppMutationVariables,
+  PutAppProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutAppMutation, PutAppMutationVariables, PutAppProps<TChildProps, TDataName>>(PutAppDocument, {
+      alias: 'putApp',
+      ...operationOptions
+    });
+};
+
+/**
+ * __usePutAppMutation__
+ *
+ * To run a mutation, you first call `usePutAppMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutAppMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [putAppMutation, { data, loading, error }] = usePutAppMutation({
+ *   variables: {
+ *      appId: // value for 'appId'
+ *      appInput: // value for 'appInput'
+ *   },
+ * });
+ */
+export function usePutAppMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutAppMutation, PutAppMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutAppMutation, PutAppMutationVariables>(PutAppDocument, baseOptions);
+      }
+export type PutAppMutationHookResult = ReturnType<typeof usePutAppMutation>;
+export type PutAppMutationResult = ApolloReactCommon.MutationResult<PutAppMutation>;
+export type PutAppMutationOptions = ApolloReactCommon.BaseMutationOptions<PutAppMutation, PutAppMutationVariables>;
+export const DeleteAppDocument = gql`
+    mutation DeleteApp($appId: String!) {
+  deleteApp(appId: $appId) {
+    _id
+  }
+}
+    `;
+export type DeleteAppMutationFn = ApolloReactCommon.MutationFunction<DeleteAppMutation, DeleteAppMutationVariables>;
+export type DeleteAppComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteAppMutation, DeleteAppMutationVariables>, 'mutation'>;
+
+    export const DeleteAppComponent = (props: DeleteAppComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteAppMutation, DeleteAppMutationVariables> mutation={DeleteAppDocument} {...props} />
+    );
+    
+export type DeleteAppProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteAppMutation, DeleteAppMutationVariables>
+    } & TChildProps;
+export function withDeleteApp<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteAppMutation,
+  DeleteAppMutationVariables,
+  DeleteAppProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteAppMutation, DeleteAppMutationVariables, DeleteAppProps<TChildProps, TDataName>>(DeleteAppDocument, {
+      alias: 'deleteApp',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteAppMutation__
+ *
+ * To run a mutation, you first call `useDeleteAppMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAppMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAppMutation, { data, loading, error }] = useDeleteAppMutation({
+ *   variables: {
+ *      appId: // value for 'appId'
+ *   },
+ * });
+ */
+export function useDeleteAppMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAppMutation, DeleteAppMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteAppMutation, DeleteAppMutationVariables>(DeleteAppDocument, baseOptions);
+      }
+export type DeleteAppMutationHookResult = ReturnType<typeof useDeleteAppMutation>;
+export type DeleteAppMutationResult = ApolloReactCommon.MutationResult<DeleteAppMutation>;
+export type DeleteAppMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAppMutation, DeleteAppMutationVariables>;
 export const GetEnvironmentsDocument = gql`
     query GetEnvironments {
   environments {
@@ -527,6 +814,165 @@ export function useDeleteEnvironmentMutation(baseOptions?: ApolloReactHooks.Muta
 export type DeleteEnvironmentMutationHookResult = ReturnType<typeof useDeleteEnvironmentMutation>;
 export type DeleteEnvironmentMutationResult = ApolloReactCommon.MutationResult<DeleteEnvironmentMutation>;
 export type DeleteEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>;
+export const GetIndexesDocument = gql`
+    query GetIndexes {
+  indexes {
+    _id
+    serviceId
+    maxTotalDataSizeMB
+    frozenTimePeriodInSecs
+    environmentIds
+    state
+  }
+}
+    `;
+export type GetIndexesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetIndexesQuery, GetIndexesQueryVariables>, 'query'>;
+
+    export const GetIndexesComponent = (props: GetIndexesComponentProps) => (
+      <ApolloReactComponents.Query<GetIndexesQuery, GetIndexesQueryVariables> query={GetIndexesDocument} {...props} />
+    );
+    
+export type GetIndexesProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetIndexesQuery, GetIndexesQueryVariables>
+    } & TChildProps;
+export function withGetIndexes<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetIndexesQuery,
+  GetIndexesQueryVariables,
+  GetIndexesProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetIndexesQuery, GetIndexesQueryVariables, GetIndexesProps<TChildProps, TDataName>>(GetIndexesDocument, {
+      alias: 'getIndexes',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetIndexesQuery__
+ *
+ * To run a query within a React component, call `useGetIndexesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIndexesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIndexesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetIndexesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetIndexesQuery, GetIndexesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetIndexesQuery, GetIndexesQueryVariables>(GetIndexesDocument, baseOptions);
+      }
+export function useGetIndexesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetIndexesQuery, GetIndexesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetIndexesQuery, GetIndexesQueryVariables>(GetIndexesDocument, baseOptions);
+        }
+export type GetIndexesQueryHookResult = ReturnType<typeof useGetIndexesQuery>;
+export type GetIndexesLazyQueryHookResult = ReturnType<typeof useGetIndexesLazyQuery>;
+export type GetIndexesQueryResult = ApolloReactCommon.QueryResult<GetIndexesQuery, GetIndexesQueryVariables>;
+export const PutIndexDocument = gql`
+    mutation PutIndex($indexId: String!, $indexInput: IndexInput!) {
+  putIndex(indexId: $indexId, indexInput: $indexInput) {
+    _id
+  }
+}
+    `;
+export type PutIndexMutationFn = ApolloReactCommon.MutationFunction<PutIndexMutation, PutIndexMutationVariables>;
+export type PutIndexComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutIndexMutation, PutIndexMutationVariables>, 'mutation'>;
+
+    export const PutIndexComponent = (props: PutIndexComponentProps) => (
+      <ApolloReactComponents.Mutation<PutIndexMutation, PutIndexMutationVariables> mutation={PutIndexDocument} {...props} />
+    );
+    
+export type PutIndexProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutIndexMutation, PutIndexMutationVariables>
+    } & TChildProps;
+export function withPutIndex<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  PutIndexMutation,
+  PutIndexMutationVariables,
+  PutIndexProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutIndexMutation, PutIndexMutationVariables, PutIndexProps<TChildProps, TDataName>>(PutIndexDocument, {
+      alias: 'putIndex',
+      ...operationOptions
+    });
+};
+
+/**
+ * __usePutIndexMutation__
+ *
+ * To run a mutation, you first call `usePutIndexMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutIndexMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [putIndexMutation, { data, loading, error }] = usePutIndexMutation({
+ *   variables: {
+ *      indexId: // value for 'indexId'
+ *      indexInput: // value for 'indexInput'
+ *   },
+ * });
+ */
+export function usePutIndexMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutIndexMutation, PutIndexMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutIndexMutation, PutIndexMutationVariables>(PutIndexDocument, baseOptions);
+      }
+export type PutIndexMutationHookResult = ReturnType<typeof usePutIndexMutation>;
+export type PutIndexMutationResult = ApolloReactCommon.MutationResult<PutIndexMutation>;
+export type PutIndexMutationOptions = ApolloReactCommon.BaseMutationOptions<PutIndexMutation, PutIndexMutationVariables>;
+export const DeleteIndexDocument = gql`
+    mutation DeleteIndex($indexId: String!) {
+  deleteIndex(indexId: $indexId) {
+    _id
+  }
+}
+    `;
+export type DeleteIndexMutationFn = ApolloReactCommon.MutationFunction<DeleteIndexMutation, DeleteIndexMutationVariables>;
+export type DeleteIndexComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteIndexMutation, DeleteIndexMutationVariables>, 'mutation'>;
+
+    export const DeleteIndexComponent = (props: DeleteIndexComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteIndexMutation, DeleteIndexMutationVariables> mutation={DeleteIndexDocument} {...props} />
+    );
+    
+export type DeleteIndexProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteIndexMutation, DeleteIndexMutationVariables>
+    } & TChildProps;
+export function withDeleteIndex<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteIndexMutation,
+  DeleteIndexMutationVariables,
+  DeleteIndexProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteIndexMutation, DeleteIndexMutationVariables, DeleteIndexProps<TChildProps, TDataName>>(DeleteIndexDocument, {
+      alias: 'deleteIndex',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteIndexMutation__
+ *
+ * To run a mutation, you first call `useDeleteIndexMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteIndexMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteIndexMutation, { data, loading, error }] = useDeleteIndexMutation({
+ *   variables: {
+ *      indexId: // value for 'indexId'
+ *   },
+ * });
+ */
+export function useDeleteIndexMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteIndexMutation, DeleteIndexMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteIndexMutation, DeleteIndexMutationVariables>(DeleteIndexDocument, baseOptions);
+      }
+export type DeleteIndexMutationHookResult = ReturnType<typeof useDeleteIndexMutation>;
+export type DeleteIndexMutationResult = ApolloReactCommon.MutationResult<DeleteIndexMutation>;
+export type DeleteIndexMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteIndexMutation, DeleteIndexMutationVariables>;
 export const GetServicesDocument = gql`
     query GetServices {
   services {
