@@ -1,10 +1,10 @@
 import React from 'react';
 import {Divider, Grid, Typography} from "@material-ui/core";
-import IndexList from "../index/IndexList";
-import AppList from "../app/AppList";
-import PermissionList from "../permission/PermissionList";
+import IndexList from "../src/components/index/IndexList";
+import AppList from "../src/components/app/AppList";
+import PermissionList from "../src/components/permission/PermissionList";
 import {createStyles, makeStyles} from "@material-ui/styles";
-import {Service} from "../../generated/graphql";
+import {Service} from "../src/generated/graphql";
 
 
 const useStyles = makeStyles(() =>

@@ -7,34 +7,54 @@ import {ApolloError, ForbiddenError} from "apollo-server";
 import {State} from "../../models";
 import {subsetEqual} from "../../helper/equality";
 
-
-export const getElements = async (model: any, context: any) => {
+export const getElements = async (model: any, id: string, context: any) => {
     let results;
 
+    // Restrict access for multi tenancy
     if(context.admin) {
-        results = await model.find();
+        if(id) {
+            results = await model.find({
+                serviceId: id
+            });
+        }
+        else {
+            results = await model.find();
+        }
     }
     else {
-        results = await model.find({
-            _id: { $in: context.services}
-        });
+        if(id) {
+            if(context.services.includes(id)) {
+                results = await model.find({
+                    serviceId: id
+                });
+            }
+            else return new ApolloError('Not found', 'NOT_FOUND');
+        }
+        else {
+            results = await model.find({
+                _id: { $in: context.services}
+            });
+        }
     }
+
+    console.log(typeof model);
 
     return results.map((e) => {
         return e._doc;
     });
 }
 
-export const getElement = async (model: any, {id}: any, context: any) => {
+export const getElement = async (model: any, id: any, context: any) => {
     const result = await model.findById(id);
 
+    // Restrict access for multi tenancy
     if(result && context.services.includes(result.serviceId)) {
         return result._doc;
     }
     else return new ApolloError('Not found', 'NOT_FOUND');
 }
 
-export const putElement = async (model: any, {id, input}: any, context: any) => {
+export const putElement = async (model: any, id: string, input: any, context: any) => {
     const result = await model.findById(id);
 
     // If the element does not exists
@@ -74,7 +94,7 @@ export const putElement = async (model: any, {id, input}: any, context: any) => 
 
 
             // Verify if future state is same as active state, if true it resets the future state
-            if(subsetEqual(serviceSaved._doc_changes, serviceSaved._doc)) {
+            if(subsetEqual(serviceSaved._doc.changes, serviceSaved._doc)) {
                 return await model.findByIdAndUpdate(id, {
                     $set: {
                         state: State.ACTIVE
@@ -94,7 +114,7 @@ export const putElement = async (model: any, {id, input}: any, context: any) => 
     }
 }
 
-export const deleteElement = async (model: any, {id}: any, context: any) => {
+export const deleteElement = async (model: any, id: string, context: any) => {
     if(!context.services.includes(id) && !context.admin) {
         return new ForbiddenError('Not allowed!');
     }

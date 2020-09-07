@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import {Typography} from '@material-ui/core';
 import {useGetEnvironmentsLazyQuery} from '../../generated/graphql';
 import EnvironmentList from "./EnvironmentList";
 import EnvironmentForm from "./EnvironmentForm";

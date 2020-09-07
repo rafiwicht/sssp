@@ -6,8 +6,8 @@ import {
     GetServicesDocument, Index, Kind,
     ServiceInput, useGetServiceLazyQuery,
     useUpdateServiceMutation
-} from "../../generated/graphql";
-import ServiceMod from "./ServiceMod";
+} from "../src/generated/graphql";
+import ServiceMod from "../src/components/service/ServiceMod";
 
 type ServiceUpdateParams = {
     id: string

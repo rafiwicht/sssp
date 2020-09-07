@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {MutationPutServiceArgs, Service, ServiceInput} from "../../generated/graphql";
+import {MutationPutServiceArgs, Service, ServiceInput, usePutServiceMutation, GetServicesDocument} from "../../generated/graphql";
 import {Button, Divider, FormControl, InputLabel, Typography, Input, Select, MenuItem} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles(() =>
@@ -19,7 +20,6 @@ const useStyles = makeStyles(() =>
 );
 
 type ServiceModProps = {
-    handleSubmit: (args: MutationPutServiceArgs) => void,
     handleCancel: () => void,
     serviceMod?: Service
 }
@@ -30,15 +30,20 @@ export enum Step {
     PERMISSION
 }
 
-const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, handleCancel, serviceMod}: ServiceModProps) => {
+const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleCancel, serviceMod}: ServiceModProps) => {
+    let history = useHistory();
 
     const [state, setState] = useState<MutationPutServiceArgs>({
         serviceId: serviceMod?._id || '',
         serviceInput: {
             owner: serviceMod?.owner || '',
             description: serviceMod?.description || '',
-            dataClassification: serviceMod?.dataClassification || ''
+            dataClassification: serviceMod?.dataClassification || 'Standard'
         }
+    });
+
+    const [putService] = usePutServiceMutation({
+        refetchQueries: [{query: GetServicesDocument}]
     });
 
     const classes = useStyles();
@@ -60,10 +65,18 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
         });
     };
 
+    const handleSubmit = () => {
+        putService({
+            variables: state
+        }).then(() => {
+            history.push('/service');
+        });
+    }
+
     return (
         <div>
             <Typography variant='h5'>Service options</Typography>
-            <form autoComplete='off' onSubmit={() => handleSubmit(state)}>
+            <form autoComplete='off' onSubmit={() => handleSubmit()}>
                 <Divider />
                 <FormControl fullWidth className={classes.marginFields} required>
                     <InputLabel htmlFor='_id'>Name</InputLabel>
@@ -121,7 +134,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleSubmit, han
                 variant='contained'
                 color='primary'
                 className={classes.marginButton}
-                onClick={() => handleSubmit(state)}
+                onClick={() => handleSubmit()}
                 disabled={state.serviceId === ''
                     || state.serviceInput.owner === ''
                     || state.serviceInput.description === ''

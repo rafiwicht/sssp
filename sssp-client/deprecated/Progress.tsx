@@ -1,6 +1,6 @@
 import { Box, Grid } from '@material-ui/core';
 import React from 'react';
-import { Step } from './ServiceMod';
+import { Step } from '../src/components/service/ServiceMod';
 
 type ProgressProps = {
     current: Step

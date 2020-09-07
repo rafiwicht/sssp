@@ -12,22 +12,22 @@ const typeDefs = gql`
     type Query {
 
         ##### App #####
-        apps: [App!]!
+        apps(serviceId: String): [App!]!
         app(appId: String!): App!
         
         ##### Environment #####
         environments: [Environment!]!
         
         ##### Http #####
-        https: [Http!]!
+        https(serviceId: String): [Http!]!
         http(httpId: String!): Http!
         
         ##### Index #####
-        indexes: [Index!]!
+        indexes(serviceId: String): [Index!]!
         index(indexId: String!): Index!
         
         ##### Server #####
-        servers: [Server!]!
+        servers(serviceId: String): [Server!]!
         server(serverId: String!): Server!
         
         ##### Service #####
@@ -35,7 +35,7 @@ const typeDefs = gql`
         service(serviceId: String!): Service!
         
         ##### Syslog #####
-        syslogs: [Syslog!]!
+        syslogs(serviceId: String): [Syslog!]!
         syslog(syslogId: String!): Syslog!
     }
     type Mutation {
@@ -48,11 +48,26 @@ const typeDefs = gql`
         putEnvironment(environmentId: String!, environmentInput: EnvironmentInput!): Environment!
         deleteEnvironment(environmentId: String!): Environment!
         
+        ##### Http #####
+        putHttp(httpId: String!, httpInput: HttpInput!): Http!
+        deleteHttp(httpId: String!): Http!
+        
+        ##### Index #####
+        putIndex(indexId: String!, indexInput: IndexInput!): Index!
+        deleteIndex(indexId: String!): Index!
+        
+        ##### Server #####
+        putServer(serverId: String!, indexInput: ServerInput!): Server!
+        deleteServer(serverId: String!): Server!
+
         ##### Service #####
         putService(serviceId: String!, serviceInput: ServiceInput!): Service!
         deleteService(serviceId: String!): Service!
-
         
+        ##### Syslog #####
+        putSyslog(syslogId: String!, syslogInput: SyslogInput!): Syslog!
+        deleteSyslog(syslogId: String!): Syslog!
+   
     }
     enum State {
         IN_CREATION

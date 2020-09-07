@@ -2,11 +2,11 @@ import React from 'react';
 import {
     GetServicesDocument,
     MutationPutServiceArgs,
-    ServiceInput,
     usePutServiceMutation
 } from '../../generated/graphql';
 import ServiceMod from './ServiceMod';
 import { useHistory } from 'react-router-dom';
+import { Typography } from '@material-ui/core';
 
 
 
@@ -32,8 +32,8 @@ const ServiceCreate: React.FC = () => {
 
     return (
         <div>
+            <Typography variant='h4'>Create service</Typography>
             <ServiceMod
-                handleSubmit={handleSubmit}
                 handleCancel={handleCancel}
             />
         </div>

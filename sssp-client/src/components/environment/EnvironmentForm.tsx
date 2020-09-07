@@ -3,7 +3,8 @@ import {Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel} from
 import {
     EnvironmentInput,
     GetEnvironmentsDocument,
-    usePutEnvironmentMutation
+    usePutEnvironmentMutation,
+    MutationPutEnvironmentArgs
 } from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 
@@ -18,13 +19,8 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-type EnvironmentState = {
-    environmentId: string,
-    environmentInput: EnvironmentInput
-}
-
 const EnvironmentForm: React.FC = () => {
-    const [state, setState] = useState<EnvironmentState>({
+    const [state, setState] = useState<MutationPutEnvironmentArgs>({
         environmentId: '',
         environmentInput: {
             userAccess: false

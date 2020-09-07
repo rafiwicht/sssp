@@ -6,7 +6,7 @@ import {
 } from "../../generated/graphql";
 import {Button} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/styles";
-import ServiceDisplay from "../service/ServiceDisplay";
+import ServiceDisplay from "../../../deprecated/ServiceDisplay";
 import ServiceDisplayCombined from './ServiceDisplayCombined';
 
 type WorkflowDetailsParams = {

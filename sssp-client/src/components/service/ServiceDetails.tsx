@@ -1,45 +1,54 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {useHistory, useParams} from "react-router-dom";
-import {Button, Typography} from "@material-ui/core";
-import {Kind, useGetServiceLazyQuery} from "../../generated/graphql";
-import {createStyles, makeStyles} from "@material-ui/styles";
-import ServiceDisplay from "./ServiceDisplay";
+import {Paper, Tabs, Tab, Divider, Button, Typography} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
+import TabPanel from "../helper/TabPanel";
+import ServiceMod from "./ServiceMod";
+import { useGetServiceLazyQuery } from "../../generated/graphql";
+import Index from "../index/Index";
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        marginFields: {
-            marginTop: 5,
-            marginBottom: 5
-        },
-        marginButton: {
-            marginTop: 5,
-            marginBottom: 5,
-            marginRight: 5
-        },
-        margin: {
-            marginTop: 5,
-            marginBottom: 5,
-            marginRight: 5
-        },
-    }),
-);
+const useStyles = makeStyles({
+    root: {
+        flexGrow: 1,
+    },
+    marginButton: {
+        marginTop: 5,
+        marginBottom: 5,
+        marginRight: 5
+    },
+});
 
 type ServiceDetailsParams = {
     id: string
 }
 
 const ServiceDetails: React.FC = () => {
-    const { id }: ServiceDetailsParams = useParams();
     const classes = useStyles();
+    const {id}: ServiceDetailsParams = useParams();
+    const history = useHistory();
+    const [value, setValue] = React.useState(0);
 
-    let history = useHistory();
-
-    const [getService, {data, error, loading}] = useGetServiceLazyQuery( {
+    const [getService, {data, loading, error}] = useGetServiceLazyQuery({
         variables: {
-            serviceId: id,
-            kind: Kind.Newest
+            serviceId: id
         }
     });
+
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setValue(newValue);
+    };
+
+    const handleCancel = () => {
+        history.push('/service');
+    }
+
+    const handleDelete = () => {
+        history.push(`/service/delete/${id}`)
+    }
+
+    const handleCancelSamePage = () => {
+        history.push(`/service/details/${id}`);
+    }
 
     useEffect(() => {
         getService();
@@ -53,22 +62,45 @@ const ServiceDetails: React.FC = () => {
         return <div>ERROR</div>;
     }
 
-    const handleClose = () => {
-        history.push('/service')
-    }
-
     return (
         <div>
-            <Typography variant='h3'>Service Details</Typography>
-            <ServiceDisplay
-                service={data.service} />
+            <Paper className={classes.root}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+                >
+                    <Tab label="Service options" />
+                    <Tab label="Indexes" />
+                </Tabs>
+            </Paper>
+            <TabPanel value={value} index={0}>
+                <Typography>State: {data.service.state}</Typography>
+                <ServiceMod 
+                    handleCancel={handleCancelSamePage}
+                    serviceMod={data.service}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <Index 
+                    serviceId={id}
+                />
+            </TabPanel>
+            <Divider />
             <Button
                 variant='contained'
                 className={classes.marginButton}
-                onClick={() => handleClose()}
-            >Close</Button>
+                onClick={() => handleCancel()}
+            >Back</Button>
+            <Button
+                variant='contained'
+                color='secondary'
+                className={classes.marginButton}
+                onClick={() => handleDelete()}
+            >Delete</Button>
         </div>
 
-    );
+    )
 }
 export default ServiceDetails;

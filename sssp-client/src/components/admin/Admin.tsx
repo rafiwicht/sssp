@@ -2,6 +2,7 @@ import React from 'react';
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
 import Environment from "../environment/Environment";
+import TabPanel from '../helper/TabPanel';
 
 
 const useStyles = makeStyles({
@@ -36,28 +37,6 @@ const Admin: React.FC = () => {
         </div>
 
     )
-}
-
-type TabPanelProps = {
-    children?: React.ReactNode,
-    index: any,
-    value: any,
-}
-
-const TabPanel = ({children, index, value}: TabPanelProps) => {
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-        >
-            {value === index && (
-                <div>
-                    {children}
-                </div>
-            )}
-        </div>
-    );
 }
 
 export default Admin;

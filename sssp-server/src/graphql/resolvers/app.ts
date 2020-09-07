@@ -1,14 +1,14 @@
-import App from "../../models/service";
+import App from "../../models/app";
 import {putElement, getElement, getElements, deleteElement} from "./generator";
 
 const AppQueries = {
-    apps: async (parent: any, params: any, context: any) => getElements(App, context),
-    app: async (parent: any, params: any, context: any) => getElement(App, params, context)
+    apps: async (parent: any, {serviceId}: any, context: any) => getElements(App, serviceId, context),
+    app: async (parent: any, {appId}: any, context: any) => getElement(App, appId, context)
 };
 
 const AppMutations = {
-    putApp: async (parent: any, params: any, context: any) => putElement(App, params, context),
-    deleteApp: async (parent: any, params: any, context: any) => deleteElement(App, params, context)
+    putApp: async (parent: any, {appId, appInput}: any, context: any) => putElement(App, appId, appInput, context),
+    deleteApp: async (parent: any, {appId}: any, context: any) => deleteElement(App, appId, context)
 };
 
 export {AppQueries, AppMutations};

@@ -4,14 +4,14 @@ import React from 'react';
 type TabPanelProps  = {
     children?: React.ReactNode;
     index: number;
-    tab: number;
+    value: number;
 }
 
-const TabPanel: React.FunctionComponent<TabPanelProps> = ({children, index, tab}: TabPanelProps) => {
+const TabPanel: React.FunctionComponent<TabPanelProps> = ({children, index, value}: TabPanelProps) => {
 
     return (
         <div
-            hidden={tab !== index}
+            hidden={value !== index}
             id={`tabpanel-${index}`}
         >
             {children}

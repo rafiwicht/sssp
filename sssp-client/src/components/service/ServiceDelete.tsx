@@ -30,15 +30,15 @@ const ServiceDelete: React.FC = () => {
 
     const handleCancel = () => {
         history.push('/service')
-    }
+    };
 
     const handleSubmit = () => {
         deleteService({variables: {
             serviceId: id
             }}).then(() => {
-                history.push('/service')
+                history.push(`/service/details/${id}`)
         });
-    }
+    };
 
     return (
         <div>

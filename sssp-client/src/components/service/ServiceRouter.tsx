@@ -3,7 +3,6 @@ import {Route, Switch, useRouteMatch} from "react-router-dom";
 import Service from "./Service";
 import ServiceCreate from "./ServiceCreate";
 import ServiceDetails from "./ServiceDetails";
-import ServiceUpdate from "./ServiceUpdate";
 import ServiceDelete from "./ServiceDelete";
 
 const ServiceRouter: React.FC = () => {
@@ -19,9 +18,6 @@ const ServiceRouter: React.FC = () => {
             </Route>
             <Route path={`${path}/details/:id`}>
                 <ServiceDetails />
-            </Route>
-            <Route path={`${path}/update/:id`}>
-                <ServiceUpdate />
             </Route>
             <Route path={`${path}/delete/:id`}>
                 <ServiceDelete />
