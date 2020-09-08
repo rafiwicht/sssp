@@ -27,6 +27,7 @@ const EnvironmentMutations = {
         else {
             const environmentNew = new Environment({
                 ...environmentInput,
+                _id: environmentId
             });
             return environmentNew.save();
         }

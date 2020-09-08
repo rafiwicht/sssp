@@ -37,8 +37,6 @@ export const getElements = async (model: any, id: string, context: any) => {
         }
     }
 
-    console.log(typeof model);
-
     return results.map((e) => {
         return e._doc;
     });

@@ -2,11 +2,7 @@ import {getElement, getElements, putElement, deleteElement} from "./generator";
 import Index from "../../models/idx";
 
 const IndexQueries = {
-    indexes: async (parent: any, {serviceId}: any, context: any) => {
-        const indexes = getElements(Index, serviceId, context);
-        console.log(indexes);
-        return indexes;
-    },
+    indexes: async (parent: any, {serviceId}: any, context: any) => getElements(Index, serviceId, context),
     index: async (parent: any, {indexId}: any, context: any) => getElement(Index, indexId, context)
 };
 
