@@ -43,6 +43,8 @@ const typeDefs = gql`
         ##### App #####
         putApp(appId: String!, appInput: AppInput!): App!
         deleteApp(appId: String!): App!
+        acceptAppChange(appId: String!): App!
+        rejectAppChange(appId: String!): App!
 
         ##### Environment #####
         putEnvironment(environmentId: String!, environmentInput: EnvironmentInput!): Environment!
@@ -51,22 +53,32 @@ const typeDefs = gql`
         ##### Http #####
         putHttp(httpId: String!, httpInput: HttpInput!): Http!
         deleteHttp(httpId: String!): Http!
+        acceptHttpChange(httpId: String!): Http!
+        rejectHttpChange(httpId: String!): Http!
         
         ##### Index #####
         putIndex(indexId: String!, indexInput: IndexInput!): Index!
         deleteIndex(indexId: String!): Index!
+        acceptIndexChange(indexId: String!): Index!
+        rejectIndexChange(indexId: String!): Index!
         
         ##### Server #####
         putServer(serverId: String!, serverInput: ServerInput!): Server!
         deleteServer(serverId: String!): Server!
+        acceptServerChange(serverId: String!): Server!
+        rejectServerChange(serverId: String!): Server!
 
         ##### Service #####
         putService(serviceId: String!, serviceInput: ServiceInput!): Service!
         deleteService(serviceId: String!): Service!
+        acceptServiceChange(serviceId: String!): Service!
+        rejectServiceChange(serviceId: String!): Service!
         
         ##### Syslog #####
         putSyslog(syslogId: String!, syslogInput: SyslogInput!): Syslog!
         deleteSyslog(syslogId: String!): Syslog!
+        acceptSyslogChange(syslogId: String!): Syslog!
+        rejectSyslogChange(syslogId: String!): Syslog!
    
     }
     enum State {

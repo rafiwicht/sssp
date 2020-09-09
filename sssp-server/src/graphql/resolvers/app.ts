@@ -1,5 +1,5 @@
 import App from "../../models/app";
-import {putElement, getElement, getElements, deleteElement} from "./generator";
+import {putElement, getElement, getElements, deleteElement, acceptChange, rejectChange} from "./generator";
 
 const AppQueries = {
     apps: async (parent: any, {serviceId}: any, context: any) => getElements(App, serviceId, context),
@@ -8,7 +8,9 @@ const AppQueries = {
 
 const AppMutations = {
     putApp: async (parent: any, {appId, appInput}: any, context: any) => putElement(App, appId, appInput, context),
-    deleteApp: async (parent: any, {appId}: any, context: any) => deleteElement(App, appId, context)
+    deleteApp: async (parent: any, {appId}: any, context: any) => deleteElement(App, appId, context),
+    acceptAppChange: async (parent: any, {appId}: any, context: any) => acceptChange(App, appId, context),
+    rejectAppChange: async (parent: any, {appId}: any, context: any) => rejectChange(App, appId, context)
 };
 
 export {AppQueries, AppMutations};

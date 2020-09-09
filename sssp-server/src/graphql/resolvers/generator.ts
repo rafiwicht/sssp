@@ -123,14 +123,57 @@ export const deleteElement = async (model: any, id: string, context: any) => {
         return new ForbiddenError('Not allowed!');
     }
 
-    const service = await model.findById(id);
-    if(!service) {
+    const element = await model.findById(id);
+    if(!element) {
         return new ApolloError('Not found', 'NOT_FOUND');
     }
     else {
         return await model.findByIdAndUpdate(id, {
             $set: {
                 state: State.IN_DELETION
+            }
+        },{
+            new: true
+        });
+    }
+}
+
+export const acceptChange = async (model: any, id: string, context: any) => {
+    if(!context.admin) return new ForbiddenError('Not allowed!');
+
+    const element = await model.findById(id);
+    if(!element) {
+        return new ApolloError('Not found', 'NOT_FOUND');
+    }
+    else {
+        return await model.findByIdAndUpdate(id, {
+            $set: {
+                ...element.changes,
+                state: State.ACTIVE
+            },
+            $unset: {
+                changes: {}
+            }
+        },{
+            new: true
+        });
+    }
+
+}
+export const rejectChange = async (model: any, id: string, context: any) => {
+    if(!context.admin) return new ForbiddenError('Not allowed!');
+
+    const element = await model.findById(id);
+    if(!element) {
+        return new ApolloError('Not found', 'NOT_FOUND');
+    }
+    else {
+        return await model.findByIdAndUpdate(id, {
+            $set: {
+                state: State.ACTIVE
+            },
+            $unset: {
+                changes: {}
             }
         },{
             new: true

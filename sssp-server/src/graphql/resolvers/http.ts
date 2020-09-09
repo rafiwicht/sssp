@@ -1,4 +1,4 @@
-import {getElement, getElements, putElement, deleteElement} from "./generator";
+import {getElement, getElements, putElement, deleteElement, rejectChange, acceptChange} from "./generator";
 import Http from "../../models/http";
 
 const HttpQueries = {
@@ -8,7 +8,9 @@ const HttpQueries = {
 
 const HttpMutations = {
     putHttp: async (parent: any, {httpId, httpInput}: any, context: any) => putElement(Http, httpId, httpInput, context),
-    deleteHttp: async (parent: any, {httpId}: any, context: any) => deleteElement(Http, httpId, context)
+    deleteHttp: async (parent: any, {httpId}: any, context: any) => deleteElement(Http, httpId, context),
+    acceptHttpChange: async (parent: any, {httpId}: any, context: any) => acceptChange(Http, httpId, context),
+    rejectHttpChange: async (parent: any, {httpId}: any, context: any) => rejectChange(Http, httpId, context)
 };
 
 export {HttpQueries, HttpMutations};

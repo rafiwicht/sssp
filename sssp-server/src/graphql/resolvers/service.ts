@@ -1,6 +1,6 @@
 import Service from '../../models/service';
 import {ApolloError} from 'apollo-server';
-import {deleteElement, putElement} from "./generator";
+import {acceptChange, deleteElement, putElement, rejectChange} from "./generator";
 
 
 export enum Kind {
@@ -39,7 +39,9 @@ const ServiceQueries = {
 
 const ServiceMutations = {
     putService: async (parent: any, {serviceId, serviceInput}: any, context: any) => putElement(Service, serviceId, serviceInput, context),
-    deleteService: async (parent: any, {serviceId}: any, context: any) => deleteElement(Service, serviceId, context)
+    deleteService: async (parent: any, {serviceId}: any, context: any) => deleteElement(Service, serviceId, context),
+    acceptServiceChange: async (parent: any, {serviceId}: any, context: any) => acceptChange(Service, serviceId, context),
+    rejectServiceChange: async (parent: any, {serviceId}: any, context: any) => rejectChange(Service, serviceId, context)
 };
 
 export {ServiceQueries, ServiceMutations};
