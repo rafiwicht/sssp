@@ -6,6 +6,7 @@ import TabPanel from "../helper/TabPanel";
 import ServiceMod from "./ServiceMod";
 import { useGetServiceLazyQuery } from "../../generated/graphql";
 import Index from "../index/Index";
+import App from '../app/App';
 
 const useStyles = makeStyles({
     root: {
@@ -73,6 +74,7 @@ const ServiceDetails: React.FC = () => {
                 >
                     <Tab label="Service options" />
                     <Tab label="Indexes" />
+                    <Tab label="Apps and addons" />
                 </Tabs>
             </Paper>
             <TabPanel value={value} index={0}>
@@ -84,6 +86,11 @@ const ServiceDetails: React.FC = () => {
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <Index 
+                    serviceId={id}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                <App 
                     serviceId={id}
                 />
             </TabPanel>

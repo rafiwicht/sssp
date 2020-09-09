@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Button, FormControl, Input, InputLabel, MenuItem, TableCell, TableRow, Select} from "@material-ui/core";
+import {Button, MenuItem, TableCell, TableRow, Select, TextField} from "@material-ui/core";
 import {Index, IndexInput, MutationPutIndexArgs, usePutIndexMutation, GetIndexesDocument, useGetEnvironmentsLazyQuery, Environment} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 
 
 type IndexFormProps = {
     serviceId: string,
+    resetInput: () => void,
     indexMod?: Index
 }
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, indexMod}: IndexFormProps) => {
+const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInput, indexMod}: IndexFormProps) => {
     const [state, setState] = useState<MutationPutIndexArgs>({
         indexId: indexMod?._id || '',
         indexInput: {
@@ -39,7 +40,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, indexMod
 
     useEffect(() => {
         getEnvironments();
-    });
+    },[]);
 
     const handleIdChange = (event: any) => {
         setState({
@@ -49,22 +50,32 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, indexMod
     };
 
     const handleChange = (prop: keyof IndexInput) => (event: any) => {
+        // Value returns always string
+        let value;
+        if(event.target.type === 'number') {
+            value = Number(event.target.value);
+        }
+        else {
+            value = event.target.value;
+        }
         setState({
             ...state,
             indexInput: {
                 ...state.indexInput, 
-                [prop]: event.target.value
+                [prop]: value
             }
         });
     };
 
     const handleSumbit = () => {
+        reset();
         putIndex({
             variables: state
         });
     };
 
     const reset = () => {
+        resetInput();
         setState({
             indexId: '',
             indexInput: {
@@ -79,57 +90,45 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, indexMod
     return (
         <TableRow>
             <TableCell>
-                <FormControl className={classes.margin} required>
-                    <InputLabel htmlFor='_id'>Name</InputLabel>
-                    <Input
-                        id='_id'
-                        type='text'
-                        required
-                        value={state.indexId}
-                        disabled={state.indexId === undefined}
-                        onChange={handleIdChange}
-                    />
-                </FormControl>
+                <TextField
+                    id='_id'
+                    type='text'
+                    required
+                    value={state.indexId}
+                    disabled={indexMod !== undefined}
+                    onChange={handleIdChange}
+                />
             </TableCell>
             <TableCell align='right'>{indexMod === undefined ? '' : indexMod.state}</TableCell>
             <TableCell align='right'>
-                <FormControl className={classes.margin} required>
-                    <InputLabel htmlFor='maxTotalDataSizeMB'>maxTotalDataSizeMB</InputLabel>
-                    <Input
-                        id='maxTotalDataSizeMB'
-                        type='number'
-                        required
-                        value={state.indexInput.maxTotalDataSizeMB}
-                        onChange={handleChange('maxTotalDataSizeMB')}
-                    />
-                </FormControl>
+                <TextField
+                    id='maxTotalDataSizeMB'
+                    type='number'
+                    required
+                    value={state.indexInput.maxTotalDataSizeMB}
+                    onChange={handleChange('maxTotalDataSizeMB')}
+                />
             </TableCell>
             <TableCell align='right'>
-                <FormControl className={classes.margin} required>
-                    <InputLabel htmlFor='name'>Name</InputLabel>
-                    <Input
-                        id='frozenTimePeriodInSecs'
-                        type='number'
-                        required
-                        value={state.indexInput.frozenTimePeriodInSecs}
-                        onChange={handleChange('frozenTimePeriodInSecs')}
-                    />
-                </FormControl>
+                <TextField
+                    id='frozenTimePeriodInSecs'
+                    type='number'
+                    required
+                    value={state.indexInput.frozenTimePeriodInSecs}
+                    onChange={handleChange('frozenTimePeriodInSecs')}
+                />
             </TableCell>
             <TableCell align='right'>
-                <FormControl className={classes.margin} required>
-                    <InputLabel htmlFor='environmentIds'>Data classification</InputLabel>
-                    <Select
-                        id="environmentIds"
-                        multiple={true}
-                        value={state.indexInput.environmentIds}
-                        onChange={handleChange('environmentIds')}
-                    >
-                        { data?.environments.map((e: Environment) => (
-                            <MenuItem value={e._id}>{e._id}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>    
+                <TextField
+                    id="environmentIds"
+                    select
+                    value={state.indexInput.environmentIds}
+                    onChange={handleChange('environmentIds')}
+                    SelectProps={{multiple: true}}
+                    children={data?.environments.map((e: Environment, k: number) => (
+                        <MenuItem key={k} value={e._id}>{e._id}</MenuItem>
+                    ))}
+                />
             </TableCell>
             <TableCell align='right'>
                 <Button

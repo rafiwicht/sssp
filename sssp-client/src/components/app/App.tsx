@@ -1,27 +1,27 @@
-import { Typography, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Divider } from '@material-ui/core';
+import { Typography, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Divider, Checkbox } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-import { useGetIndexesLazyQuery, useDeleteIndexMutation, GetIndexesDocument, Index as IndexType } from '../../generated/graphql';
-import IndexForm from './IndexForm';
+import { useGetAppsLazyQuery, useDeleteAppMutation, GetAppsDocument, App as AppType } from '../../generated/graphql';
+import AppForm from './AppForm';
 
 
 
-type IndexProps = {
+type AppProps = {
     serviceId: string
 }
 
-const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => {
+const App: React.FunctionComponent<AppProps> = ({serviceId}: AppProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');
 
-    const [getIndexes, {data, loading, error}] = useGetIndexesLazyQuery();
-    const [deleteIndex] = useDeleteIndexMutation({
-        refetchQueries: [{query: GetIndexesDocument}]
+    const [getApps, {data, loading, error}] = useGetAppsLazyQuery();
+    const [deleteApp] = useDeleteAppMutation({
+        refetchQueries: [{query: GetAppsDocument}]
     });
 
     const handleDelete = (id: string) => {
-        deleteIndex({
+        deleteApp({
             variables: {
-                indexId: id
+                appId: id
             }
         });
     };
@@ -32,7 +32,7 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
     }
 
     useEffect(() => {
-        getIndexes();
+        getApps();
     }, []);
     
     if (loading) {
@@ -45,25 +45,26 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
 
     return (
         <div>
-            <Typography variant='h5'>Index options</Typography>
+            <Typography variant='h5'>App options</Typography>
             <Divider />
             <TableContainer component={Paper}>
-                <Table aria-label="indexes">
+                <Table aria-label="Appes">
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell align='right'>State</TableCell>
-                            <TableCell align='right'>MaxTotalDataSizeMB</TableCell>
-                            <TableCell align='right'>FrozenTimePeriodInSecs</TableCell>
+                            <TableCell align='right'>URL</TableCell>
+                            <TableCell align='right'>Version</TableCell>
+                            <TableCell align='right'>Git</TableCell>
                             <TableCell align='right'>Environments</TableCell>
                             <TableCell align='right'>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.indexes.map((row: IndexType) => {
+                        {data.apps?.map((row: AppType) => {
                             if(row._id === edit) {
                                 return (
-                                    <IndexForm key={row._id} serviceId={serviceId} resetInput={reset} indexMod={row} />
+                                    <AppForm key={row._id} serviceId={serviceId} resetInput={reset} appMod={row} />
                                 );
                             }
                             else {
@@ -71,8 +72,14 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
                                     <TableRow key={row._id}>
                                         <TableCell>{row._id}</TableCell>
                                         <TableCell align='right'>{row.state}</TableCell>
-                                        <TableCell align='right'>{row.maxTotalDataSizeMB}</TableCell>
-                                        <TableCell align='right'>{row.frozenTimePeriodInSecs}</TableCell>
+                                        <TableCell align='right'>{row.url}</TableCell>
+                                        <TableCell align='right'>{row.version}</TableCell>
+                                        <TableCell align='right'>
+                                            <Checkbox 
+                                                disabled 
+                                                checked={row.git}
+                                            />    
+                                        </TableCell>
                                         <TableCell align='right'>{row.environmentIds.join(', ')}</TableCell>
                                         <TableCell align='right'>
                                             <Button
@@ -91,7 +98,7 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
                             }
                         })}
                         {!hidden && 
-                            <IndexForm serviceId={serviceId} resetInput={reset} />
+                            <AppForm serviceId={serviceId} resetInput={reset} />
                         }
                     </TableBody>
                 </Table>
@@ -102,10 +109,10 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
                     variant='contained'
                     color='primary'
                     onClick={() => setHidden(false)}
-                >Add index</Button>
+                >Add app</Button>
             }
         </div>
     );
 }
 
-export default Index;
+export default App;

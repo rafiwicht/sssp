@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel} from "@material-ui/core";
 import {
-    EnvironmentInput,
     GetEnvironmentsDocument,
     usePutEnvironmentMutation,
     MutationPutEnvironmentArgs

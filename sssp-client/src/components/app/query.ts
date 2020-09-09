@@ -7,6 +7,7 @@ export default gql`
             serviceId
             url
             version
+            git
             environmentIds
             state
         }

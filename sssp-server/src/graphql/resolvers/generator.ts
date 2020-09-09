@@ -9,7 +9,6 @@ import {subsetEqual} from "../../helper/equality";
 
 export const getElements = async (model: any, id: string, context: any) => {
     let results;
-
     // Restrict access for multi tenancy
     if(context.admin) {
         if(id) {
@@ -73,7 +72,8 @@ export const putElement = async (model: any, id: string, input: any, context: an
 
         // Updates elements which are in creation
         if(result.state === State.IN_CREATION) {
-            return await model.findByIdAndUpdate(result.serviceId, {
+
+            return await model.findByIdAndUpdate(id, {
                 ...input,
                 state: State.IN_CREATION
             },{
@@ -83,9 +83,13 @@ export const putElement = async (model: any, id: string, input: any, context: an
         else {
             // Updates elements which are in deletion and modificationb
             const serviceSaved = await model.findByIdAndUpdate(id, {
-                changes: {
-                    ...input
+                $set: {
+                    changes: {
+                        ...input
+                    },
+                    state: State.IN_MODIFICATION
                 }
+                
             },{
                 new: true
             });

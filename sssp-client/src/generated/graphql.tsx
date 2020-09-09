@@ -34,8 +34,18 @@ export type Query = {
 };
 
 
+export type QueryAppsArgs = {
+  serviceId?: Maybe<Scalars['String']>;
+};
+
+
 export type QueryAppArgs = {
   appId: Scalars['String'];
+};
+
+
+export type QueryHttpsArgs = {
+  serviceId?: Maybe<Scalars['String']>;
 };
 
 
@@ -44,8 +54,18 @@ export type QueryHttpArgs = {
 };
 
 
+export type QueryIndexesArgs = {
+  serviceId?: Maybe<Scalars['String']>;
+};
+
+
 export type QueryIndexArgs = {
   indexId: Scalars['String'];
+};
+
+
+export type QueryServersArgs = {
+  serviceId?: Maybe<Scalars['String']>;
 };
 
 
@@ -56,6 +76,11 @@ export type QueryServerArgs = {
 
 export type QueryServiceArgs = {
   serviceId: Scalars['String'];
+};
+
+
+export type QuerySyslogsArgs = {
+  serviceId?: Maybe<Scalars['String']>;
 };
 
 
@@ -169,6 +194,7 @@ export type AppChanges = {
   __typename?: 'AppChanges';
   url: Scalars['String'];
   version: Scalars['String'];
+  git: Scalars['Boolean'];
   environmentIds: Array<Scalars['String']>;
 };
 
@@ -178,6 +204,7 @@ export type App = {
   serviceId: Scalars['String'];
   url: Scalars['String'];
   version: Scalars['String'];
+  git: Scalars['Boolean'];
   environmentIds: Array<Scalars['String']>;
   state: State;
   changes?: Maybe<AppChanges>;
@@ -187,6 +214,7 @@ export type AppInput = {
   serviceId: Scalars['String'];
   url?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
+  git?: Maybe<Scalars['Boolean']>;
   environmentIds?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -341,7 +369,7 @@ export type GetAppsQuery = (
   { __typename?: 'Query' }
   & { apps: Array<(
     { __typename?: 'App' }
-    & Pick<App, '_id' | 'serviceId' | 'url' | 'version' | 'environmentIds' | 'state'>
+    & Pick<App, '_id' | 'serviceId' | 'url' | 'version' | 'git' | 'environmentIds' | 'state'>
   )> }
 );
 
@@ -507,6 +535,7 @@ export const GetAppsDocument = gql`
     serviceId
     url
     version
+    git
     environmentIds
     state
   }

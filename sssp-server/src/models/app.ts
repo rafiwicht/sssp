@@ -6,6 +6,7 @@ export interface AppInterface extends Document {
     serviceId: string;
     url: string;
     version: string;
+    git: boolean;
     environmentIds: [string];
     state: State;
     changes?: {
@@ -19,12 +20,14 @@ const AppSchema: Schema = new Schema({
     serviceId: { type: String, required: true, index: true },
     url: { type: String, default: 'in creation' },
     version: { type: String, default: 'latest' },
+    git: { type: Boolean, default: true },
     environmentIds : { type: [String], default: []},
     state: { type: State, default: State.IN_CREATION },
     changes: {
         type: {
             url: { type: String, default: 'in creation' },
             version: { type: String, default: 'latest' },
+            git: { type: Boolean, default: true },
             environmentIds : { type: [String], default: [] }
         }
     }

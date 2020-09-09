@@ -80,6 +80,7 @@ const typeDefs = gql`
     type AppChanges {
         url: String!
         version: String!
+        git: Boolean!
         environmentIds: [String!]!
     }
     type App {
@@ -87,6 +88,7 @@ const typeDefs = gql`
         serviceId: String!
         url: String!
         version: String!
+        git: Boolean!
         environmentIds: [String!]!
         state: State!
         changes: AppChanges
@@ -95,6 +97,7 @@ const typeDefs = gql`
         serviceId: String!
         url: String
         version: String
+        git: Boolean
         environmentIds: [String!]
     }
     
