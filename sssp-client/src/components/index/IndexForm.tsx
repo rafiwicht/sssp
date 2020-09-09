@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Button, MenuItem, TableCell, TableRow, Select, TextField} from "@material-ui/core";
-import {Index, IndexInput, MutationPutIndexArgs, usePutIndexMutation, GetIndexesDocument, useGetEnvironmentsLazyQuery, Environment} from "../../generated/graphql";
+import React, {useState} from 'react';
+import {Button, TableCell, TableRow, TextField} from "@material-ui/core";
+import {Index, IndexInput, MutationPutIndexArgs, usePutIndexMutation, GetIndexesDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import EnvironmentInput from '../helper/EnvironmentInput';
 
 
 type IndexFormProps = {
@@ -35,12 +36,6 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInp
     const [putIndex] = usePutIndexMutation({
         refetchQueries: [{query: GetIndexesDocument}]
     })
-
-    const [getEnvironments, {data}] = useGetEnvironmentsLazyQuery();
-
-    useEffect(() => {
-        getEnvironments();
-    },[]);
 
     const handleIdChange = (event: any) => {
         setState({
@@ -118,18 +113,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInp
                     onChange={handleChange('frozenTimePeriodInSecs')}
                 />
             </TableCell>
-            <TableCell align='right'>
-                <TextField
-                    id="environmentIds"
-                    select
-                    value={state.indexInput.environmentIds}
-                    onChange={handleChange('environmentIds')}
-                    SelectProps={{multiple: true}}
-                    children={data?.environments.map((e: Environment, k: number) => (
-                        <MenuItem key={k} value={e._id}>{e._id}</MenuItem>
-                    ))}
-                />
-            </TableCell>
+            <EnvironmentInput handleChange={handleChange} environmentIds={state.indexInput.environmentIds || []} />
             <TableCell align='right'>
                 <Button
                     variant='contained'

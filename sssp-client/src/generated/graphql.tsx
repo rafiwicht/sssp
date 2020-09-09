@@ -231,7 +231,7 @@ export type EnvironmentInput = {
 export type HttpChanges = {
   __typename?: 'HttpChanges';
   token: Scalars['String'];
-  environmentIds?: Maybe<Array<Scalars['String']>>;
+  environmentIds: Array<Scalars['String']>;
 };
 
 export type Http = {
@@ -239,7 +239,7 @@ export type Http = {
   _id: Scalars['String'];
   serviceId: Scalars['String'];
   token: Scalars['String'];
-  environmentIds?: Maybe<Array<Scalars['String']>>;
+  environmentIds: Array<Scalars['String']>;
   state: State;
   changes?: Maybe<HttpChanges>;
 };
@@ -362,7 +362,9 @@ export type SyslogInput = {
   environmentIds?: Maybe<Array<Scalars['String']>>;
 };
 
-export type GetAppsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAppsQueryVariables = Exact<{
+  serviceId: Scalars['String'];
+}>;
 
 
 export type GetAppsQuery = (
@@ -438,7 +440,49 @@ export type DeleteEnvironmentMutation = (
   ) }
 );
 
-export type GetIndexesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetHttpsQueryVariables = Exact<{
+  serviceId: Scalars['String'];
+}>;
+
+
+export type GetHttpsQuery = (
+  { __typename?: 'Query' }
+  & { https: Array<(
+    { __typename?: 'Http' }
+    & Pick<Http, '_id' | 'serviceId' | 'token' | 'environmentIds' | 'state'>
+  )> }
+);
+
+export type PutHttpMutationVariables = Exact<{
+  httpId: Scalars['String'];
+  httpInput: HttpInput;
+}>;
+
+
+export type PutHttpMutation = (
+  { __typename?: 'Mutation' }
+  & { putHttp: (
+    { __typename?: 'Http' }
+    & Pick<Http, '_id'>
+  ) }
+);
+
+export type DeleteHttpMutationVariables = Exact<{
+  httpId: Scalars['String'];
+}>;
+
+
+export type DeleteHttpMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteHttp: (
+    { __typename?: 'Http' }
+    & Pick<Http, '_id'>
+  ) }
+);
+
+export type GetIndexesQueryVariables = Exact<{
+  serviceId: Scalars['String'];
+}>;
 
 
 export type GetIndexesQuery = (
@@ -529,8 +573,8 @@ export type DeleteServiceMutation = (
 
 
 export const GetAppsDocument = gql`
-    query GetApps {
-  apps {
+    query GetApps($serviceId: String!) {
+  apps(serviceId: $serviceId) {
     _id
     serviceId
     url
@@ -541,7 +585,7 @@ export const GetAppsDocument = gql`
   }
 }
     `;
-export type GetAppsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetAppsQuery, GetAppsQueryVariables>, 'query'>;
+export type GetAppsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetAppsQuery, GetAppsQueryVariables>, 'query'> & ({ variables: GetAppsQueryVariables; skip?: boolean; } | { skip: boolean; });
 
     export const GetAppsComponent = (props: GetAppsComponentProps) => (
       <ApolloReactComponents.Query<GetAppsQuery, GetAppsQueryVariables> query={GetAppsDocument} {...props} />
@@ -573,6 +617,7 @@ export function withGetApps<TProps, TChildProps = {}, TDataName extends string =
  * @example
  * const { data, loading, error } = useGetAppsQuery({
  *   variables: {
+ *      serviceId: // value for 'serviceId'
  *   },
  * });
  */
@@ -843,9 +888,168 @@ export function useDeleteEnvironmentMutation(baseOptions?: ApolloReactHooks.Muta
 export type DeleteEnvironmentMutationHookResult = ReturnType<typeof useDeleteEnvironmentMutation>;
 export type DeleteEnvironmentMutationResult = ApolloReactCommon.MutationResult<DeleteEnvironmentMutation>;
 export type DeleteEnvironmentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteEnvironmentMutation, DeleteEnvironmentMutationVariables>;
+export const GetHttpsDocument = gql`
+    query GetHttps($serviceId: String!) {
+  https(serviceId: $serviceId) {
+    _id
+    serviceId
+    token
+    environmentIds
+    state
+  }
+}
+    `;
+export type GetHttpsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetHttpsQuery, GetHttpsQueryVariables>, 'query'> & ({ variables: GetHttpsQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetHttpsComponent = (props: GetHttpsComponentProps) => (
+      <ApolloReactComponents.Query<GetHttpsQuery, GetHttpsQueryVariables> query={GetHttpsDocument} {...props} />
+    );
+    
+export type GetHttpsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetHttpsQuery, GetHttpsQueryVariables>
+    } & TChildProps;
+export function withGetHttps<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetHttpsQuery,
+  GetHttpsQueryVariables,
+  GetHttpsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetHttpsQuery, GetHttpsQueryVariables, GetHttpsProps<TChildProps, TDataName>>(GetHttpsDocument, {
+      alias: 'getHttps',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetHttpsQuery__
+ *
+ * To run a query within a React component, call `useGetHttpsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHttpsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHttpsQuery({
+ *   variables: {
+ *      serviceId: // value for 'serviceId'
+ *   },
+ * });
+ */
+export function useGetHttpsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetHttpsQuery, GetHttpsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetHttpsQuery, GetHttpsQueryVariables>(GetHttpsDocument, baseOptions);
+      }
+export function useGetHttpsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetHttpsQuery, GetHttpsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetHttpsQuery, GetHttpsQueryVariables>(GetHttpsDocument, baseOptions);
+        }
+export type GetHttpsQueryHookResult = ReturnType<typeof useGetHttpsQuery>;
+export type GetHttpsLazyQueryHookResult = ReturnType<typeof useGetHttpsLazyQuery>;
+export type GetHttpsQueryResult = ApolloReactCommon.QueryResult<GetHttpsQuery, GetHttpsQueryVariables>;
+export const PutHttpDocument = gql`
+    mutation PutHttp($httpId: String!, $httpInput: HttpInput!) {
+  putHttp(httpId: $httpId, httpInput: $httpInput) {
+    _id
+  }
+}
+    `;
+export type PutHttpMutationFn = ApolloReactCommon.MutationFunction<PutHttpMutation, PutHttpMutationVariables>;
+export type PutHttpComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutHttpMutation, PutHttpMutationVariables>, 'mutation'>;
+
+    export const PutHttpComponent = (props: PutHttpComponentProps) => (
+      <ApolloReactComponents.Mutation<PutHttpMutation, PutHttpMutationVariables> mutation={PutHttpDocument} {...props} />
+    );
+    
+export type PutHttpProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutHttpMutation, PutHttpMutationVariables>
+    } & TChildProps;
+export function withPutHttp<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  PutHttpMutation,
+  PutHttpMutationVariables,
+  PutHttpProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutHttpMutation, PutHttpMutationVariables, PutHttpProps<TChildProps, TDataName>>(PutHttpDocument, {
+      alias: 'putHttp',
+      ...operationOptions
+    });
+};
+
+/**
+ * __usePutHttpMutation__
+ *
+ * To run a mutation, you first call `usePutHttpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutHttpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [putHttpMutation, { data, loading, error }] = usePutHttpMutation({
+ *   variables: {
+ *      httpId: // value for 'httpId'
+ *      httpInput: // value for 'httpInput'
+ *   },
+ * });
+ */
+export function usePutHttpMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutHttpMutation, PutHttpMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutHttpMutation, PutHttpMutationVariables>(PutHttpDocument, baseOptions);
+      }
+export type PutHttpMutationHookResult = ReturnType<typeof usePutHttpMutation>;
+export type PutHttpMutationResult = ApolloReactCommon.MutationResult<PutHttpMutation>;
+export type PutHttpMutationOptions = ApolloReactCommon.BaseMutationOptions<PutHttpMutation, PutHttpMutationVariables>;
+export const DeleteHttpDocument = gql`
+    mutation DeleteHttp($httpId: String!) {
+  deleteHttp(httpId: $httpId) {
+    _id
+  }
+}
+    `;
+export type DeleteHttpMutationFn = ApolloReactCommon.MutationFunction<DeleteHttpMutation, DeleteHttpMutationVariables>;
+export type DeleteHttpComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteHttpMutation, DeleteHttpMutationVariables>, 'mutation'>;
+
+    export const DeleteHttpComponent = (props: DeleteHttpComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteHttpMutation, DeleteHttpMutationVariables> mutation={DeleteHttpDocument} {...props} />
+    );
+    
+export type DeleteHttpProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteHttpMutation, DeleteHttpMutationVariables>
+    } & TChildProps;
+export function withDeleteHttp<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteHttpMutation,
+  DeleteHttpMutationVariables,
+  DeleteHttpProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteHttpMutation, DeleteHttpMutationVariables, DeleteHttpProps<TChildProps, TDataName>>(DeleteHttpDocument, {
+      alias: 'deleteHttp',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteHttpMutation__
+ *
+ * To run a mutation, you first call `useDeleteHttpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHttpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHttpMutation, { data, loading, error }] = useDeleteHttpMutation({
+ *   variables: {
+ *      httpId: // value for 'httpId'
+ *   },
+ * });
+ */
+export function useDeleteHttpMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteHttpMutation, DeleteHttpMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteHttpMutation, DeleteHttpMutationVariables>(DeleteHttpDocument, baseOptions);
+      }
+export type DeleteHttpMutationHookResult = ReturnType<typeof useDeleteHttpMutation>;
+export type DeleteHttpMutationResult = ApolloReactCommon.MutationResult<DeleteHttpMutation>;
+export type DeleteHttpMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteHttpMutation, DeleteHttpMutationVariables>;
 export const GetIndexesDocument = gql`
-    query GetIndexes {
-  indexes {
+    query GetIndexes($serviceId: String!) {
+  indexes(serviceId: $serviceId) {
     _id
     serviceId
     maxTotalDataSizeMB
@@ -855,7 +1059,7 @@ export const GetIndexesDocument = gql`
   }
 }
     `;
-export type GetIndexesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetIndexesQuery, GetIndexesQueryVariables>, 'query'>;
+export type GetIndexesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetIndexesQuery, GetIndexesQueryVariables>, 'query'> & ({ variables: GetIndexesQueryVariables; skip?: boolean; } | { skip: boolean; });
 
     export const GetIndexesComponent = (props: GetIndexesComponentProps) => (
       <ApolloReactComponents.Query<GetIndexesQuery, GetIndexesQueryVariables> query={GetIndexesDocument} {...props} />
@@ -887,6 +1091,7 @@ export function withGetIndexes<TProps, TChildProps = {}, TDataName extends strin
  * @example
  * const { data, loading, error } = useGetIndexesQuery({
  *   variables: {
+ *      serviceId: // value for 'serviceId'
  *   },
  * });
  */

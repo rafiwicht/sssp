@@ -1,31 +1,31 @@
 import { Typography, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Divider } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-import { useGetIndexesLazyQuery, useDeleteIndexMutation, GetIndexesDocument, Index as IndexType } from '../../generated/graphql';
-import IndexForm from './IndexForm';
+import { useGetHttpsLazyQuery, useDeleteHttpMutation, GetHttpsDocument, Http as httpType } from '../../generated/graphql';
+import HttpForm from './HttpForm';
 
 
 
-type IndexProps = {
+type HttpProps = {
     serviceId: string
 }
 
-const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => {
+const http: React.FunctionComponent<HttpProps> = ({serviceId}: HttpProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');
 
-    const [getIndexes, {data, loading, error}] = useGetIndexesLazyQuery({
+    const [getHttps, {data, loading, error}] = useGetHttpsLazyQuery({
         variables: {
             serviceId: serviceId
         }
     });
-    const [deleteIndex] = useDeleteIndexMutation({
-        refetchQueries: [{query: GetIndexesDocument}]
+    const [deleteHttp] = useDeleteHttpMutation({
+        refetchQueries: [{query: GetHttpsDocument}]
     });
 
     const handleDelete = (id: string) => {
-        deleteIndex({
+        deleteHttp({
             variables: {
-                indexId: id
+                httpId: id
             }
         });
     };
@@ -36,7 +36,7 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
     }
 
     useEffect(() => {
-        getIndexes();
+        getHttps();
     }, []);
     
     if (loading) {
@@ -49,25 +49,24 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
 
     return (
         <div>
-            <Typography variant='h5'>Index options</Typography>
+            <Typography variant='h5'>Http options</Typography>
             <Divider />
             <TableContainer component={Paper}>
-                <Table aria-label="indexes">
+                <Table aria-label="httpes">
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell align='right'>State</TableCell>
-                            <TableCell align='right'>MaxTotalDataSizeMB</TableCell>
-                            <TableCell align='right'>FrozenTimePeriodInSecs</TableCell>
+                            <TableCell align='right'>Token</TableCell>
                             <TableCell align='right'>Environments</TableCell>
                             <TableCell align='right'>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.indexes.map((row: IndexType) => {
+                        {data.https?.map((row: httpType) => {
                             if(row._id === edit) {
                                 return (
-                                    <IndexForm key={row._id} serviceId={serviceId} resetInput={reset} indexMod={row} />
+                                    <HttpForm key={row._id} serviceId={serviceId} resetInput={reset} httpMod={row} />
                                 );
                             }
                             else {
@@ -75,8 +74,7 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
                                     <TableRow key={row._id}>
                                         <TableCell>{row._id}</TableCell>
                                         <TableCell align='right'>{row.state}</TableCell>
-                                        <TableCell align='right'>{row.maxTotalDataSizeMB}</TableCell>
-                                        <TableCell align='right'>{row.frozenTimePeriodInSecs}</TableCell>
+                                        <TableCell align='right'>{row.token}</TableCell>
                                         <TableCell align='right'>{row.environmentIds.join(', ')}</TableCell>
                                         <TableCell align='right'>
                                             <Button
@@ -95,7 +93,7 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
                             }
                         })}
                         {!hidden && 
-                            <IndexForm serviceId={serviceId} resetInput={reset} />
+                            <HttpForm serviceId={serviceId} resetInput={reset} />
                         }
                     </TableBody>
                 </Table>
@@ -106,10 +104,10 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
                     variant='contained'
                     color='primary'
                     onClick={() => setHidden(false)}
-                >Add index</Button>
+                >Add http</Button>
             }
         </div>
     );
 }
 
-export default Index;
+export default http;

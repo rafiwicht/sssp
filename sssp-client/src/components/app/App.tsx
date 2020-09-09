@@ -13,7 +13,11 @@ const App: React.FunctionComponent<AppProps> = ({serviceId}: AppProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');
 
-    const [getApps, {data, loading, error}] = useGetAppsLazyQuery();
+    const [getApps, {data, loading, error}] = useGetAppsLazyQuery({
+        variables: {
+            serviceId: serviceId
+        }
+    });
     const [deleteApp] = useDeleteAppMutation({
         refetchQueries: [{query: GetAppsDocument}]
     });

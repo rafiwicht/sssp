@@ -112,13 +112,13 @@ const typeDefs = gql`
     ##### Http #####
     type HttpChanges {
         token: String!
-        environmentIds: [String!]
+        environmentIds: [String!]!
     }
     type Http {
         _id: String!
         serviceId: String!
         token: String!
-        environmentIds: [String!]
+        environmentIds: [String!]!
         state: State!
         changes: HttpChanges
     }

@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export default gql`
-    query GetApps {
-        apps {
+    query GetApps($serviceId: String!) {
+        apps(serviceId: $serviceId) {
             _id
             serviceId
             url

@@ -7,6 +7,7 @@ import ServiceMod from "./ServiceMod";
 import { useGetServiceLazyQuery } from "../../generated/graphql";
 import Index from "../index/Index";
 import App from '../app/App';
+import Http from '../http/Http';
 
 const useStyles = makeStyles({
     root: {
@@ -75,6 +76,7 @@ const ServiceDetails: React.FC = () => {
                     <Tab label="Service options" />
                     <Tab label="Indexes" />
                     <Tab label="Apps and addons" />
+                    <Tab label="Http inputs" />
                 </Tabs>
             </Paper>
             <TabPanel value={value} index={0}>
@@ -91,6 +93,11 @@ const ServiceDetails: React.FC = () => {
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <App 
+                    serviceId={id}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+                <Http 
                     serviceId={id}
                 />
             </TabPanel>

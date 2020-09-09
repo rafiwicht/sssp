@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Button, MenuItem, TableCell, TableRow, TextField, Checkbox} from "@material-ui/core";
-import {App, AppInput, MutationPutAppArgs, usePutAppMutation, GetAppsDocument, useGetEnvironmentsLazyQuery, Environment} from "../../generated/graphql";
+import React, {useState} from 'react';
+import {Button, TableCell, TableRow, TextField, Checkbox} from "@material-ui/core";
+import {App, AppInput, MutationPutAppArgs, usePutAppMutation, GetAppsDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import EnvironmentInput from '../helper/EnvironmentInput';
 
 
 type AppFormProps = {
@@ -33,17 +34,9 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
     });
     const classes = useStyles();
 
-    console.log(state.appInput.git);
-
     const [putApp] = usePutAppMutation({
         refetchQueries: [{query: GetAppsDocument}]
     })
-
-    const [getEnvironments, {data}] = useGetEnvironmentsLazyQuery();
-
-    useEffect(() => {
-        getEnvironments();
-    },[]);
 
     const handleIdChange = (event: any) => {
         setState({
@@ -132,18 +125,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
                     onChange={handleChange('git')}
                 />
             </TableCell>
-            <TableCell align='right'>
-                <TextField
-                    id="environmentIds"
-                    select
-                    value={state.appInput.environmentIds}
-                    onChange={handleChange('environmentIds')}
-                    SelectProps={{multiple: true}}
-                    children={data?.environments.map((e: Environment, k: number) => (
-                        <MenuItem key={k} value={e._id}>{e._id}</MenuItem>
-                    ))}
-                />
-            </TableCell>
+            <EnvironmentInput handleChange={handleChange} environmentIds={state.appInput.environmentIds || []} />
             <TableCell align='right'>
                 <Button
                     variant='contained'

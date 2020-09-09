@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export default gql`
-    query GetIndexes {
-        indexes {
+    query GetIndexes($serviceId: String!) {
+        indexes(serviceId: $serviceId) {
             _id
             serviceId
             maxTotalDataSizeMB
