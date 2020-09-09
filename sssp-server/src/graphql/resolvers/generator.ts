@@ -7,34 +7,25 @@ import {ApolloError, ForbiddenError} from "apollo-server";
 import {State} from "../../models";
 import {subsetEqual} from "../../helper/equality";
 
-export const getElements = async (model: any, id: string, context: any) => {
-    let results;
+export const getElements = async (model: any, serviceId: string, onlyModifications: boolean, context: any) => {
+    let searchQuery: any = {}
+
     // Restrict access for multi tenancy
-    if(context.admin) {
-        if(id) {
-            results = await model.find({
-                serviceId: id
-            });
+    if(serviceId) {
+        if(!context.admin && !context.services.includes(serviceId)) {
+            return new ApolloError('Not found', 'NOT_FOUND');
         }
-        else {
-            results = await model.find();
-        }
+        searchQuery.serviceId = serviceId;   
     }
-    else {
-        if(id) {
-            if(context.services.includes(id)) {
-                results = await model.find({
-                    serviceId: id
-                });
-            }
-            else return new ApolloError('Not found', 'NOT_FOUND');
-        }
-        else {
-            results = await model.find({
-                _id: { $in: context.services}
-            });
-        }
+    else if(!serviceId && !context.admin) {
+        searchQuery._id = { $in: context.services };
     }
+    
+    if(onlyModifications) {
+        searchQuery.state = { $ne: State.ACTIVE };
+    }
+
+    const results = await model.find(searchQuery);
 
     return results.map((e) => {
         return e._doc;
@@ -131,49 +122,6 @@ export const deleteElement = async (model: any, id: string, context: any) => {
         return await model.findByIdAndUpdate(id, {
             $set: {
                 state: State.IN_DELETION
-            }
-        },{
-            new: true
-        });
-    }
-}
-
-export const acceptChange = async (model: any, id: string, context: any) => {
-    if(!context.admin) return new ForbiddenError('Not allowed!');
-
-    const element = await model.findById(id);
-    if(!element) {
-        return new ApolloError('Not found', 'NOT_FOUND');
-    }
-    else {
-        return await model.findByIdAndUpdate(id, {
-            $set: {
-                ...element.changes,
-                state: State.ACTIVE
-            },
-            $unset: {
-                changes: {}
-            }
-        },{
-            new: true
-        });
-    }
-
-}
-export const rejectChange = async (model: any, id: string, context: any) => {
-    if(!context.admin) return new ForbiddenError('Not allowed!');
-
-    const element = await model.findById(id);
-    if(!element) {
-        return new ApolloError('Not found', 'NOT_FOUND');
-    }
-    else {
-        return await model.findByIdAndUpdate(id, {
-            $set: {
-                state: State.ACTIVE
-            },
-            $unset: {
-                changes: {}
             }
         },{
             new: true

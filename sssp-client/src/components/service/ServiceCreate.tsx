@@ -17,15 +17,7 @@ const ServiceCreate: React.FC = () => {
     });
 
     let history = useHistory();
-
-    const handleSubmit = (args : MutationPutServiceArgs) => {
-        putService({
-            variables: args
-        }).then(() => {
-            history.push('/service');
-        });
-    }
-
+    
     const handleCancel = () => {
         history.push('/service')
     }

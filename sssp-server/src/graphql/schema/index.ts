@@ -12,30 +12,30 @@ const typeDefs = gql`
     type Query {
 
         ##### App #####
-        apps(serviceId: String): [App!]!
+        apps(serviceId: String, onlyModifications: Boolean): [App!]!
         app(appId: String!): App!
         
         ##### Environment #####
         environments: [Environment!]!
         
         ##### Http #####
-        https(serviceId: String): [Http!]!
+        https(serviceId: String, onlyModifications: Boolean): [Http!]!
         http(httpId: String!): Http!
         
         ##### Index #####
-        indexes(serviceId: String): [Index!]!
+        indexes(serviceId: String, onlyModifications: Boolean): [Index!]!
         index(indexId: String!): Index!
         
         ##### Server #####
-        servers(serviceId: String): [Server!]!
+        servers(serviceId: String, onlyModifications: Boolean): [Server!]!
         server(serverId: String!): Server!
         
         ##### Service #####
-        services: [Service!]!
+        services(onlyModifications: Boolean): [Service!]!
         service(serviceId: String!): Service!
         
         ##### Syslog #####
-        syslogs(serviceId: String): [Syslog!]!
+        syslogs(serviceId: String, onlyModifications: Boolean): [Syslog!]!
         syslog(syslogId: String!): Syslog!
     }
     type Mutation {
@@ -43,8 +43,6 @@ const typeDefs = gql`
         ##### App #####
         putApp(appId: String!, appInput: AppInput!): App!
         deleteApp(appId: String!): App!
-        acceptAppChange(appId: String!): App!
-        rejectAppChange(appId: String!): App!
 
         ##### Environment #####
         putEnvironment(environmentId: String!, environmentInput: EnvironmentInput!): Environment!
@@ -53,33 +51,35 @@ const typeDefs = gql`
         ##### Http #####
         putHttp(httpId: String!, httpInput: HttpInput!): Http!
         deleteHttp(httpId: String!): Http!
-        acceptHttpChange(httpId: String!): Http!
-        rejectHttpChange(httpId: String!): Http!
         
         ##### Index #####
         putIndex(indexId: String!, indexInput: IndexInput!): Index!
         deleteIndex(indexId: String!): Index!
-        acceptIndexChange(indexId: String!): Index!
-        rejectIndexChange(indexId: String!): Index!
         
         ##### Server #####
         putServer(serverId: String!, serverInput: ServerInput!): Server!
         deleteServer(serverId: String!): Server!
-        acceptServerChange(serverId: String!): Server!
-        rejectServerChange(serverId: String!): Server!
 
         ##### Service #####
         putService(serviceId: String!, serviceInput: ServiceInput!): Service!
         deleteService(serviceId: String!): Service!
-        acceptServiceChange(serviceId: String!): Service!
-        rejectServiceChange(serviceId: String!): Service!
         
         ##### Syslog #####
         putSyslog(syslogId: String!, syslogInput: SyslogInput!): Syslog!
         deleteSyslog(syslogId: String!): Syslog!
-        acceptSyslogChange(syslogId: String!): Syslog!
-        rejectSyslogChange(syslogId: String!): Syslog!
+
+        ##### Workflow #####
+        acceptChange(id: String!, resource: Resource!): String!
+        rejectChange(id: String!, resource: Resource!): String!
    
+    }
+    enum Resource {
+        APP
+        HTTP
+        INDEX
+        SERVER
+        SERVICE
+        SYSLOG
     }
     enum State {
         IN_CREATION

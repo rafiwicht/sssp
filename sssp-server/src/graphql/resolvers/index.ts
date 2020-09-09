@@ -10,6 +10,7 @@ import {HttpMutations, HttpQueries} from "./http";
 import {IndexMutations, IndexQueries} from "./idx";
 import {ServerMutations, ServerQueries} from "./server";
 import {SyslogMutations, SyslogQueries} from "./syslog";
+import { WorkflowMutations } from './workflow';
 
 
 const rootResolver = {
@@ -30,6 +31,7 @@ const rootResolver = {
         ...ServerMutations,
         ...ServiceMutations,
         ...SyslogMutations,
+        ...WorkflowMutations,
     },
 };
 

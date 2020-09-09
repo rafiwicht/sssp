@@ -3,6 +3,7 @@ import {Paper, Tab, Tabs} from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
 import Environment from "../environment/Environment";
 import TabPanel from '../helper/TabPanel';
+import Workflow from '../workflow/Workflow';
 
 
 const useStyles = makeStyles({
@@ -28,10 +29,14 @@ const Admin: React.FC = () => {
                     indicatorColor="primary"
                     textColor="primary"
                 >
+                    <Tab label="Change requests" />
                     <Tab label="Environments" />
                 </Tabs>
             </Paper>
             <TabPanel value={value} index={0}>
+                <Workflow />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
                 <Environment />
             </TabPanel>
         </div>

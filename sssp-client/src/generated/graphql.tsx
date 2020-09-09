@@ -36,6 +36,7 @@ export type Query = {
 
 export type QueryAppsArgs = {
   serviceId?: Maybe<Scalars['String']>;
+  onlyModifications?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -46,6 +47,7 @@ export type QueryAppArgs = {
 
 export type QueryHttpsArgs = {
   serviceId?: Maybe<Scalars['String']>;
+  onlyModifications?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -56,6 +58,7 @@ export type QueryHttpArgs = {
 
 export type QueryIndexesArgs = {
   serviceId?: Maybe<Scalars['String']>;
+  onlyModifications?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -66,11 +69,17 @@ export type QueryIndexArgs = {
 
 export type QueryServersArgs = {
   serviceId?: Maybe<Scalars['String']>;
+  onlyModifications?: Maybe<Scalars['Boolean']>;
 };
 
 
 export type QueryServerArgs = {
   serverId: Scalars['String'];
+};
+
+
+export type QueryServicesArgs = {
+  onlyModifications?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -81,6 +90,7 @@ export type QueryServiceArgs = {
 
 export type QuerySyslogsArgs = {
   serviceId?: Maybe<Scalars['String']>;
+  onlyModifications?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -104,6 +114,8 @@ export type Mutation = {
   deleteService: Service;
   putSyslog: Syslog;
   deleteSyslog: Syslog;
+  acceptChange: Scalars['String'];
+  rejectChange: Scalars['String'];
 };
 
 
@@ -182,6 +194,27 @@ export type MutationPutSyslogArgs = {
 export type MutationDeleteSyslogArgs = {
   syslogId: Scalars['String'];
 };
+
+
+export type MutationAcceptChangeArgs = {
+  id: Scalars['String'];
+  resource: Resource;
+};
+
+
+export type MutationRejectChangeArgs = {
+  id: Scalars['String'];
+  resource: Resource;
+};
+
+export enum Resource {
+  App = 'APP',
+  Http = 'HTTP',
+  Index = 'INDEX',
+  Server = 'SERVER',
+  Service = 'SERVICE',
+  Syslog = 'SYSLOG'
+}
 
 export enum State {
   InCreation = 'IN_CREATION',
@@ -649,6 +682,130 @@ export type DeleteSyslogMutation = (
     { __typename?: 'Syslog' }
     & Pick<Syslog, '_id'>
   ) }
+);
+
+export type GetChangedAppsQueryVariables = Exact<{
+  onlyModifications: Scalars['Boolean'];
+}>;
+
+
+export type GetChangedAppsQuery = (
+  { __typename?: 'Query' }
+  & { apps: Array<(
+    { __typename?: 'App' }
+    & Pick<App, '_id' | 'serviceId' | 'url' | 'version' | 'git' | 'environmentIds' | 'state'>
+    & { changes?: Maybe<(
+      { __typename?: 'AppChanges' }
+      & Pick<AppChanges, 'url' | 'version' | 'git' | 'environmentIds'>
+    )> }
+  )> }
+);
+
+export type GetChangedHttpsQueryVariables = Exact<{
+  onlyModifications: Scalars['Boolean'];
+}>;
+
+
+export type GetChangedHttpsQuery = (
+  { __typename?: 'Query' }
+  & { https: Array<(
+    { __typename?: 'Http' }
+    & Pick<Http, '_id' | 'serviceId' | 'token' | 'environmentIds' | 'state'>
+    & { changes?: Maybe<(
+      { __typename?: 'HttpChanges' }
+      & Pick<HttpChanges, 'token' | 'environmentIds'>
+    )> }
+  )> }
+);
+
+export type GetChangedIndexesQueryVariables = Exact<{
+  onlyModifications: Scalars['Boolean'];
+}>;
+
+
+export type GetChangedIndexesQuery = (
+  { __typename?: 'Query' }
+  & { indexes: Array<(
+    { __typename?: 'Index' }
+    & Pick<Index, '_id' | 'serviceId' | 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs' | 'environmentIds' | 'state'>
+    & { changes?: Maybe<(
+      { __typename?: 'IndexChanges' }
+      & Pick<IndexChanges, 'maxTotalDataSizeMB' | 'frozenTimePeriodInSecs' | 'environmentIds'>
+    )> }
+  )> }
+);
+
+export type GetChangedServersQueryVariables = Exact<{
+  onlyModifications: Scalars['Boolean'];
+}>;
+
+
+export type GetChangedServersQuery = (
+  { __typename?: 'Query' }
+  & { servers: Array<(
+    { __typename?: 'Server' }
+    & Pick<Server, '_id' | 'serviceId' | 'hosts' | 'appIds' | 'environmentIds' | 'state'>
+    & { changes?: Maybe<(
+      { __typename?: 'ServerChanges' }
+      & Pick<ServerChanges, 'hosts' | 'appIds' | 'environmentIds'>
+    )> }
+  )> }
+);
+
+export type GetChangedServicesQueryVariables = Exact<{
+  onlyModifications: Scalars['Boolean'];
+}>;
+
+
+export type GetChangedServicesQuery = (
+  { __typename?: 'Query' }
+  & { services: Array<(
+    { __typename?: 'Service' }
+    & Pick<Service, '_id' | 'owner' | 'description' | 'dataClassification' | 'state'>
+    & { changes?: Maybe<(
+      { __typename?: 'ServiceChanges' }
+      & Pick<ServiceChanges, 'owner' | 'description' | 'dataClassification'>
+    )> }
+  )> }
+);
+
+export type GetChangedSyslogsQueryVariables = Exact<{
+  onlyModifications: Scalars['Boolean'];
+}>;
+
+
+export type GetChangedSyslogsQuery = (
+  { __typename?: 'Query' }
+  & { syslogs: Array<(
+    { __typename?: 'Syslog' }
+    & Pick<Syslog, '_id' | 'serviceId' | 'index' | 'sourcetype' | 'port' | 'protocol' | 'hosts' | 'environmentIds' | 'state'>
+    & { changes?: Maybe<(
+      { __typename?: 'SyslogChanges' }
+      & Pick<SyslogChanges, 'index' | 'sourcetype' | 'port' | 'protocol' | 'hosts' | 'environmentIds'>
+    )> }
+  )> }
+);
+
+export type AcceptChangeMutationVariables = Exact<{
+  id: Scalars['String'];
+  resource: Resource;
+}>;
+
+
+export type AcceptChangeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'acceptChange'>
+);
+
+export type RejectChangeMutationVariables = Exact<{
+  id: Scalars['String'];
+  resource: Resource;
+}>;
+
+
+export type RejectChangeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'rejectChange'>
 );
 
 
@@ -1823,3 +1980,480 @@ export function useDeleteSyslogMutation(baseOptions?: ApolloReactHooks.MutationH
 export type DeleteSyslogMutationHookResult = ReturnType<typeof useDeleteSyslogMutation>;
 export type DeleteSyslogMutationResult = ApolloReactCommon.MutationResult<DeleteSyslogMutation>;
 export type DeleteSyslogMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteSyslogMutation, DeleteSyslogMutationVariables>;
+export const GetChangedAppsDocument = gql`
+    query GetChangedApps($onlyModifications: Boolean!) {
+  apps(onlyModifications: $onlyModifications) {
+    _id
+    serviceId
+    url
+    version
+    git
+    environmentIds
+    state
+    changes {
+      url
+      version
+      git
+      environmentIds
+    }
+  }
+}
+    `;
+export type GetChangedAppsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetChangedAppsQuery, GetChangedAppsQueryVariables>, 'query'> & ({ variables: GetChangedAppsQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetChangedAppsComponent = (props: GetChangedAppsComponentProps) => (
+      <ApolloReactComponents.Query<GetChangedAppsQuery, GetChangedAppsQueryVariables> query={GetChangedAppsDocument} {...props} />
+    );
+    
+export type GetChangedAppsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetChangedAppsQuery, GetChangedAppsQueryVariables>
+    } & TChildProps;
+export function withGetChangedApps<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetChangedAppsQuery,
+  GetChangedAppsQueryVariables,
+  GetChangedAppsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetChangedAppsQuery, GetChangedAppsQueryVariables, GetChangedAppsProps<TChildProps, TDataName>>(GetChangedAppsDocument, {
+      alias: 'getChangedApps',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetChangedAppsQuery__
+ *
+ * To run a query within a React component, call `useGetChangedAppsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChangedAppsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChangedAppsQuery({
+ *   variables: {
+ *      onlyModifications: // value for 'onlyModifications'
+ *   },
+ * });
+ */
+export function useGetChangedAppsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetChangedAppsQuery, GetChangedAppsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetChangedAppsQuery, GetChangedAppsQueryVariables>(GetChangedAppsDocument, baseOptions);
+      }
+export function useGetChangedAppsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetChangedAppsQuery, GetChangedAppsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetChangedAppsQuery, GetChangedAppsQueryVariables>(GetChangedAppsDocument, baseOptions);
+        }
+export type GetChangedAppsQueryHookResult = ReturnType<typeof useGetChangedAppsQuery>;
+export type GetChangedAppsLazyQueryHookResult = ReturnType<typeof useGetChangedAppsLazyQuery>;
+export type GetChangedAppsQueryResult = ApolloReactCommon.QueryResult<GetChangedAppsQuery, GetChangedAppsQueryVariables>;
+export const GetChangedHttpsDocument = gql`
+    query GetChangedHttps($onlyModifications: Boolean!) {
+  https(onlyModifications: $onlyModifications) {
+    _id
+    serviceId
+    token
+    environmentIds
+    state
+    changes {
+      token
+      environmentIds
+    }
+  }
+}
+    `;
+export type GetChangedHttpsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>, 'query'> & ({ variables: GetChangedHttpsQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetChangedHttpsComponent = (props: GetChangedHttpsComponentProps) => (
+      <ApolloReactComponents.Query<GetChangedHttpsQuery, GetChangedHttpsQueryVariables> query={GetChangedHttpsDocument} {...props} />
+    );
+    
+export type GetChangedHttpsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>
+    } & TChildProps;
+export function withGetChangedHttps<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetChangedHttpsQuery,
+  GetChangedHttpsQueryVariables,
+  GetChangedHttpsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetChangedHttpsQuery, GetChangedHttpsQueryVariables, GetChangedHttpsProps<TChildProps, TDataName>>(GetChangedHttpsDocument, {
+      alias: 'getChangedHttps',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetChangedHttpsQuery__
+ *
+ * To run a query within a React component, call `useGetChangedHttpsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChangedHttpsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChangedHttpsQuery({
+ *   variables: {
+ *      onlyModifications: // value for 'onlyModifications'
+ *   },
+ * });
+ */
+export function useGetChangedHttpsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>(GetChangedHttpsDocument, baseOptions);
+      }
+export function useGetChangedHttpsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>(GetChangedHttpsDocument, baseOptions);
+        }
+export type GetChangedHttpsQueryHookResult = ReturnType<typeof useGetChangedHttpsQuery>;
+export type GetChangedHttpsLazyQueryHookResult = ReturnType<typeof useGetChangedHttpsLazyQuery>;
+export type GetChangedHttpsQueryResult = ApolloReactCommon.QueryResult<GetChangedHttpsQuery, GetChangedHttpsQueryVariables>;
+export const GetChangedIndexesDocument = gql`
+    query GetChangedIndexes($onlyModifications: Boolean!) {
+  indexes(onlyModifications: $onlyModifications) {
+    _id
+    serviceId
+    maxTotalDataSizeMB
+    frozenTimePeriodInSecs
+    environmentIds
+    state
+    changes {
+      maxTotalDataSizeMB
+      frozenTimePeriodInSecs
+      environmentIds
+    }
+  }
+}
+    `;
+export type GetChangedIndexesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>, 'query'> & ({ variables: GetChangedIndexesQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetChangedIndexesComponent = (props: GetChangedIndexesComponentProps) => (
+      <ApolloReactComponents.Query<GetChangedIndexesQuery, GetChangedIndexesQueryVariables> query={GetChangedIndexesDocument} {...props} />
+    );
+    
+export type GetChangedIndexesProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>
+    } & TChildProps;
+export function withGetChangedIndexes<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetChangedIndexesQuery,
+  GetChangedIndexesQueryVariables,
+  GetChangedIndexesProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetChangedIndexesQuery, GetChangedIndexesQueryVariables, GetChangedIndexesProps<TChildProps, TDataName>>(GetChangedIndexesDocument, {
+      alias: 'getChangedIndexes',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetChangedIndexesQuery__
+ *
+ * To run a query within a React component, call `useGetChangedIndexesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChangedIndexesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChangedIndexesQuery({
+ *   variables: {
+ *      onlyModifications: // value for 'onlyModifications'
+ *   },
+ * });
+ */
+export function useGetChangedIndexesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>(GetChangedIndexesDocument, baseOptions);
+      }
+export function useGetChangedIndexesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>(GetChangedIndexesDocument, baseOptions);
+        }
+export type GetChangedIndexesQueryHookResult = ReturnType<typeof useGetChangedIndexesQuery>;
+export type GetChangedIndexesLazyQueryHookResult = ReturnType<typeof useGetChangedIndexesLazyQuery>;
+export type GetChangedIndexesQueryResult = ApolloReactCommon.QueryResult<GetChangedIndexesQuery, GetChangedIndexesQueryVariables>;
+export const GetChangedServersDocument = gql`
+    query GetChangedServers($onlyModifications: Boolean!) {
+  servers(onlyModifications: $onlyModifications) {
+    _id
+    serviceId
+    hosts
+    appIds
+    environmentIds
+    state
+    changes {
+      hosts
+      appIds
+      environmentIds
+    }
+  }
+}
+    `;
+export type GetChangedServersComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetChangedServersQuery, GetChangedServersQueryVariables>, 'query'> & ({ variables: GetChangedServersQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetChangedServersComponent = (props: GetChangedServersComponentProps) => (
+      <ApolloReactComponents.Query<GetChangedServersQuery, GetChangedServersQueryVariables> query={GetChangedServersDocument} {...props} />
+    );
+    
+export type GetChangedServersProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetChangedServersQuery, GetChangedServersQueryVariables>
+    } & TChildProps;
+export function withGetChangedServers<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetChangedServersQuery,
+  GetChangedServersQueryVariables,
+  GetChangedServersProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetChangedServersQuery, GetChangedServersQueryVariables, GetChangedServersProps<TChildProps, TDataName>>(GetChangedServersDocument, {
+      alias: 'getChangedServers',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetChangedServersQuery__
+ *
+ * To run a query within a React component, call `useGetChangedServersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChangedServersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChangedServersQuery({
+ *   variables: {
+ *      onlyModifications: // value for 'onlyModifications'
+ *   },
+ * });
+ */
+export function useGetChangedServersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetChangedServersQuery, GetChangedServersQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetChangedServersQuery, GetChangedServersQueryVariables>(GetChangedServersDocument, baseOptions);
+      }
+export function useGetChangedServersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetChangedServersQuery, GetChangedServersQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetChangedServersQuery, GetChangedServersQueryVariables>(GetChangedServersDocument, baseOptions);
+        }
+export type GetChangedServersQueryHookResult = ReturnType<typeof useGetChangedServersQuery>;
+export type GetChangedServersLazyQueryHookResult = ReturnType<typeof useGetChangedServersLazyQuery>;
+export type GetChangedServersQueryResult = ApolloReactCommon.QueryResult<GetChangedServersQuery, GetChangedServersQueryVariables>;
+export const GetChangedServicesDocument = gql`
+    query GetChangedServices($onlyModifications: Boolean!) {
+  services(onlyModifications: $onlyModifications) {
+    _id
+    owner
+    description
+    dataClassification
+    state
+    changes {
+      owner
+      description
+      dataClassification
+    }
+  }
+}
+    `;
+export type GetChangedServicesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetChangedServicesQuery, GetChangedServicesQueryVariables>, 'query'> & ({ variables: GetChangedServicesQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetChangedServicesComponent = (props: GetChangedServicesComponentProps) => (
+      <ApolloReactComponents.Query<GetChangedServicesQuery, GetChangedServicesQueryVariables> query={GetChangedServicesDocument} {...props} />
+    );
+    
+export type GetChangedServicesProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetChangedServicesQuery, GetChangedServicesQueryVariables>
+    } & TChildProps;
+export function withGetChangedServices<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetChangedServicesQuery,
+  GetChangedServicesQueryVariables,
+  GetChangedServicesProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetChangedServicesQuery, GetChangedServicesQueryVariables, GetChangedServicesProps<TChildProps, TDataName>>(GetChangedServicesDocument, {
+      alias: 'getChangedServices',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetChangedServicesQuery__
+ *
+ * To run a query within a React component, call `useGetChangedServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChangedServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChangedServicesQuery({
+ *   variables: {
+ *      onlyModifications: // value for 'onlyModifications'
+ *   },
+ * });
+ */
+export function useGetChangedServicesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetChangedServicesQuery, GetChangedServicesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetChangedServicesQuery, GetChangedServicesQueryVariables>(GetChangedServicesDocument, baseOptions);
+      }
+export function useGetChangedServicesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetChangedServicesQuery, GetChangedServicesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetChangedServicesQuery, GetChangedServicesQueryVariables>(GetChangedServicesDocument, baseOptions);
+        }
+export type GetChangedServicesQueryHookResult = ReturnType<typeof useGetChangedServicesQuery>;
+export type GetChangedServicesLazyQueryHookResult = ReturnType<typeof useGetChangedServicesLazyQuery>;
+export type GetChangedServicesQueryResult = ApolloReactCommon.QueryResult<GetChangedServicesQuery, GetChangedServicesQueryVariables>;
+export const GetChangedSyslogsDocument = gql`
+    query GetChangedSyslogs($onlyModifications: Boolean!) {
+  syslogs(onlyModifications: $onlyModifications) {
+    _id
+    serviceId
+    index
+    sourcetype
+    port
+    protocol
+    hosts
+    environmentIds
+    state
+    changes {
+      index
+      sourcetype
+      port
+      protocol
+      hosts
+      environmentIds
+    }
+  }
+}
+    `;
+export type GetChangedSyslogsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>, 'query'> & ({ variables: GetChangedSyslogsQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetChangedSyslogsComponent = (props: GetChangedSyslogsComponentProps) => (
+      <ApolloReactComponents.Query<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables> query={GetChangedSyslogsDocument} {...props} />
+    );
+    
+export type GetChangedSyslogsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>
+    } & TChildProps;
+export function withGetChangedSyslogs<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetChangedSyslogsQuery,
+  GetChangedSyslogsQueryVariables,
+  GetChangedSyslogsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables, GetChangedSyslogsProps<TChildProps, TDataName>>(GetChangedSyslogsDocument, {
+      alias: 'getChangedSyslogs',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetChangedSyslogsQuery__
+ *
+ * To run a query within a React component, call `useGetChangedSyslogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChangedSyslogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChangedSyslogsQuery({
+ *   variables: {
+ *      onlyModifications: // value for 'onlyModifications'
+ *   },
+ * });
+ */
+export function useGetChangedSyslogsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>(GetChangedSyslogsDocument, baseOptions);
+      }
+export function useGetChangedSyslogsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>(GetChangedSyslogsDocument, baseOptions);
+        }
+export type GetChangedSyslogsQueryHookResult = ReturnType<typeof useGetChangedSyslogsQuery>;
+export type GetChangedSyslogsLazyQueryHookResult = ReturnType<typeof useGetChangedSyslogsLazyQuery>;
+export type GetChangedSyslogsQueryResult = ApolloReactCommon.QueryResult<GetChangedSyslogsQuery, GetChangedSyslogsQueryVariables>;
+export const AcceptChangeDocument = gql`
+    mutation AcceptChange($id: String!, $resource: Resource!) {
+  acceptChange(id: $id, resource: $resource)
+}
+    `;
+export type AcceptChangeMutationFn = ApolloReactCommon.MutationFunction<AcceptChangeMutation, AcceptChangeMutationVariables>;
+export type AcceptChangeComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<AcceptChangeMutation, AcceptChangeMutationVariables>, 'mutation'>;
+
+    export const AcceptChangeComponent = (props: AcceptChangeComponentProps) => (
+      <ApolloReactComponents.Mutation<AcceptChangeMutation, AcceptChangeMutationVariables> mutation={AcceptChangeDocument} {...props} />
+    );
+    
+export type AcceptChangeProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<AcceptChangeMutation, AcceptChangeMutationVariables>
+    } & TChildProps;
+export function withAcceptChange<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  AcceptChangeMutation,
+  AcceptChangeMutationVariables,
+  AcceptChangeProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, AcceptChangeMutation, AcceptChangeMutationVariables, AcceptChangeProps<TChildProps, TDataName>>(AcceptChangeDocument, {
+      alias: 'acceptChange',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useAcceptChangeMutation__
+ *
+ * To run a mutation, you first call `useAcceptChangeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptChangeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptChangeMutation, { data, loading, error }] = useAcceptChangeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      resource: // value for 'resource'
+ *   },
+ * });
+ */
+export function useAcceptChangeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AcceptChangeMutation, AcceptChangeMutationVariables>) {
+        return ApolloReactHooks.useMutation<AcceptChangeMutation, AcceptChangeMutationVariables>(AcceptChangeDocument, baseOptions);
+      }
+export type AcceptChangeMutationHookResult = ReturnType<typeof useAcceptChangeMutation>;
+export type AcceptChangeMutationResult = ApolloReactCommon.MutationResult<AcceptChangeMutation>;
+export type AcceptChangeMutationOptions = ApolloReactCommon.BaseMutationOptions<AcceptChangeMutation, AcceptChangeMutationVariables>;
+export const RejectChangeDocument = gql`
+    mutation RejectChange($id: String!, $resource: Resource!) {
+  rejectChange(id: $id, resource: $resource)
+}
+    `;
+export type RejectChangeMutationFn = ApolloReactCommon.MutationFunction<RejectChangeMutation, RejectChangeMutationVariables>;
+export type RejectChangeComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<RejectChangeMutation, RejectChangeMutationVariables>, 'mutation'>;
+
+    export const RejectChangeComponent = (props: RejectChangeComponentProps) => (
+      <ApolloReactComponents.Mutation<RejectChangeMutation, RejectChangeMutationVariables> mutation={RejectChangeDocument} {...props} />
+    );
+    
+export type RejectChangeProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<RejectChangeMutation, RejectChangeMutationVariables>
+    } & TChildProps;
+export function withRejectChange<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  RejectChangeMutation,
+  RejectChangeMutationVariables,
+  RejectChangeProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, RejectChangeMutation, RejectChangeMutationVariables, RejectChangeProps<TChildProps, TDataName>>(RejectChangeDocument, {
+      alias: 'rejectChange',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useRejectChangeMutation__
+ *
+ * To run a mutation, you first call `useRejectChangeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectChangeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectChangeMutation, { data, loading, error }] = useRejectChangeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      resource: // value for 'resource'
+ *   },
+ * });
+ */
+export function useRejectChangeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RejectChangeMutation, RejectChangeMutationVariables>) {
+        return ApolloReactHooks.useMutation<RejectChangeMutation, RejectChangeMutationVariables>(RejectChangeDocument, baseOptions);
+      }
+export type RejectChangeMutationHookResult = ReturnType<typeof useRejectChangeMutation>;
+export type RejectChangeMutationResult = ApolloReactCommon.MutationResult<RejectChangeMutation>;
+export type RejectChangeMutationOptions = ApolloReactCommon.BaseMutationOptions<RejectChangeMutation, RejectChangeMutationVariables>;

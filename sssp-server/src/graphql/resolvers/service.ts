@@ -1,6 +1,7 @@
 import Service from '../../models/service';
+import {State} from '../../models';
 import {ApolloError} from 'apollo-server';
-import {acceptChange, deleteElement, putElement, rejectChange} from "./generator";
+import {deleteElement, putElement} from "./generator";
 
 
 export enum Kind {
@@ -10,18 +11,19 @@ export enum Kind {
 }
 
 const ServiceQueries = {
-    services: async (parent: any, {}: any, context: any) => {
-        let results;
+    services: async (parent: any, {onlyModifications = false}: any, context: any) => {
+        let searchQuery: any = {}
     
         // Restrict access for multi tenancy
-        if(context.admin) {
-            results = await Service.find();
+        if(!context.admin) {
+            searchQuery._id = { $in: context.services };
         }
-        else {
-            results = await Service.find({
-                _id: { $in: context.services}
-            });
+
+        if(onlyModifications) {
+            searchQuery.state = { $ne: State.ACTIVE };
         }
+
+        const results = await Service.find(searchQuery);
     
         return results.map((e) => {
             return e._doc;
@@ -39,9 +41,7 @@ const ServiceQueries = {
 
 const ServiceMutations = {
     putService: async (parent: any, {serviceId, serviceInput}: any, context: any) => putElement(Service, serviceId, serviceInput, context),
-    deleteService: async (parent: any, {serviceId}: any, context: any) => deleteElement(Service, serviceId, context),
-    acceptServiceChange: async (parent: any, {serviceId}: any, context: any) => acceptChange(Service, serviceId, context),
-    rejectServiceChange: async (parent: any, {serviceId}: any, context: any) => rejectChange(Service, serviceId, context)
+    deleteService: async (parent: any, {serviceId}: any, context: any) => deleteElement(Service, serviceId, context)
 };
 
 export {ServiceQueries, ServiceMutations};
