@@ -57,7 +57,7 @@ const typeDefs = gql`
         deleteIndex(indexId: String!): Index!
         
         ##### Server #####
-        putServer(serverId: String!, indexInput: ServerInput!): Server!
+        putServer(serverId: String!, serverInput: ServerInput!): Server!
         deleteServer(serverId: String!): Server!
 
         ##### Service #####

@@ -137,7 +137,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
                     color='primary'
                     className={classes.margin}
                     onClick={() => handleSumbit()}
-                    disabled={state.appId === ''}
+                    disabled={state.appId === '' || state.appInput.version === ''}
                 >Submit</Button>
             </TableCell>
         </TableRow>

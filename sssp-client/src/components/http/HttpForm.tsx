@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, TableCell, TableRow, TextField} from "@material-ui/core";
-import {Http, HttpInput, MutationPutHttpArgs, usePutHttpMutation, GetHttpsDocument, useGetEnvironmentsLazyQuery, Environment} from "../../generated/graphql";
+import {Http, HttpInput, MutationPutHttpArgs, usePutHttpMutation, GetHttpsDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import EnvironmentInput from '../helper/EnvironmentInput';
 
@@ -45,14 +45,7 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
 
     const handleChange = (prop: keyof HttpInput) => (event: any) => {
         // Value returns always string
-        let value;
-        if(event.target.type === 'checkbox') {
-            value = Boolean(event.target.checked);
-            console.log(event.target.checked);
-        }
-        else {
-            value = event.target.value;
-        }
+        let value = event.target.checked;
         setState({
             ...state,
             httpInput: {
@@ -115,7 +108,7 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
                     color='primary'
                     className={classes.margin}
                     onClick={() => handleSumbit()}
-                    disabled={state.httpId === ''}
+                    disabled={state.httpId === '' || state.httpInput.token === ''}
                 >Submit</Button>
             </TableCell>
         </TableRow>

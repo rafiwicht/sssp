@@ -153,7 +153,7 @@ export type MutationDeleteIndexArgs = {
 
 export type MutationPutServerArgs = {
   serverId: Scalars['String'];
-  indexInput: ServerInput;
+  serverInput: ServerInput;
 };
 
 
@@ -517,6 +517,46 @@ export type DeleteIndexMutation = (
   & { deleteIndex: (
     { __typename?: 'Index' }
     & Pick<Index, '_id'>
+  ) }
+);
+
+export type GetServersQueryVariables = Exact<{
+  serviceId: Scalars['String'];
+}>;
+
+
+export type GetServersQuery = (
+  { __typename?: 'Query' }
+  & { servers: Array<(
+    { __typename?: 'Server' }
+    & Pick<Server, '_id' | 'serviceId' | 'hosts' | 'appIds' | 'environmentIds' | 'state'>
+  )> }
+);
+
+export type PutServerMutationVariables = Exact<{
+  serverId: Scalars['String'];
+  serverInput: ServerInput;
+}>;
+
+
+export type PutServerMutation = (
+  { __typename?: 'Mutation' }
+  & { putServer: (
+    { __typename?: 'Server' }
+    & Pick<Server, '_id'>
+  ) }
+);
+
+export type DeleteServerMutationVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type DeleteServerMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteServer: (
+    { __typename?: 'Server' }
+    & Pick<Server, '_id'>
   ) }
 );
 
@@ -1207,6 +1247,166 @@ export function useDeleteIndexMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type DeleteIndexMutationHookResult = ReturnType<typeof useDeleteIndexMutation>;
 export type DeleteIndexMutationResult = ApolloReactCommon.MutationResult<DeleteIndexMutation>;
 export type DeleteIndexMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteIndexMutation, DeleteIndexMutationVariables>;
+export const GetServersDocument = gql`
+    query GetServers($serviceId: String!) {
+  servers(serviceId: $serviceId) {
+    _id
+    serviceId
+    hosts
+    appIds
+    environmentIds
+    state
+  }
+}
+    `;
+export type GetServersComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetServersQuery, GetServersQueryVariables>, 'query'> & ({ variables: GetServersQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetServersComponent = (props: GetServersComponentProps) => (
+      <ApolloReactComponents.Query<GetServersQuery, GetServersQueryVariables> query={GetServersDocument} {...props} />
+    );
+    
+export type GetServersProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetServersQuery, GetServersQueryVariables>
+    } & TChildProps;
+export function withGetServers<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetServersQuery,
+  GetServersQueryVariables,
+  GetServersProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetServersQuery, GetServersQueryVariables, GetServersProps<TChildProps, TDataName>>(GetServersDocument, {
+      alias: 'getServers',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetServersQuery__
+ *
+ * To run a query within a React component, call `useGetServersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServersQuery({
+ *   variables: {
+ *      serviceId: // value for 'serviceId'
+ *   },
+ * });
+ */
+export function useGetServersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetServersQuery, GetServersQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetServersQuery, GetServersQueryVariables>(GetServersDocument, baseOptions);
+      }
+export function useGetServersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetServersQuery, GetServersQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetServersQuery, GetServersQueryVariables>(GetServersDocument, baseOptions);
+        }
+export type GetServersQueryHookResult = ReturnType<typeof useGetServersQuery>;
+export type GetServersLazyQueryHookResult = ReturnType<typeof useGetServersLazyQuery>;
+export type GetServersQueryResult = ApolloReactCommon.QueryResult<GetServersQuery, GetServersQueryVariables>;
+export const PutServerDocument = gql`
+    mutation PutServer($serverId: String!, $serverInput: ServerInput!) {
+  putServer(serverId: $serverId, serverInput: $serverInput) {
+    _id
+  }
+}
+    `;
+export type PutServerMutationFn = ApolloReactCommon.MutationFunction<PutServerMutation, PutServerMutationVariables>;
+export type PutServerComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutServerMutation, PutServerMutationVariables>, 'mutation'>;
+
+    export const PutServerComponent = (props: PutServerComponentProps) => (
+      <ApolloReactComponents.Mutation<PutServerMutation, PutServerMutationVariables> mutation={PutServerDocument} {...props} />
+    );
+    
+export type PutServerProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutServerMutation, PutServerMutationVariables>
+    } & TChildProps;
+export function withPutServer<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  PutServerMutation,
+  PutServerMutationVariables,
+  PutServerProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutServerMutation, PutServerMutationVariables, PutServerProps<TChildProps, TDataName>>(PutServerDocument, {
+      alias: 'putServer',
+      ...operationOptions
+    });
+};
+
+/**
+ * __usePutServerMutation__
+ *
+ * To run a mutation, you first call `usePutServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [putServerMutation, { data, loading, error }] = usePutServerMutation({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *      serverInput: // value for 'serverInput'
+ *   },
+ * });
+ */
+export function usePutServerMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutServerMutation, PutServerMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutServerMutation, PutServerMutationVariables>(PutServerDocument, baseOptions);
+      }
+export type PutServerMutationHookResult = ReturnType<typeof usePutServerMutation>;
+export type PutServerMutationResult = ApolloReactCommon.MutationResult<PutServerMutation>;
+export type PutServerMutationOptions = ApolloReactCommon.BaseMutationOptions<PutServerMutation, PutServerMutationVariables>;
+export const DeleteServerDocument = gql`
+    mutation DeleteServer($serverId: String!) {
+  deleteServer(serverId: $serverId) {
+    _id
+  }
+}
+    `;
+export type DeleteServerMutationFn = ApolloReactCommon.MutationFunction<DeleteServerMutation, DeleteServerMutationVariables>;
+export type DeleteServerComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteServerMutation, DeleteServerMutationVariables>, 'mutation'>;
+
+    export const DeleteServerComponent = (props: DeleteServerComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteServerMutation, DeleteServerMutationVariables> mutation={DeleteServerDocument} {...props} />
+    );
+    
+export type DeleteServerProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteServerMutation, DeleteServerMutationVariables>
+    } & TChildProps;
+export function withDeleteServer<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteServerMutation,
+  DeleteServerMutationVariables,
+  DeleteServerProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteServerMutation, DeleteServerMutationVariables, DeleteServerProps<TChildProps, TDataName>>(DeleteServerDocument, {
+      alias: 'deleteServer',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteServerMutation__
+ *
+ * To run a mutation, you first call `useDeleteServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteServerMutation, { data, loading, error }] = useDeleteServerMutation({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useDeleteServerMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteServerMutation, DeleteServerMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteServerMutation, DeleteServerMutationVariables>(DeleteServerDocument, baseOptions);
+      }
+export type DeleteServerMutationHookResult = ReturnType<typeof useDeleteServerMutation>;
+export type DeleteServerMutationResult = ApolloReactCommon.MutationResult<DeleteServerMutation>;
+export type DeleteServerMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteServerMutation, DeleteServerMutationVariables>;
 export const GetServicesDocument = gql`
     query GetServices {
   services {
