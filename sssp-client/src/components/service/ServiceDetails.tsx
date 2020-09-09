@@ -8,6 +8,8 @@ import { useGetServiceLazyQuery } from "../../generated/graphql";
 import Index from "../index/Index";
 import App from '../app/App';
 import Http from '../http/Http';
+import Server from '../server/Server';
+import Syslog from '../syslog/Syslog';
 
 const useStyles = makeStyles({
     root: {
@@ -77,6 +79,8 @@ const ServiceDetails: React.FC = () => {
                     <Tab label="Indexes" />
                     <Tab label="Apps and addons" />
                     <Tab label="Http inputs" />
+                    <Tab label="Server inputs" />
+                    <Tab label="Syslog inputs" />
                 </Tabs>
             </Paper>
             <TabPanel value={value} index={0}>
@@ -98,6 +102,16 @@ const ServiceDetails: React.FC = () => {
             </TabPanel>
             <TabPanel value={value} index={3}>
                 <Http 
+                    serviceId={id}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+                <Server 
+                    serviceId={id}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+                <Syslog 
                     serviceId={id}
                 />
             </TabPanel>

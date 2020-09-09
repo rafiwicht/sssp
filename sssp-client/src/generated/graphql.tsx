@@ -611,6 +611,46 @@ export type DeleteServiceMutation = (
   ) }
 );
 
+export type GetSyslogsQueryVariables = Exact<{
+  serviceId: Scalars['String'];
+}>;
+
+
+export type GetSyslogsQuery = (
+  { __typename?: 'Query' }
+  & { syslogs: Array<(
+    { __typename?: 'Syslog' }
+    & Pick<Syslog, '_id' | 'serviceId' | 'index' | 'sourcetype' | 'port' | 'protocol' | 'hosts' | 'environmentIds' | 'state'>
+  )> }
+);
+
+export type PutSyslogMutationVariables = Exact<{
+  syslogId: Scalars['String'];
+  syslogInput: SyslogInput;
+}>;
+
+
+export type PutSyslogMutation = (
+  { __typename?: 'Mutation' }
+  & { putSyslog: (
+    { __typename?: 'Syslog' }
+    & Pick<Syslog, '_id'>
+  ) }
+);
+
+export type DeleteSyslogMutationVariables = Exact<{
+  syslogId: Scalars['String'];
+}>;
+
+
+export type DeleteSyslogMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteSyslog: (
+    { __typename?: 'Syslog' }
+    & Pick<Syslog, '_id'>
+  ) }
+);
+
 
 export const GetAppsDocument = gql`
     query GetApps($serviceId: String!) {
@@ -1620,3 +1660,166 @@ export function useDeleteServiceMutation(baseOptions?: ApolloReactHooks.Mutation
 export type DeleteServiceMutationHookResult = ReturnType<typeof useDeleteServiceMutation>;
 export type DeleteServiceMutationResult = ApolloReactCommon.MutationResult<DeleteServiceMutation>;
 export type DeleteServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteServiceMutation, DeleteServiceMutationVariables>;
+export const GetSyslogsDocument = gql`
+    query GetSyslogs($serviceId: String!) {
+  syslogs(serviceId: $serviceId) {
+    _id
+    serviceId
+    index
+    sourcetype
+    port
+    protocol
+    hosts
+    environmentIds
+    state
+  }
+}
+    `;
+export type GetSyslogsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetSyslogsQuery, GetSyslogsQueryVariables>, 'query'> & ({ variables: GetSyslogsQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const GetSyslogsComponent = (props: GetSyslogsComponentProps) => (
+      <ApolloReactComponents.Query<GetSyslogsQuery, GetSyslogsQueryVariables> query={GetSyslogsDocument} {...props} />
+    );
+    
+export type GetSyslogsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+      [key in TDataName]: ApolloReactHoc.DataValue<GetSyslogsQuery, GetSyslogsQueryVariables>
+    } & TChildProps;
+export function withGetSyslogs<TProps, TChildProps = {}, TDataName extends string = 'data'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  GetSyslogsQuery,
+  GetSyslogsQueryVariables,
+  GetSyslogsProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withQuery<TProps, GetSyslogsQuery, GetSyslogsQueryVariables, GetSyslogsProps<TChildProps, TDataName>>(GetSyslogsDocument, {
+      alias: 'getSyslogs',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useGetSyslogsQuery__
+ *
+ * To run a query within a React component, call `useGetSyslogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSyslogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSyslogsQuery({
+ *   variables: {
+ *      serviceId: // value for 'serviceId'
+ *   },
+ * });
+ */
+export function useGetSyslogsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetSyslogsQuery, GetSyslogsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetSyslogsQuery, GetSyslogsQueryVariables>(GetSyslogsDocument, baseOptions);
+      }
+export function useGetSyslogsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetSyslogsQuery, GetSyslogsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetSyslogsQuery, GetSyslogsQueryVariables>(GetSyslogsDocument, baseOptions);
+        }
+export type GetSyslogsQueryHookResult = ReturnType<typeof useGetSyslogsQuery>;
+export type GetSyslogsLazyQueryHookResult = ReturnType<typeof useGetSyslogsLazyQuery>;
+export type GetSyslogsQueryResult = ApolloReactCommon.QueryResult<GetSyslogsQuery, GetSyslogsQueryVariables>;
+export const PutSyslogDocument = gql`
+    mutation PutSyslog($syslogId: String!, $syslogInput: SyslogInput!) {
+  putSyslog(syslogId: $syslogId, syslogInput: $syslogInput) {
+    _id
+  }
+}
+    `;
+export type PutSyslogMutationFn = ApolloReactCommon.MutationFunction<PutSyslogMutation, PutSyslogMutationVariables>;
+export type PutSyslogComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<PutSyslogMutation, PutSyslogMutationVariables>, 'mutation'>;
+
+    export const PutSyslogComponent = (props: PutSyslogComponentProps) => (
+      <ApolloReactComponents.Mutation<PutSyslogMutation, PutSyslogMutationVariables> mutation={PutSyslogDocument} {...props} />
+    );
+    
+export type PutSyslogProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<PutSyslogMutation, PutSyslogMutationVariables>
+    } & TChildProps;
+export function withPutSyslog<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  PutSyslogMutation,
+  PutSyslogMutationVariables,
+  PutSyslogProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, PutSyslogMutation, PutSyslogMutationVariables, PutSyslogProps<TChildProps, TDataName>>(PutSyslogDocument, {
+      alias: 'putSyslog',
+      ...operationOptions
+    });
+};
+
+/**
+ * __usePutSyslogMutation__
+ *
+ * To run a mutation, you first call `usePutSyslogMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePutSyslogMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [putSyslogMutation, { data, loading, error }] = usePutSyslogMutation({
+ *   variables: {
+ *      syslogId: // value for 'syslogId'
+ *      syslogInput: // value for 'syslogInput'
+ *   },
+ * });
+ */
+export function usePutSyslogMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<PutSyslogMutation, PutSyslogMutationVariables>) {
+        return ApolloReactHooks.useMutation<PutSyslogMutation, PutSyslogMutationVariables>(PutSyslogDocument, baseOptions);
+      }
+export type PutSyslogMutationHookResult = ReturnType<typeof usePutSyslogMutation>;
+export type PutSyslogMutationResult = ApolloReactCommon.MutationResult<PutSyslogMutation>;
+export type PutSyslogMutationOptions = ApolloReactCommon.BaseMutationOptions<PutSyslogMutation, PutSyslogMutationVariables>;
+export const DeleteSyslogDocument = gql`
+    mutation DeleteSyslog($syslogId: String!) {
+  deleteSyslog(syslogId: $syslogId) {
+    _id
+  }
+}
+    `;
+export type DeleteSyslogMutationFn = ApolloReactCommon.MutationFunction<DeleteSyslogMutation, DeleteSyslogMutationVariables>;
+export type DeleteSyslogComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<DeleteSyslogMutation, DeleteSyslogMutationVariables>, 'mutation'>;
+
+    export const DeleteSyslogComponent = (props: DeleteSyslogComponentProps) => (
+      <ApolloReactComponents.Mutation<DeleteSyslogMutation, DeleteSyslogMutationVariables> mutation={DeleteSyslogDocument} {...props} />
+    );
+    
+export type DeleteSyslogProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+      [key in TDataName]: ApolloReactCommon.MutationFunction<DeleteSyslogMutation, DeleteSyslogMutationVariables>
+    } & TChildProps;
+export function withDeleteSyslog<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  DeleteSyslogMutation,
+  DeleteSyslogMutationVariables,
+  DeleteSyslogProps<TChildProps, TDataName>>) {
+    return ApolloReactHoc.withMutation<TProps, DeleteSyslogMutation, DeleteSyslogMutationVariables, DeleteSyslogProps<TChildProps, TDataName>>(DeleteSyslogDocument, {
+      alias: 'deleteSyslog',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useDeleteSyslogMutation__
+ *
+ * To run a mutation, you first call `useDeleteSyslogMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSyslogMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSyslogMutation, { data, loading, error }] = useDeleteSyslogMutation({
+ *   variables: {
+ *      syslogId: // value for 'syslogId'
+ *   },
+ * });
+ */
+export function useDeleteSyslogMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteSyslogMutation, DeleteSyslogMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteSyslogMutation, DeleteSyslogMutationVariables>(DeleteSyslogDocument, baseOptions);
+      }
+export type DeleteSyslogMutationHookResult = ReturnType<typeof useDeleteSyslogMutation>;
+export type DeleteSyslogMutationResult = ApolloReactCommon.MutationResult<DeleteSyslogMutation>;
+export type DeleteSyslogMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteSyslogMutation, DeleteSyslogMutationVariables>;

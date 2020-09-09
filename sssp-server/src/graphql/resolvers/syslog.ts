@@ -7,8 +7,8 @@ const SyslogQueries = {
 };
 
 const SyslogMutations = {
-    putServer: async (parent: any, {syslogId, syslogInput}: any, context: any) => putElement(Syslog, syslogId, syslogInput, context),
-    deleteServer: async (parent: any, {syslogId}: any, context: any) => deleteElement(Syslog, syslogId, context)
+    putSyslog: async (parent: any, {syslogId, syslogInput}: any, context: any) => putElement(Syslog, syslogId, syslogInput, context),
+    deleteSyslog: async (parent: any, {syslogId}: any, context: any) => deleteElement(Syslog, syslogId, context)
 };
 
 export {SyslogQueries, SyslogMutations};

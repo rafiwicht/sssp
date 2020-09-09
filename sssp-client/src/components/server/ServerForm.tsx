@@ -3,7 +3,8 @@ import {Button, TableCell, TableRow, TextField} from "@material-ui/core";
 import {Server, ServerInput, MutationPutServerArgs, usePutServerMutation, GetServersDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import EnvironmentInput from '../helper/EnvironmentInput';
-import AppsInput from './AppsInput';
+import AppsInput from '../helper/AppsInput';
+import HostsInput from '../helper/HostsInput';
 
 
 type ServerFormProps = {
@@ -32,10 +33,13 @@ const ServerForm: React.FunctionComponent<ServerFormProps> = ({serviceId, resetI
             environmentIds: serverMod?.environmentIds || []
         }
     });
+
+    const [hosts, setHosts] = useState<string>((serverMod?.hosts || []).join(', '));
+
     const classes = useStyles();
 
     const [putServer] = usePutServerMutation({
-        refetchQueries: [{query: GetServersDocument}]
+        refetchQueries: [{query: GetServersDocument, variables: {serviceId: serviceId}}]
     })
 
     const handleIdChange = (event: any) => {
@@ -47,24 +51,23 @@ const ServerForm: React.FunctionComponent<ServerFormProps> = ({serviceId, resetI
 
     const handleChange = (prop: keyof ServerInput) => (event: any) => {
         // Value returns always string
-        let value;
-        if(event.target.type === 'checkbox') {
-            value = Boolean(event.target.checked);
-        }
-        else {
-            value = event.target.value;
-        }
         setState({
             ...state,
             serverInput: {
                 ...state.serverInput, 
-                [prop]: value
+                [prop]: event.target.value
             }
         });
     };
 
-    const handleHostsChange = (event: any) => {
-        console.log(event.target.value);
+    const handleHostsChange = (hosts: Array<string>) => {
+        setState({
+            ...state,
+            serverInput: {
+                ...state.serverInput, 
+                hosts: hosts
+            }
+        });
     };
 
     const handleSumbit = () => {
@@ -94,21 +97,14 @@ const ServerForm: React.FunctionComponent<ServerFormProps> = ({serviceId, resetI
                     id='_id'
                     type='text'
                     required
+                    fullWidth
                     value={state.serverId}
                     disabled={serverMod !== undefined}
                     onChange={handleIdChange}
                 />
             </TableCell>
             <TableCell align='right'>{serverMod === undefined ? '' : serverMod.state}</TableCell>
-            <TableCell>
-                <TextField
-                    id='hosts'
-                    type='text'
-                    required
-                    multiline
-                    onChange={handleHostsChange}
-                />
-            </TableCell>
+            <HostsInput hosts={state.serverInput.hosts || []} handleHostsChange={handleHostsChange} />
             <AppsInput serviceId={serviceId} handleChange={handleChange} appIds={state.serverInput.appIds || []} />
             <EnvironmentInput handleChange={handleChange} environmentIds={state.serverInput.environmentIds || []} />
             <TableCell align='right'>

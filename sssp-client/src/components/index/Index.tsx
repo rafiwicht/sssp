@@ -19,7 +19,7 @@ const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => 
         }
     });
     const [deleteIndex] = useDeleteIndexMutation({
-        refetchQueries: [{query: GetIndexesDocument}]
+        refetchQueries: [{query: GetIndexesDocument, variables: {serviceId: serviceId}}]
     });
 
     const handleDelete = (id: string) => {

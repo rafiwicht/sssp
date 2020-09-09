@@ -25,6 +25,7 @@ const AppsInput: React.FunctionComponent<AppsInputProps> = ({serviceId, appIds, 
             <TextField
                 id="appIds"
                 select
+                fullWidth
                 value={appIds}
                 onChange={handleChange('appIds')}
                 SelectProps={{multiple: true}}

@@ -34,7 +34,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInp
     const classes = useStyles();
 
     const [putIndex] = usePutIndexMutation({
-        refetchQueries: [{query: GetIndexesDocument}]
+        refetchQueries: [{query: GetIndexesDocument, variables: {serviceId: serviceId}}]
     })
 
     const handleIdChange = (event: any) => {
@@ -89,6 +89,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInp
                     id='_id'
                     type='text'
                     required
+                    fullWidth
                     value={state.indexId}
                     disabled={indexMod !== undefined}
                     onChange={handleIdChange}
@@ -100,6 +101,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInp
                     id='maxTotalDataSizeMB'
                     type='number'
                     required
+                    fullWidth
                     value={state.indexInput.maxTotalDataSizeMB}
                     onChange={handleChange('maxTotalDataSizeMB')}
                 />
@@ -109,6 +111,7 @@ const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInp
                     id='frozenTimePeriodInSecs'
                     type='number'
                     required
+                    fullWidth
                     value={state.indexInput.frozenTimePeriodInSecs}
                     onChange={handleChange('frozenTimePeriodInSecs')}
                 />

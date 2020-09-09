@@ -20,6 +20,7 @@ const EnvironmentInput: React.FunctionComponent<EnvironmentInputProps> = ({envir
             <TextField
                 id="environmentIds"
                 select
+                fullWidth
                 value={environmentIds}
                 onChange={handleChange('environmentIds')}
                 SelectProps={{multiple: true}}

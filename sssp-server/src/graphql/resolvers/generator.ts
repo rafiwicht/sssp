@@ -54,6 +54,8 @@ export const getElement = async (model: any, id: any, context: any) => {
 export const putElement = async (model: any, id: string, input: any, context: any) => {
     const result = await model.findById(id);
 
+    console.log(input);
+
     // If the element does not exists
     if (!result) {
         const resultNew = new model({

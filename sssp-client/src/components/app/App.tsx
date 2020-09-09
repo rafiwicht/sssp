@@ -19,7 +19,7 @@ const App: React.FunctionComponent<AppProps> = ({serviceId}: AppProps) => {
         }
     });
     const [deleteApp] = useDeleteAppMutation({
-        refetchQueries: [{query: GetAppsDocument}]
+        refetchQueries: [{query: GetAppsDocument, variables: {serviceId: serviceId}}]
     });
 
     const handleDelete = (id: string) => {

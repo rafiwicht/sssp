@@ -19,7 +19,7 @@ const http: React.FunctionComponent<HttpProps> = ({serviceId}: HttpProps) => {
         }
     });
     const [deleteHttp] = useDeleteHttpMutation({
-        refetchQueries: [{query: GetHttpsDocument}]
+        refetchQueries: [{query: GetHttpsDocument, variables: {serviceId: serviceId}}]
     });
 
     const handleDelete = (id: string) => {

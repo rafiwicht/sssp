@@ -1,31 +1,31 @@
 import { Typography, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Divider } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-import { useGetServersLazyQuery, useDeleteServerMutation, GetServersDocument, Server as ServerType } from '../../generated/graphql';
-import ServerForm from './ServerForm';
+import { useGetSyslogsLazyQuery, useDeleteSyslogMutation, GetSyslogsDocument, Syslog as SyslogType } from '../../generated/graphql';
+import SyslogForm from './SyslogForm';
 
 
 
-type ServerProps = {
+type SyslogProps = {
     serviceId: string
 }
 
-const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) => {
+const Syslog: React.FunctionComponent<SyslogProps> = ({serviceId}: SyslogProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');
 
-    const [getServers, {data, loading, error}] = useGetServersLazyQuery({
+    const [getSyslogs, {data, loading, error}] = useGetSyslogsLazyQuery({
         variables: {
             serviceId: serviceId
         }
     });
-    const [deleteServer] = useDeleteServerMutation({
-        refetchQueries: [{query: GetServersDocument, variables: {serviceId: serviceId}}]
+    const [deleteSyslog] = useDeleteSyslogMutation({
+        refetchQueries: [{query: GetSyslogsDocument, variables: {serviceId: serviceId}}]
     });
 
     const handleDelete = (id: string) => {
-        deleteServer({
+        deleteSyslog({
             variables: {
-                serverId: id
+                syslogId: id
             }
         });
     };
@@ -36,7 +36,7 @@ const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) 
     }
 
     useEffect(() => {
-        getServers();
+        getSyslogs();
     }, []);
     
     if (loading) {
@@ -49,25 +49,28 @@ const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) 
 
     return (
         <div>
-            <Typography variant='h5'>Server options</Typography>
+            <Typography variant='h5'>Syslog options</Typography>
             <Divider />
             <TableContainer component={Paper}>
-                <Table aria-label="serveres">
+                <Table aria-label="sysloges">
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell align='right'>State</TableCell>
+                            <TableCell align='right'>Index</TableCell>
+                            <TableCell align='right'>Sourcetype</TableCell>
+                            <TableCell align='right'>Port</TableCell>
+                            <TableCell align='right'>Protocol</TableCell>
                             <TableCell align='right'>Hosts</TableCell>
-                            <TableCell align='right'>Apps</TableCell>
                             <TableCell align='right'>Environments</TableCell>
                             <TableCell align='right'>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.servers?.map((row: ServerType) => {
+                        {data.syslogs?.map((row: SyslogType) => {
                             if(row._id === edit) {
                                 return (
-                                    <ServerForm key={row._id} serviceId={serviceId} resetInput={reset} serverMod={row} />
+                                    <SyslogForm key={row._id} serviceId={serviceId} resetInput={reset} syslogMod={row} />
                                 );
                             }
                             else {
@@ -75,8 +78,11 @@ const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) 
                                     <TableRow key={row._id}>
                                         <TableCell>{row._id}</TableCell>
                                         <TableCell align='right'>{row.state}</TableCell>
+                                        <TableCell align='right'>{row.index}</TableCell>
+                                        <TableCell align='right'>{row.sourcetype}</TableCell>
+                                        <TableCell align='right'>{row.port}</TableCell>
+                                        <TableCell align='right'>{row.protocol}</TableCell>
                                         <TableCell align='right'>{row.hosts.join(', ')}</TableCell>
-                                        <TableCell align='right'>{row.appIds.join(', ')}</TableCell>
                                         <TableCell align='right'>{row.environmentIds.join(', ')}</TableCell>
                                         <TableCell align='right'>
                                             <Button
@@ -95,7 +101,7 @@ const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) 
                             }
                         })}
                         {!hidden && 
-                            <ServerForm serviceId={serviceId} resetInput={reset} />
+                            <SyslogForm serviceId={serviceId} resetInput={reset} />
                         }
                     </TableBody>
                 </Table>
@@ -106,10 +112,10 @@ const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) 
                     variant='contained'
                     color='primary'
                     onClick={() => setHidden(false)}
-                >Add server</Button>
+                >Add syslog</Button>
             }
         </div>
     );
 }
 
-export default Server;
+export default Syslog;

@@ -35,7 +35,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
     const classes = useStyles();
 
     const [putApp] = usePutAppMutation({
-        refetchQueries: [{query: GetAppsDocument}]
+        refetchQueries: [{query: GetAppsDocument, variables: {serviceId: serviceId}}]
     })
 
     const handleIdChange = (event: any) => {
@@ -92,6 +92,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
                     id='_id'
                     type='text'
                     required
+                    fullWidth
                     value={state.appId}
                     disabled={appMod !== undefined}
                     onChange={handleIdChange}
@@ -103,6 +104,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
                     id='url'
                     type='text'
                     required
+                    fullWidth
                     value={state.appInput.url}
                     disabled={state.appInput.git || false}
                     onChange={handleChange('url')}
@@ -113,6 +115,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
                     id='version'
                     type='text'
                     required
+                    fullWidth
                     value={state.appInput.version}
                     onChange={handleChange('version')}
                 />

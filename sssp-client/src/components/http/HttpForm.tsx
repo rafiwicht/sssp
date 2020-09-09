@@ -3,6 +3,9 @@ import {Button, TableCell, TableRow, TextField} from "@material-ui/core";
 import {Http, HttpInput, MutationPutHttpArgs, usePutHttpMutation, GetHttpsDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
 import EnvironmentInput from '../helper/EnvironmentInput';
+import { IconButton } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 
 type HttpFormProps = {
@@ -25,7 +28,7 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
     const [state, setState] = useState<MutationPutHttpArgs>({
         httpId: httpMod?._id || '',
         httpInput: {
-            serviceId: httpMod?.serviceId || serviceId,
+            serviceId: serviceId,
             token: httpMod?.token || '',
             environmentIds: httpMod?.environmentIds || []
         }
@@ -33,7 +36,7 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
     const classes = useStyles();
 
     const [putHttp] = usePutHttpMutation({
-        refetchQueries: [{query: GetHttpsDocument}]
+        refetchQueries: [{query: GetHttpsDocument, variables: {serviceId: serviceId}}]
     })
 
     const handleIdChange = (event: any) => {
@@ -44,13 +47,11 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
     };
 
     const handleChange = (prop: keyof HttpInput) => (event: any) => {
-        // Value returns always string
-        let value = event.target.checked;
         setState({
             ...state,
             httpInput: {
                 ...state.httpInput, 
-                [prop]: value
+                [prop]: event.target.value
             }
         });
     };
@@ -81,6 +82,7 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
                     id='_id'
                     type='text'
                     required
+                    fullWidth
                     value={state.httpId}
                     disabled={httpMod !== undefined}
                     onChange={handleIdChange}
@@ -92,9 +94,22 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
                     id='token'
                     type='text'
                     required
+                    style = {{width: 400}}
                     value={state.httpInput.token}
                     onChange={handleChange('token')}
                 />
+                <IconButton
+                    color='primary'
+                    onClick={() => setState({
+                        ...state,
+                        httpInput: {
+                            ...state.httpInput, 
+                            token: uuidv4()
+                        }
+                    })}
+                >
+                    <RefreshIcon />
+                </IconButton>
             </TableCell>
             <EnvironmentInput handleChange={handleChange} environmentIds={state.httpInput.environmentIds || []} />
             <TableCell align='right'>
