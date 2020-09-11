@@ -37,6 +37,10 @@ export type ServiceListProps = {
     }>
 }
 
+/**
+ * List to hold the service entries
+ * @param ServiceListProps 
+ */
 const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, buttons}: ServiceListProps) => {
     const classes = useStyles();
 

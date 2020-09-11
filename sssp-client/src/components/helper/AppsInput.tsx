@@ -8,6 +8,11 @@ type AppsInputProps = {
     handleChange: (prop: any) => (event: any) => void
 }
 
+/**
+ * Helper to create an app selector with backend data
+ * @param AppsInputProps
+ */
+
 const AppsInput: React.FunctionComponent<AppsInputProps> = ({serviceId, appIds, handleChange}: AppsInputProps) => {
     
     const [getApps, {data}] = useGetAppsLazyQuery({

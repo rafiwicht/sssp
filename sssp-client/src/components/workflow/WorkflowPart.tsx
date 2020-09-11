@@ -11,6 +11,10 @@ type WorkflowPartProps = {
     refetchQueries: any
 }
 
+/**
+ * The result of a query as table rows
+ * @param WorkflowPartProps
+ */
 const WorkflowPart: React.FunctionComponent<WorkflowPartProps> = ({ query, name, resource, refetchQueries }: WorkflowPartProps) => {
     const [getChanges, { data, loading, error }] = query(args);
 

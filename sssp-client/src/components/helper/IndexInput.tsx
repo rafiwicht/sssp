@@ -8,6 +8,11 @@ type IndexInputProps = {
     handleChange: (prop: any) => (event: any) => void
 }
 
+/**
+ * Helper to create an index selector with backend data
+ * @param AppsInputProps
+ */
+
 const IndexInput: React.FunctionComponent<IndexInputProps> = ({serviceId, index, handleChange}: IndexInputProps) => {
     
     const [getApps, {data}] = useGetIndexesLazyQuery({

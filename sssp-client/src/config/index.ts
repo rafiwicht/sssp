@@ -1,3 +1,7 @@
+/**
+ * Environment variables for the frontend, gets replaced during build
+ */
+
 export default {
     firm: process.env.FIRM || 'SSSP',
     adminRole: process.env.ADMIN_ROLE || 'sssp-admin',

@@ -1,15 +1,17 @@
 import { Typography, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Divider } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-import { useGetHttpsLazyQuery, useDeleteHttpMutation, GetHttpsDocument, Http as httpType } from '../../generated/graphql';
+import { useGetHttpsLazyQuery, useDeleteHttpMutation, GetHttpsDocument, Http as HttpType } from '../../generated/graphql';
 import HttpForm from './HttpForm';
-
-
 
 type HttpProps = {
     serviceId: string
 }
 
-const http: React.FunctionComponent<HttpProps> = ({serviceId}: HttpProps) => {
+/**
+ * Http edit and view page
+ * @param HttpProps 
+ */
+const Http: React.FunctionComponent<HttpProps> = ({serviceId}: HttpProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');
 
@@ -63,7 +65,7 @@ const http: React.FunctionComponent<HttpProps> = ({serviceId}: HttpProps) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.https?.map((row: httpType) => {
+                        {data.https?.map((row: HttpType) => {
                             if(row._id === edit) {
                                 return (
                                     <HttpForm key={row._id} serviceId={serviceId} resetInput={reset} httpMod={row} />
@@ -110,4 +112,4 @@ const http: React.FunctionComponent<HttpProps> = ({serviceId}: HttpProps) => {
     );
 }
 
-export default http;
+export default Http;

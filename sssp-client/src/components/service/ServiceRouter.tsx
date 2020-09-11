@@ -5,6 +5,9 @@ import ServiceCreate from "./ServiceCreate";
 import ServiceDetails from "./ServiceDetails";
 import ServiceDelete from "./ServiceDelete";
 
+/**
+ * Routes the subpach '/service'
+ */
 const ServiceRouter: React.FC = () => {
     const { path } = useRouteMatch();
 

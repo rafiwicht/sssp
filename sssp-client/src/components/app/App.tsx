@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useGetAppsLazyQuery, useDeleteAppMutation, GetAppsDocument, App as AppType } from '../../generated/graphql';
 import AppForm from './AppForm';
 
-
-
 type AppProps = {
     serviceId: string
 }
-
+/**
+ * App edit and view page
+ * @param AppProps 
+ */
 const App: React.FunctionComponent<AppProps> = ({serviceId}: AppProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');

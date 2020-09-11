@@ -1,6 +1,3 @@
-/**
- *  Home screen of the frontend
- */
 import { Typography, Grid, Paper, Link, Divider, Button, Box } from '@material-ui/core';
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +12,10 @@ const useStyles = makeStyles(() =>({
         height: 80
     }
 }));
+
+/**
+ *  Home screen of the web page
+ */
 
 const Home: React.FC = () => {
     const classes = useStyles();

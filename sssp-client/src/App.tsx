@@ -10,14 +10,14 @@ import {Snackbar} from "@material-ui/core";
 import Alert from "./components/Alert";
 import config from './config';
 
-
-
-
-
+/**
+ * Main Gui Component, initializes Keycloak and Apollo
+ */
 const App: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [messages, setMessages] = useState<Array<string>>([]);
     
+    // Display error messages
     const setErrors = (errorMessages: Array<string>) => {
         setMessages(errorMessages);
         setOpen(true);

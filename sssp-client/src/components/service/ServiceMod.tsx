@@ -30,6 +30,10 @@ export enum Step {
     PERMISSION
 }
 
+/**
+ * Form used to create and edit services
+ * @param SyslogFormProps 
+ */
 const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleCancel, serviceMod}: ServiceModProps) => {
     let history = useHistory();
 

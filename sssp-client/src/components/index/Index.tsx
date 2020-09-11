@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { useGetIndexesLazyQuery, useDeleteIndexMutation, GetIndexesDocument, Index as IndexType } from '../../generated/graphql';
 import IndexForm from './IndexForm';
 
-
-
 type IndexProps = {
     serviceId: string
 }
 
+/**
+ * Index edit and view page
+ * @param IndexProps 
+ */
 const Index: React.FunctionComponent<IndexProps> = ({serviceId}: IndexProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');

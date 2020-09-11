@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { useGetServersLazyQuery, useDeleteServerMutation, GetServersDocument, Server as ServerType } from '../../generated/graphql';
 import ServerForm from './ServerForm';
 
-
-
 type ServerProps = {
     serviceId: string
 }
 
+/**
+ * Server edit and view page
+ * @param ServerProps 
+ */
 const Server: React.FunctionComponent<ServerProps> = ({serviceId}: ServerProps) => {
     const [hidden, setHidden] = useState<boolean>(true);
     const [edit, setEdit] = useState<string>('');

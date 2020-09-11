@@ -23,10 +23,16 @@ type WorkflowRowProps = {
     refetchQueries: any
 }
 
+/**
+ * Single table row with accept and reject function
+ * @param WorkflowPartProps
+ */
+
 const WorkflowRow: React.FunctionComponent<WorkflowRowProps> = ({ row, resource, refetchQueries }: WorkflowRowProps) => {
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
 
+    // Refetch the modification queries to upadte the table
     const [acceptChange] = useAcceptChangeMutation({
         refetchQueries: refetchQueries
     });

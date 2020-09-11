@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
 
+/**
+ * Contains the queries for the server pages
+ * Used for code generation
+ */
 export default gql`
     query GetServers($serviceId: String!) {
         servers(serviceId: $serviceId) {

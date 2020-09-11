@@ -3,7 +3,9 @@ import {useGetEnvironmentsLazyQuery} from '../../generated/graphql';
 import EnvironmentList from "./EnvironmentList";
 import EnvironmentForm from "./EnvironmentForm";
 
-
+/**
+ * Environment edit and view page
+ */
 const Environment: React.FC = () => {
 
     const [getEnvironments, {data, loading, error}] = useGetEnvironmentsLazyQuery();

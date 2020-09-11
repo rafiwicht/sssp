@@ -5,7 +5,6 @@ import {createStyles, makeStyles} from "@material-ui/styles";
 import EnvironmentInput from '../helper/EnvironmentInput';
 import config from '../../config';
 
-
 type AppFormProps = {
     serviceId: string,
     resetInput: () => void,
@@ -25,7 +24,12 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+/**
+ * Form used to create and edit apps
+ * @param AppFormProps 
+ */
 const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, appMod}: AppFormProps) => {
+    // Used to support a naming convention
     const [appType, setAppType] = useState<string>('TA');
     const [state, setState] = useState<MutationPutAppArgs>({
         appId: appMod?._id || '',
@@ -64,6 +68,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
             ...state.appInput, 
             [prop]: value
         };
+        // If git is used for the app, this resets the url, the url is then set by the backend
         if(prop === 'git' && value) {
             appInput.url = 'in creation';
         }
@@ -135,6 +140,7 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
                     required
                     fullWidth
                     value={state.appInput.url}
+                    // Disable if git is used
                     disabled={state.appInput.git || false}
                     onChange={handleChange('url')}
                 />

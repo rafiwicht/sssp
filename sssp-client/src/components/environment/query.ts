@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
 
+/**
+ * Contains the queries for the environment pages
+ * Used for code generation
+ */
 export default gql`
     query GetEnvironments {
         environments {

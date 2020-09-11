@@ -23,7 +23,11 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const syslogForm: React.FunctionComponent<SyslogFormProps> = ({serviceId, resetInput, syslogMod}: SyslogFormProps) => {
+/**
+ * Form used to create and edit syslog inputs
+ * @param SyslogFormProps 
+ */
+const SyslogForm: React.FunctionComponent<SyslogFormProps> = ({serviceId, resetInput, syslogMod}: SyslogFormProps) => {
     const [state, setState] = useState<MutationPutSyslogArgs>({
         syslogId: syslogMod?._id || '',
         syslogInput: {
@@ -166,4 +170,4 @@ const syslogForm: React.FunctionComponent<SyslogFormProps> = ({serviceId, resetI
     );
 }
 
-export default syslogForm;
+export default SyslogForm;

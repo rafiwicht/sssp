@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
 
+/**
+ * Contains the queries for the http pages
+ * Used for code generation
+ */
 export default gql`
     query GetHttps($serviceId: String!) {
         https(serviceId: $serviceId) {

@@ -11,6 +11,10 @@ const useStyles = makeStyles({
         flexGrow: 1,
     },
 });
+
+/**
+ * Admin page, entry to environment and workflow page
+ */
 const Admin: React.FC = () => {
 
     const classes = useStyles();

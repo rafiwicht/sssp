@@ -49,8 +49,8 @@ type MenuProps = {
     handleDrawerClose: () => void
 }
 
-
-const test = [
+// Items display in the menu
+const menuItems = [
     {
         text: 'Home',
         subpage: '/home',
@@ -70,6 +70,10 @@ const test = [
         icon: (<SupervisorAccountIcon />)
     }]
 
+/**
+ * Menu component, left side of gui
+ * @param MenuProps 
+ */
 const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
 
@@ -92,7 +96,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: Men
                 </IconButton>
             </div>
             <Divider/>
-            {test.map((value, index) => {
+            {menuItems.map((value, index) => {
                 if(admin || !value.adminOnly) {
                     return (<MenuListItem {...value} key={index}/>);
                 }

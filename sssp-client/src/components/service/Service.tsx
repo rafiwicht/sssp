@@ -4,7 +4,9 @@ import {Button, Typography} from '@material-ui/core';
 import ServiceList from './ServiceList';
 import {useGetServicesLazyQuery} from '../../generated/graphql';
 
-
+/**
+ * Default service page
+ */
 const Service: React.FC = () => {
     const [getServices, {data, loading, error}] = useGetServicesLazyQuery();
 

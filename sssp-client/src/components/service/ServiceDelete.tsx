@@ -18,6 +18,10 @@ type ServiceDeleteParams = {
     id: string
 }
 
+/**
+ * Simply delete page to confirm the request
+ * @param AppProps 
+ */
 const ServiceDelete: React.FC = () => {
     const { id }: ServiceDeleteParams = useParams();
     const classes = useStyles();

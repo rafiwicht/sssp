@@ -7,6 +7,10 @@ type TabPanelProps  = {
     value: number;
 }
 
+/**
+ * Helper component to create tabed components
+ * @param AppsInputProps
+ */
 const TabPanel: React.FunctionComponent<TabPanelProps> = ({children, index, value}: TabPanelProps) => {
 
     return (

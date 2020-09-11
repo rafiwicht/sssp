@@ -8,6 +8,11 @@ type MenuListItemProps = {
     icon: any
 }
 
+/**
+ * Item in the menu
+ * @param MenuListItemProps
+ */
+
 const MenuListItem: React.FunctionComponent<MenuListItemProps> = ({text, subpage, icon}: MenuListItemProps) => {
     let history = useHistory();
     return (

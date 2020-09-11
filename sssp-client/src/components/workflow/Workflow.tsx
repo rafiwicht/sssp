@@ -23,6 +23,9 @@ export const args = {
     }
 };
 
+/**
+ * Queries used to fetch the modified entries
+ */
 const queries = [
     {
         query: useGetChangedAppsLazyQuery,
@@ -104,7 +107,9 @@ const queries = [
     }
 ];
 
-
+/**
+ * Concat all queries in to collapsible table
+ */
 const Workflow: React.FC = () => {
 
     return (

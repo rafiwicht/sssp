@@ -1,6 +1,3 @@
-/**
- *  Bar for react
- */
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { AppBar, Grid, IconButton, Theme, Toolbar, Typography } from '@material-ui/core';
@@ -42,7 +39,10 @@ type BarProps = {
     userId: string
 }
 
-
+/**
+ * AppBar with username and drawer opener
+ * @param BarProps 
+ */
 const Bar: React.FunctionComponent<BarProps> = ({ open, handleDrawerOpen, userId }: BarProps) => {
     const classes = useStyles();
     return (

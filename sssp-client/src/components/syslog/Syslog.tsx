@@ -3,11 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { useGetSyslogsLazyQuery, useDeleteSyslogMutation, GetSyslogsDocument, Syslog as SyslogType } from '../../generated/graphql';
 import SyslogForm from './SyslogForm';
 
-
-
 type SyslogProps = {
     serviceId: string
 }
+
+/**
+ * Syslog edit and view page
+ * @param SyslogProps 
+ */
 
 const Syslog: React.FunctionComponent<SyslogProps> = ({serviceId}: SyslogProps) => {
     const [hidden, setHidden] = useState<boolean>(true);

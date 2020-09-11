@@ -24,6 +24,10 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+/**
+ * Form used to create and edit http inputs
+ * @param HttpFormProps 
+ */
 const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput, httpMod}: HttpFormProps) => {
     const [state, setState] = useState<MutationPutHttpArgs>({
         httpId: httpMod?._id || '',
@@ -100,6 +104,7 @@ const httpForm: React.FunctionComponent<HttpFormProps> = ({serviceId, resetInput
                 />
                 <IconButton
                     color='primary'
+                    // Creates a new UUIDv4 for the http input
                     onClick={() => setState({
                         ...state,
                         httpInput: {

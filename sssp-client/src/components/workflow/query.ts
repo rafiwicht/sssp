@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
 
+/**
+ * Contains the queries for the workflow pages
+ * Used for code generation
+ */
 export default gql`
     query GetChangedApps($onlyModifications: Boolean!) {
         apps(onlyModifications: $onlyModifications) {

@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
 
+/**
+ * Contains the queries for the syslog pages
+ * Used for code generation
+ */
 export default gql`
     query GetSyslogs($serviceId: String!) {
         syslogs(serviceId: $serviceId) {

@@ -26,17 +26,14 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-export type ServiceSimple = {
-    _id: string,
-    owner: string,
-    state: string,
-    dataClassification: string
-}
-
 export type EnvironmentListProps = {
     data: Array<Environment>
 }
 
+/**
+ * List to update and delete environments
+ * @param EnvironmentListProps 
+ */
 const EnvironmentList: React.FunctionComponent<EnvironmentListProps> = ({data}: EnvironmentListProps) => {
     const classes = useStyles();
 
@@ -54,6 +51,10 @@ const EnvironmentList: React.FunctionComponent<EnvironmentListProps> = ({data}: 
         }});
     }
 
+    /**
+     * Updates the environment automatically when changing the access rights
+     * @param environmentId 
+     */
     const handleChange = (environmentId: string) => (event: any) => {
         putEnvironment({ variables: {
             environmentId: environmentId,

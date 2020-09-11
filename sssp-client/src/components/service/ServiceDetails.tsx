@@ -26,6 +26,9 @@ type ServiceDetailsParams = {
     id: string
 }
 
+/**
+ * Service edit and view page with the tabs to the other pages
+ */
 const ServiceDetails: React.FC = () => {
     const classes = useStyles();
     const {id}: ServiceDetailsParams = useParams();

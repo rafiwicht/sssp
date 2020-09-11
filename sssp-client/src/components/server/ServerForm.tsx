@@ -6,7 +6,6 @@ import EnvironmentInput from '../helper/EnvironmentInput';
 import AppsInput from '../helper/AppsInput';
 import HostsInput from '../helper/HostsInput';
 
-
 type ServerFormProps = {
     serviceId: string,
     resetInput: () => void,
@@ -23,6 +22,10 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+/**
+ * Form used to create and edit server/deploymentserver inputs
+ * @param ServerFormProps 
+ */
 const ServerForm: React.FunctionComponent<ServerFormProps> = ({serviceId, resetInput, serverMod}: ServerFormProps) => {
     const [state, setState] = useState<MutationPutServerArgs>({
         serverId: serverMod?._id || '',

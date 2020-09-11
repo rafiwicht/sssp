@@ -7,7 +7,13 @@ type HostsInput = {
     handleHostsChange: (hosts: Array<string>) => void
 }
 
+/**
+ * Helper to create an host input field with comma seperated inputs
+ * @param AppsInputProps
+ */
+
 const HostsInput: React.FunctionComponent<HostsInput> = ({hosts, handleHostsChange}: HostsInput) => {
+    // Holds input as string
     const [hostsString, setHostsString] = useState<string>('');
 
     useEffect(() => {
@@ -16,6 +22,7 @@ const HostsInput: React.FunctionComponent<HostsInput> = ({hosts, handleHostsChan
 
     const handleChange = (event: any) => {
         setHostsString(event.target.value);
+        // Update state, where the input object is stored
         handleHostsChange(hostsString.trim().split(',').map(e => e.trim()));
     }
    

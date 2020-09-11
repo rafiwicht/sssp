@@ -18,6 +18,9 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+/**
+ * Used to create and update an environment
+ */
 const EnvironmentForm: React.FC = () => {
     const [state, setState] = useState<MutationPutEnvironmentArgs>({
         environmentId: '',
@@ -43,7 +46,7 @@ const EnvironmentForm: React.FC = () => {
             environmentId: event.target.value
         });
     };
-
+    
     const handleAccessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setState({
             ...state,

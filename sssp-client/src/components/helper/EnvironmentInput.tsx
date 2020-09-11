@@ -7,6 +7,11 @@ type EnvironmentInputProps = {
     handleChange: (prop: any) => (event: any) => void
 }
 
+/**
+ * Helper to create an environment selector with backend data
+ * @param AppsInputProps
+ */
+
 const EnvironmentInput: React.FunctionComponent<EnvironmentInputProps> = ({environmentIds, handleChange}: EnvironmentInputProps) => {
     
     const [getEnvironments, {data}] = useGetEnvironmentsLazyQuery();

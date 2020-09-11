@@ -21,6 +21,10 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+/**
+ * Form used to create and edit indexes
+ * @param IndexFormProps 
+ */
 const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInput, indexMod}: IndexFormProps) => {
     const [state, setState] = useState<MutationPutIndexArgs>({
         indexId: indexMod?._id || '',
