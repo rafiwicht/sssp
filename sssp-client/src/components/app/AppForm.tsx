@@ -64,7 +64,6 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
             ...state.appInput, 
             [prop]: value
         };
-        console.log()
         if(prop === 'git' && value) {
             appInput.url = 'in creation';
         }
