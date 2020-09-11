@@ -14,6 +14,9 @@ import config from '../config';
  * @param next
  */
 
+// Regex for service permission extraction
+let re = new RegExp(`^${config.prefixLDAPGroups}([a-z]*)_power`)
+
 export default async (req: any, res: any, next: any) => {
     const authHeader = req.get('Authorization');
     if (!authHeader) {
@@ -21,7 +24,7 @@ export default async (req: any, res: any, next: any) => {
     }
     const token = authHeader.split(' ')[1];
 
-    // For development
+    // Static token for development
     if(config.devToken && token === config.devToken) {
         req.userId = 'test1'
         req.admin = true;
@@ -40,15 +43,23 @@ export default async (req: any, res: any, next: any) => {
     if (!decodedToken) {
         return next();
     }
+
+    // Set username and admin previliges
     req.userId = decodedToken.preferred_username;
     req.admin = decodedToken.realm_access.roles.includes(config.adminRole);
-    req.services = decodedToken.realm_access.roles
-                        .filter((e: string) => e.startsWith(config.prefixLDAPGroups))
-                        .map((e: string) => {
-                            return e.replace(config.prefixLDAPGroups, '')
-                                    .replace('_user', '')
-                                    .replace('_power', '');
-                        })
-                        .filter((value, index, self) => self.index(value) === index);
+
+    // Extract service permission from roles
+    req.readAccess = []
+    req.writeAccess = []
+    decodedToken.realm_access.roles.forEach((e: string) => {
+        const res = e.match(re);
+        if(res) {
+            req.read.push(res[1]);
+            if(res[2] === 'power') {
+                req.write.push(res[1]);
+            }
+        }
+    });
+    console.log(req);
     return next();
 };

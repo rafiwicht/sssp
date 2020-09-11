@@ -1,3 +1,8 @@
+/**
+ * Resolver for the app queries and mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import App from "../../models/app";
 import {putElement, getElement, getElements, deleteElement} from "./generator";
 

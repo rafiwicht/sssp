@@ -1,3 +1,8 @@
+/**
+ * Model for server inputs over deployment server
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import mongoose, { Schema, Document } from "mongoose";
 import { State } from './index';
 
@@ -30,7 +35,6 @@ const ServerSchema: Schema = new Schema({
         }
     }
 });
-
 
 const Server = mongoose.model<ServerInterface>('Server', ServerSchema);
 

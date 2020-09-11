@@ -1,3 +1,8 @@
+/**
+ * Resolver for accepting and rejecting request mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import { ForbiddenError, ApolloError } from 'apollo-server';
 import { State } from '../../models';
 import Http from '../../models/http';

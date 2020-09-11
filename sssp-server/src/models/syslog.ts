@@ -1,3 +1,8 @@
+/**
+ * Model for the syslog inputs
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import mongoose, { Schema, Document } from "mongoose";
 import { State } from './index';
 

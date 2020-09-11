@@ -1,3 +1,8 @@
+/**
+ * Resolver for the index queries and mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import {getElement, getElements, putElement, deleteElement} from "./generator";
 import Index from "../../models/idx";
 

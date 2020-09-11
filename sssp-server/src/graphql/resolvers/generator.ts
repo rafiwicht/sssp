@@ -12,13 +12,13 @@ export const getElements = async (model: any, serviceId: string, onlyModificatio
 
     // Restrict access for multi tenancy
     if(serviceId) {
-        if(!context.admin && !context.services.includes(serviceId)) {
+        if(!context.admin && !context.read.includes(serviceId)) {
             return new ApolloError('Not found', 'NOT_FOUND');
         }
         searchQuery.serviceId = serviceId;   
     }
     else if(!serviceId && !context.admin) {
-        searchQuery._id = { $in: context.services };
+        searchQuery._id = { $in: context.read };
     }
     
     if(onlyModifications) {
@@ -36,7 +36,7 @@ export const getElement = async (model: any, id: any, context: any) => {
     const result = await model.findById(id);
 
     // Restrict access for multi tenancy
-    if(result && context.services.includes(result.serviceId)) {
+    if(result && context.read.includes(result.serviceId)) {
         return result._doc;
     }
     else return new ApolloError('Not found', 'NOT_FOUND');
@@ -57,7 +57,7 @@ export const putElement = async (model: any, id: string, input: any, context: an
     // If the element exist
     else {
         // Verify permissions
-        if(!context.services.includes(result.serviceId) && !context.admin) {
+        if(!context.write.includes(result.serviceId) && !context.admin) {
             return new ForbiddenError('Not allowed!');
         }
 
@@ -85,12 +85,6 @@ export const putElement = async (model: any, id: string, input: any, context: an
                 new: true
             });
 
-            console.log(input);
-            console.log(serviceSaved);
-
-            console.log(subsetEqual(serviceSaved._doc.changes, serviceSaved._doc));
-
-
             // Verify if future state is same as active state, if true it resets the future state
             if(subsetEqual(serviceSaved._doc.changes, serviceSaved._doc)) {
                 return await model.findByIdAndUpdate(id, {
@@ -113,7 +107,7 @@ export const putElement = async (model: any, id: string, input: any, context: an
 }
 
 export const deleteElement = async (model: any, id: string, context: any) => {
-    if(!context.services.includes(id) && !context.admin) {
+    if(!context.write.includes(id) && !context.admin) {
         return new ForbiddenError('Not allowed!');
     }
 

@@ -1,3 +1,8 @@
+/**
+ * Resolver for the syslog input queries and mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import Syslog from "../../models/syslog";
 import {getElement, getElements, putElement, deleteElement} from "./generator";
 

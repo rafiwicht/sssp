@@ -1,3 +1,8 @@
+/**
+ * Resolver for the server input queries and mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import Server from "../../models/server";
 import {getElement, getElements, deleteElement, putElement} from "./generator";
 

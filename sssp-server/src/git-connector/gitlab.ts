@@ -1,5 +1,5 @@
 /**
- * Git connector for gitlab
+ * Git connector for gitlab community edition
  * Does not support changing access permissions
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */

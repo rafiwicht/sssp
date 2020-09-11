@@ -1,3 +1,8 @@
+/**
+ * Model for the indexes
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import mongoose, { Schema, Document } from "mongoose";
 import config from '../config';
 import { State } from './index';
@@ -31,7 +36,6 @@ const IndexSchema: Schema = new Schema({
         }
     }
 });
-
 
 const Index = mongoose.model<IndexInterface>('Index', IndexSchema);
 

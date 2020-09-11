@@ -250,10 +250,12 @@ const schema: ApolloServerExpressConfig = {
     context: ({req}: any) => {
         // Add authentication to the graphql context
         if (!req.userId) throw new AuthenticationError('Unauthenticated!');
+        
         return {
             userId: req.userId,
             admin: req.admin,
-            services: req.services
+            read: req.readAccess,
+            write: req.writeAccess
         };
     },
     playground: true

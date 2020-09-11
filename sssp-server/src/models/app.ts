@@ -1,3 +1,8 @@
+/**
+ * Model for the apps and addons
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import mongoose, { Schema, Document } from "mongoose";
 import { State } from '.';
 
@@ -32,7 +37,6 @@ const AppSchema: Schema = new Schema({
         }
     }
 });
-
 
 const App = mongoose.model<AppInterface>('App', AppSchema);
 

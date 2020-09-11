@@ -1,3 +1,8 @@
+/**
+ * Resolver for the environment queries and mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import { ForbiddenError } from 'apollo-server';
 import Environment from '../../models/environment';
 

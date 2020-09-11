@@ -1,3 +1,8 @@
+/**
+ * Resolver for the https input queries and mutations
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import {getElement, getElements, putElement, deleteElement} from "./generator";
 import Http from "../../models/http";
 

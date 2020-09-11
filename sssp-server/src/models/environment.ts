@@ -1,5 +1,9 @@
-import mongoose, { Schema, Document } from "mongoose";
+/**
+ * Model for the environemnts
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
 
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface EnvironmentInterface extends Document {
     _id: string;
@@ -11,7 +15,6 @@ const EnvironmentSchema: Schema = new Schema({
     userAccess: { type: Boolean, default: false }
 });
 
-// Saving active state
 const Environment = mongoose.model<EnvironmentInterface>('Environment', EnvironmentSchema);
 
 export default Environment;

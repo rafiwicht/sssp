@@ -1,3 +1,8 @@
+/**
+ * Model for the http inputs
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
+
 import mongoose, { Schema, Document } from "mongoose";
 import { State } from './index';
 
@@ -26,7 +31,6 @@ const HttpSchema: Schema = new Schema({
         }
     }
 });
-
 
 const Http = mongoose.model<HttpInterface>('Http', HttpSchema);
 

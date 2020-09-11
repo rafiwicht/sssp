@@ -1,4 +1,7 @@
-
+/**
+ * The possible status of the documents
+ * @author Rafael Wicht <rafi.wicht139@gmail.com>
+ */
 
 export enum State {
     IN_CREATION= 'IN_CREATION',
