@@ -59,17 +59,20 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
         else {
             value = event.target.value;
         }
+
+        const appInput = {
+            ...state.appInput, 
+            [prop]: value
+        };
+        console.log()
+        if(prop === 'git' && value) {
+            appInput.url = 'in creation';
+        }
+
         setState({
             ...state,
-            appInput: {
-                ...state.appInput, 
-                [prop]: value,
-                url: value ? 'in creation' : state.appInput.url
-            }
+            appInput: appInput
         });
-        if(value) {
-
-        }
     };
 
     const handleSumbit = () => {
