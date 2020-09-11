@@ -4,11 +4,8 @@
  */
 
 
-import {AppType} from "../models/service";
-
-
 // Default app conf
-export const appConf = (name: string, type: AppType) => {
+export const appConf = (name: string, visible: boolean) => {
     const nameShort = name.split('-')[-1];
 
     return {
@@ -20,11 +17,11 @@ export const appConf = (name: string, type: AppType) => {
 is_configured = 0
 
 [ui]
-${type === AppType.UI ? `is_visible = 1\nlabel = ${AppType} for ${nameShort}`: "is_visible = 0"}
+${visible ? `is_visible = 1\nlabel = App for ${nameShort}`: "is_visible = 0"}
 
 [launcher]
 author = SSSP Automator
-description = ${type} for ${nameShort}
+description = ${visible ? 'App' : 'Addon'} for ${nameShort}
 version = 1.0.0
 
 [package]
@@ -35,14 +32,14 @@ check_for_updates = 0
 
 // default.meta for permissions
 // Does not support access permissions
-export const defaultMeta = (name: string, type: AppType) => {
+export const defaultMeta = (name: string, visible: boolean) => {
     return {
         path: 'metadata/default.meta',
         content: `# Application-level permissions
 
 []
 access = read : [ * ], write : [ admin ]
-${type === AppType.UI ? "export = none" : "export = system"}
+${visible ? "export = none" : "export = system"}
 `
     };
 }

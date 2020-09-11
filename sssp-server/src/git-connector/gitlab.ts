@@ -6,7 +6,6 @@
 
 
 import GitConnectorInterface from "./index";
-import {AppType} from "../models/service";
 import axios, {AxiosPromise, AxiosResponse, Method} from "axios";
 import config from "../config";
 import {templates, uiTemplates} from "./templates";
@@ -14,7 +13,7 @@ import {encode} from "../helper/url";
 
 
 class GitlabConnector implements GitConnectorInterface {
-    createRepo(name: string, read: Array<string>, write: Array<string>, type: AppType): string {
+    createRepo(name: string, serviceId: string, visible: boolean): string {
         axiosRequest(
             '/projects'
         ).then((r: AxiosResponse) => {
@@ -29,7 +28,7 @@ class GitlabConnector implements GitConnectorInterface {
                 )
                 .then((r) =>
                 {
-                    template(name, r.data.id, type);
+                    template(name, r.data.id, visible);
                 })
                 .catch(r => {
                     console.log(r);
@@ -67,10 +66,10 @@ class GitlabConnector implements GitConnectorInterface {
 
 }
 
-const template = async(name: string, id: number, type: AppType) => {
+const template = async(name: string, id: number, visible: boolean) => {
 
     for (const e of templates) {
-        const {path, content} = e(name, type)
+        const {path, content} = e(name, visible)
         await axiosRequest(
             `/projects/${id}/repository/files/${encode(path)}`,
             {
@@ -82,7 +81,7 @@ const template = async(name: string, id: number, type: AppType) => {
         ).catch(r => console.log(r));
 
     }
-    if(type === AppType.UI) {
+    if(visible) {
         for (const e of uiTemplates) {
             const {path, content} = e();
             await axiosRequest(

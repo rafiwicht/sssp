@@ -6,6 +6,18 @@ import Server from '../../models/server';
 import Service from '../../models/service';
 import Syslog from '../../models/syslog';
 import App from "../../models/app";
+import config from '../../config';
+import GitConnectorInterface from '../../git-connector';
+import GithubConnector from '../../git-connector/github';
+import GitlabConnector from '../../git-connector/gitlab';
+
+let gitConnector: GitConnectorInterface;
+if(config.githubToken) {
+    gitConnector = new GithubConnector();
+}
+else {
+    gitConnector = new GitlabConnector();
+}
 
 enum Resource {
     APP = 'APP',
@@ -31,7 +43,7 @@ type WorkflowProps = {
 }
 
 const WorkflowMutations = {
-    acceptChange: async (parent: any, {id, resource}: any, context: any) => {
+    acceptChange: async (parent: any, {id, resource}: WorkflowProps, context: any) => {
         if(!context.admin) return new ForbiddenError('Not allowed!');
 
         const model = modelMapper[resource];
@@ -55,6 +67,14 @@ const WorkflowMutations = {
             },{
                 new: true
             });
+        }
+        if(resource === Resource.APP && element.git) {
+            if(element.state === State.IN_CREATION) {
+                gitConnector.createRepo(id, element.serviceId, id.startsWith('UI'));
+            }
+            else if(element.state === State.IN_DELETION) {
+                gitConnector.deleteRepo(id);
+            }
         }
         return id;
     
