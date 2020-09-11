@@ -1,9 +1,14 @@
 # Release
 
 ## v0.2.0
-- Splitting up the creation and update page in multiple steps.
-- Automatic addition of the service ldap-group to the permissions
-- Users can only see the services for which they are authorized.
+- Redesign graphql interface to use operations for each configuration type
+- Redesign frontend to match backend
+- Add syslog inputs as a configuration option
+- Add http input as a configuration option
+- Add multi environment configurations
+- Finished full multi-tenancy for backend
+- Implemented read and write privileges for frontend and backend
+- Multiple bugfixes
 
 ## v0.1.1
 

@@ -25,9 +25,7 @@ Before you can build the image, you have to create the file `sssp-client/.envPro
 | ADMIN_ROLE | The LDAP role for the SSSP Admins | sssp-admin | 
 | KEYCLOAK_URL | URL to the keycloak backend. | https://test.sssp.local:8000/auth/ | 
 | KEYCLOAK_REALM | The keycloak realm used for the SSSP | sssp | 
-| KEYCLOAK_CLIENT_ID | The keycloak client for the SSSP | sssp-client | 
-| ADD_LDAP_GROUPS | If ldap groups should added to service permissions | true |
-| PREFIX_LDAP_GROUPS | Prefix of the AD groups `<praefix><servicename>_<user|power>` | "svc_" |
+| KEYCLOAK_CLIENT_ID | The keycloak client for the SSSP | sssp-client |
 
 ```
 make build-client
@@ -48,6 +46,7 @@ For production you can use the prebuild image [docker.io/wichtr/sssp-server](htt
 | MONGO | The server adress of the mongodb instance | (no default) |
 | MONGO_PORT | The port of the mongodb instance | 27017 |
 | ADMIN_ROLE | The LDAP-group with the sssp admins | sssp-admin |
+| PREFIX_LDAP_GROUPS | Prefix of the AD groups `<praefix><servicename>_<user|power>` | "svc_" |
 | JWT_CERT_URL | The URL, where the public certificate can be downloaded | http://127.0.0.1:8080/auth/realms/sssp/protocol/openid-connect/certs |
 | GITHUB_TOKEN | Token for token-based authentication, if set Github will be used | (no default) |
 | GITHUB_ORG | The github organization where the repositories are created | sssp-test |
