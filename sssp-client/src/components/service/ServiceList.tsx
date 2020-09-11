@@ -23,7 +23,6 @@ const useStyles = makeStyles(() =>
 
 export type ServiceSimple = {
     _id: string,
-    name: string,
     owner: string,
     state: string,
     dataClassification: string
@@ -38,6 +37,10 @@ export type ServiceListProps = {
     }>
 }
 
+/**
+ * List to hold the service entries
+ * @param ServiceListProps 
+ */
 const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, buttons}: ServiceListProps) => {
     const classes = useStyles();
 
@@ -56,7 +59,7 @@ const ServiceList: React.FunctionComponent<ServiceListProps> = ({data, buttons}:
                 <TableBody>
                     {data.map((row: ServiceSimple) => (
                         <TableRow key={row._id}>
-                            <TableCell>{row.name}</TableCell>
+                            <TableCell>{row._id}</TableCell>
                             <TableCell align='right'>{row.owner}</TableCell>
                             <TableCell align='right'>{row.state}</TableCell>
                             <TableCell align='right'>{row.dataClassification}</TableCell>

@@ -9,12 +9,16 @@ type ApolloProps = {
     setErrors: (messages: Array<string>) => void
 }
 
+/**
+ * Apollo props
+ */
 export default ({setErrors}: ApolloProps) => {
 
     const errorLink = onError(({ response, operation, graphQLErrors, networkError, forward }) => {
         let errors: Array<string> = []
         if (graphQLErrors) {
             graphQLErrors.map(({ message, locations, path, extensions }) => {
+                // If the token expires, automatically renew it
                 if(extensions?.code === 'UNAUTHENTICATED') {
                     keycloak.updateToken(120).then(() => {
                         operation.setContext({
@@ -30,6 +34,10 @@ export default ({setErrors}: ApolloProps) => {
                 }
             });
         }
+        // Display connection issues to the console
+        else if(networkError) {
+            console.log(networkError);
+        }
         setErrors(errors);
     })
 
@@ -38,6 +46,7 @@ export default ({setErrors}: ApolloProps) => {
         uri: '/graphql',
     });
 
+    // Add keycloak token to header
     const authLink = setContext((_, {headers}) => {
         const token = keycloak?.token
         return {
@@ -48,6 +57,7 @@ export default ({setErrors}: ApolloProps) => {
         };
     });
 
+    // Initialize client with cache
     return new ApolloClient({
         link: authLink.concat(errorLink).concat(httpLink),
         cache: new InMemoryCache(),

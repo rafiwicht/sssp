@@ -1,8 +1,11 @@
-import React, {FunctionComponent} from 'react';
+import React from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
-
-const Alert: FunctionComponent<AlertProps> = (props: AlertProps) => {
+/**
+ * Display error messages as flash messages on screen
+ * @param props 
+ */
+const Alert: React.FunctionComponent<AlertProps> = (props: AlertProps) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 

@@ -1,19 +1,21 @@
 /**
- * File containing all workflow queries, mutations and subscriptions
- * This resolvers are only accessible by admins
+ * Resolver for accepting and rejecting request mutations
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
-import mongoose from 'mongoose';
-import {FutureService, IndexInterface, RevisionService, Service, AppInterface, State, ServiceInterface} from '../../models/service';
-import {ApolloError, ForbiddenError} from 'apollo-server';
-import GitConnectorInterface from '../../git-connector';
+import { ForbiddenError, ApolloError } from 'apollo-server';
+import { State } from '../../models';
+import Http from '../../models/http';
+import Index from '../../models/idx';
+import Server from '../../models/server';
+import Service from '../../models/service';
+import Syslog from '../../models/syslog';
+import App from "../../models/app";
 import config from '../../config';
+import GitConnectorInterface from '../../git-connector';
 import GithubConnector from '../../git-connector/github';
 import GitlabConnector from '../../git-connector/gitlab';
 
-
-// Connector to the git backend
 let gitConnector: GitConnectorInterface;
 if(config.githubToken) {
     gitConnector = new GithubConnector();
@@ -22,141 +24,89 @@ else {
     gitConnector = new GitlabConnector();
 }
 
-type WorkflowResult = {
-    _id: string,
-    name: Array<string>,
-    owner: Array<string>,
-    description: Array<string>,
-    dataClassification: Array<string>,
-    read: Array<Array<string>>,
-    write: Array<Array<string>>,
-    indexes: Array<Array<IndexInterface>>,
-    apps: Array<Array<AppInterface>>,
-    state: State
+enum Resource {
+    APP = 'APP',
+    HTTP = 'HTTP',
+    INDEX = 'INDEX',
+    SERVER = 'SERVER',
+    SERVICE = 'SERVICE',
+    SYSLOG = 'SYSLOG'
 }
 
-const WorkflowQueries = {
-    workflow: async (parent: any, {serviceId}: any, context: any) => {
-        if(!context.admin) return new ForbiddenError('Not allowed!');
+const modelMapper = {
+    APP: App,
+    HTTP: Http,
+    INDEX: Index,
+    SERVER: Server,
+    SERVICE: Service,
+    SYSLOG: Syslog
+}
 
-        const futureService = await FutureService.findById(serviceId);
-        if(!futureService) throw new ApolloError('Service not found', 'NOT_FOUND');
-
-        let result: WorkflowResult = {
-            _id: futureService._id,
-            name: [futureService.name],
-            owner: [futureService.owner],
-            description: [futureService.description],
-            dataClassification: [futureService.dataClassification],
-            read: [futureService.read],
-            write: [futureService.write],
-            indexes: [futureService.indexes],
-            apps: [futureService.apps],
-            state: futureService.state
-        };
-        if(futureService.state !== State.IN_CREATION) {
-            const service = await Service.findById(serviceId);
-            result.name.unshift(service.name);
-            result.owner.unshift(service.owner);
-            result.description.unshift(service.description);
-            result.dataClassification.unshift(service.dataClassification);
-            result.read.unshift(service.read);
-            result.write.unshift(service.write);
-            result.indexes.unshift(service.indexes);
-            result.apps.unshift(service.apps);
-        }
-        return result;
-    }
-};
+type WorkflowProps = {
+    id: string,
+    resource: Resource
+}
 
 const WorkflowMutations = {
-    acceptWorkflow: async (parent: any, {serviceId}: any, context: any) => {
+    acceptChange: async (parent: any, {id, resource}: WorkflowProps, context: any) => {
         if(!context.admin) return new ForbiddenError('Not allowed!');
 
-        const futureService = await FutureService.findById(serviceId);
-        if(!futureService) throw new ApolloError('Service not found', 'NOT_FOUND');
-
-        if(futureService.state === State.IN_CREATION) {
-            const newService = new Service({
-                ...futureService._doc,
-                apps: futureService.apps.map(e => {
-                    // Create git repositories
-                    return {
-                        name: e.name,
-                        type: e.type,
-                        url: gitConnector.createRepo(e.name, futureService.read, futureService.write, e.type)
-                    };
-                }),
-                state: State.ACTIVE
+        const model = modelMapper[resource];
+    
+        const element = await model.findById(id);
+        if(!element) {
+            return new ApolloError('Not found', 'NOT_FOUND');
+        }
+        else if(element._doc.state === State.IN_DELETION) {
+            await model.findByIdAndDelete(id);
+        }
+        else {
+            await model.findByIdAndUpdate(id, {
+                $set: {
+                    ...element.changes,
+                    state: State.ACTIVE
+                },
+                $unset: {
+                    changes: {}
+                }
+            },{
+                new: true
             });
-            newService.save();
         }
-        else{
-            const service = await Service.findById(serviceId);
-            // Add current state to revision
-            const newRevisionService = new RevisionService({
-                ...service._doc,
-                _id: new mongoose.Types.ObjectId(),
-                state: State.ARCHIVED
-            })
-            newRevisionService.save();
-
-            if(futureService.state === State.IN_DELETION) {
-                await Service.findByIdAndDelete(serviceId);
-
-                // Delete git repositories
-                futureService.apps.forEach(e => {
-                    gitConnector.deleteRepo(e.name);
-                });
+        if(resource === Resource.APP && element.git) {
+            if(element.state === State.IN_CREATION) {
+                gitConnector.createRepo(id, element.serviceId, id.startsWith('UI'));
             }
-            else {
-                // Get git repositories difference
-                const newApps = futureService.apps.map((e: ServiceInterface) => {return e.name;});
-                const currentApps = service.apps.map((e: ServiceInterface) => {return e.name;});
-                const appsToDelete = currentApps.filter((e: string) => !newApps.includes(e));
-
-                // Delete git repositories
-                appsToDelete.forEach(e => {
-                    gitConnector.deleteRepo(e);
-                });
-
-                await Service.findByIdAndUpdate(serviceId, {
-                    ...futureService._doc,
-                    state: State.ACTIVE,
-                    revision: futureService.revision + 1,
-                    apps: futureService.apps.map(e => {
-                        if(e.url !== 'in creation') {
-                            return e;
-                        }
-                        else {
-                            return {
-                                name: e.name,
-                                type: e.type,
-                                url: gitConnector.createRepo(e.name, futureService.read, futureService.write, e.type)
-                            };
-                        }
-                    })
-                });
-
-
+            else if(element.state === State.IN_DELETION) {
+                gitConnector.deleteRepo(id);
             }
         }
-
-        return await FutureService.findByIdAndDelete(serviceId);
+        return id;
+    
     },
-    declineWorkflow: async (parent: any, {serviceId}: any, context: any) => {
+    rejectChange: async (parent: any, {id, resource}: WorkflowProps, context: any) => {
         if(!context.admin) return new ForbiddenError('Not allowed!');
 
-        const futureService = await FutureService.findById(serviceId);
-        if(!futureService) throw new ApolloError('Service not found', 'NOT_FOUND');
-
-        if(futureService.state !== State.IN_CREATION) {
-            await Service.findByIdAndUpdate(serviceId, {
-                state: State.ACTIVE
+        const model = modelMapper[resource];
+    
+        const element = await model.findById(id);
+        if(!element) {
+            return new ApolloError('Not found', 'NOT_FOUND');
+        }
+        else {
+            await model.findByIdAndUpdate(id, {
+                $set: {
+                    state: State.ACTIVE
+                },
+                $unset: {
+                    changes: {}
+                }
+            },{
+                new: true
             });
         }
-        return await FutureService.findByIdAndDelete(serviceId);
+        return id;
     }
 };
 
-export {WorkflowQueries, WorkflowMutations};
+export {WorkflowMutations};

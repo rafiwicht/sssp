@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
-import {Button, FormControl, Input, InputLabel, MenuItem, Select, Typography} from "@material-ui/core";
-import {AppInput, AppType} from "../../generated/graphql";
+import {Button, TableCell, TableRow, TextField, Checkbox, MenuItem} from "@material-ui/core";
+import {App, AppInput, MutationPutAppArgs, usePutAppMutation, GetAppsDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import EnvironmentInput from '../helper/EnvironmentInput';
 import config from '../../config';
 
-
 type AppFormProps = {
-    submitApp: (appInput: AppInput) => void
+    serviceId: string,
+    resetInput: () => void,
+    appMod?: App
 }
 
 const useStyles = makeStyles(() =>
@@ -16,96 +18,167 @@ const useStyles = makeStyles(() =>
             marginBottom: 5,
             marginRight: 5
         },
-        typo: {
-            display: 'inline-block',
-            margin: 5,
-            marginTop: 27
+        marginLeft: {
+            marginLeft: 5
         }
     }),
 );
 
-const AppForm: React.FunctionComponent<AppFormProps> = ({submitApp}: AppFormProps) => {
-    const [appInput, setAppInput] = useState<AppInput>({
-        name: '',
-        type: AppType.Ta
+/**
+ * Form used to create and edit apps
+ * @param AppFormProps 
+ */
+const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, appMod}: AppFormProps) => {
+    // Used to support a naming convention
+    const [appType, setAppType] = useState<string>('TA');
+    const [state, setState] = useState<MutationPutAppArgs>({
+        appId: appMod?._id || '',
+        appInput: {
+            serviceId: appMod?.serviceId || serviceId,
+            version: appMod?.version || 'latest',
+            url: appMod?.url || 'in creation',
+            git: (appMod?.git === undefined || appMod?.git === null) ? true : appMod?.git,
+            environmentIds: appMod?.environmentIds || []
+        }
     });
-    const [hidden, setHidden] = useState<boolean>(true);
     const classes = useStyles();
 
-    const handleOpen = () =>  {
-        setHidden(false);
-    }
+    const [putApp] = usePutAppMutation({
+        refetchQueries: [{query: GetAppsDocument, variables: {serviceId: serviceId}}]
+    })
+
+    const handleIdChange = (event: any) => {
+        setState({
+            ...state,
+            appId: event.target.value
+        });
+    };
 
     const handleChange = (prop: keyof AppInput) => (event: any) => {
-        setAppInput({ ...appInput, [prop]: event.target.value });
+        // Value returns always string
+        let value;
+        if(event.target.type === 'checkbox') {
+            value = Boolean(event.target.checked);
+        }
+        else {
+            value = event.target.value;
+        }
+
+        const appInput = {
+            ...state.appInput, 
+            [prop]: value
+        };
+        // If git is used for the app, this resets the url, the url is then set by the backend
+        if(prop === 'git' && value) {
+            appInput.url = 'in creation';
+        }
+
+        setState({
+            ...state,
+            appInput: appInput
+        });
+    };
+
+    const handleSumbit = () => {
+        reset();
+        putApp({
+            variables: {
+                ...state,
+                appId: state.appInput.git ? `${appType}-${config.firm}-${state.appId}` : state.appId
+            }
+        });
     };
 
     const reset = () => {
-        setHidden(true);
-        setAppInput({
-            name: '',
-            type: AppType.Ta
+        resetInput();
+        setState({
+            appId: '',
+            appInput: {
+                serviceId: serviceId,
+                version: 'latest',
+                url: 'in creation',
+                git: true,
+                environmentIds: []
+            }
         });
-    }
-
-    const handleSubmit = () => {
-        submitApp({
-            name: `${appInput.type}-${config.firm}-${appInput.name}`,
-            type: appInput.type
-        });
-        reset();
-    }
-
-    if(hidden) {
-        return (
-            <Button
-                variant='contained'
-                color='primary'
-                onClick={() => handleOpen()}
-            >Add app/addons</Button>
-        );
     }
 
     return (
-        <div>
-            <Typography className={classes.typo} variant='body1'>{`${appInput.type}-${config.firm}-`}</Typography>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <Input
-                    id='name'
+        <TableRow>
+            <TableCell>
+                {state.appInput.git === true && `${appType}-${config.firm}-`}
+                <TextField
+                    id='_id'
                     type='text'
                     required
-                    value={appInput.name}
-                    onChange={handleChange('name')}
+                    value={state.appId}
+                    disabled={appMod !== undefined}
+                    onChange={handleIdChange}
                 />
-            </FormControl>
-            <FormControl className={classes.margin}>
-                <InputLabel htmlFor='type'>Type</InputLabel>
-                <Select
-                    id="type"
-                    value={appInput.type}
-                    onChange={handleChange('type')}
-                >
-                    <MenuItem value={AppType.Ta}>TA</MenuItem>
-                    <MenuItem value={AppType.Fa}>FA</MenuItem>
-                    <MenuItem value={AppType.Sa}>SA</MenuItem>
-                    <MenuItem value={AppType.Ia}>IA</MenuItem>
-                    <MenuItem value={AppType.Ui}>UI</MenuItem>
-                </Select>
-            </FormControl>
-            <Button
-                variant='contained'
-                className={classes.margin}
-                onClick={() => reset()}
-            >Cancel</Button>
-            <Button
-                variant='contained'
-                color='primary'
-                className={classes.margin}
-                onClick={() => handleSubmit()}
-                disabled={appInput.name === ''}
-            >Submit</Button>
-        </div>
+                {state.appInput.git === true && 
+                    <TextField
+                        id="appType"
+                        select
+                        className={classes.marginLeft}
+                        value={appType}
+                        onChange={(event) => {
+                            setAppType(event.target.value);
+                          }}
+                    >
+                        <MenuItem value='TA'>TA</MenuItem>
+                        <MenuItem value='UI'>UI</MenuItem>
+                        <MenuItem value='FA'>FA</MenuItem>
+                        <MenuItem value='SA'>SA</MenuItem>
+                    </TextField>
+                }
+            </TableCell>
+            <TableCell align='right'>{appMod === undefined ? '' : appMod.state}</TableCell>
+            <TableCell align='right'>
+                <TextField
+                    id='url'
+                    type='text'
+                    required
+                    fullWidth
+                    value={state.appInput.url}
+                    // Disable if git is used
+                    disabled={state.appInput.git || false}
+                    onChange={handleChange('url')}
+                />
+            </TableCell>
+            <TableCell align='right'>
+                <TextField
+                    id='version'
+                    type='text'
+                    required
+                    fullWidth
+                    value={state.appInput.version}
+                    onChange={handleChange('version')}
+                />
+            </TableCell>
+            <TableCell align='right'>
+                <Checkbox
+                    id='git'
+                    required
+                    checked={(state.appInput.git === undefined || state.appInput.git === null) ? true : state.appInput.git }
+                    onChange={handleChange('git')}
+                />
+            </TableCell>
+            <EnvironmentInput handleChange={handleChange} environmentIds={state.appInput.environmentIds || []} />
+            <TableCell align='right'>
+                <Button
+                    variant='contained'
+                    className={classes.margin}
+                    onClick={() => reset()}
+                >Cancel</Button>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    className={classes.margin}
+                    onClick={() => handleSumbit()}
+                    disabled={state.appId === '' || state.appInput.version === ''}
+                >Submit</Button>
+            </TableCell>
+        </TableRow>
     );
 }
 

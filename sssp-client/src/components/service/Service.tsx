@@ -2,15 +2,13 @@ import React, {useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import {Button, Typography} from '@material-ui/core';
 import ServiceList from './ServiceList';
-import {Kind, useGetServicesLazyQuery} from '../../generated/graphql';
+import {useGetServicesLazyQuery} from '../../generated/graphql';
 
-
+/**
+ * Default service page
+ */
 const Service: React.FC = () => {
-    const [getServices, {data, loading, error}] = useGetServicesLazyQuery({
-        variables: {
-            kind: Kind.Newest
-        }
-    });
+    const [getServices, {data, loading, error}] = useGetServicesLazyQuery();
 
     let history = useHistory();
 
@@ -20,14 +18,6 @@ const Service: React.FC = () => {
 
     const handleDetails = (id: string) => {
         history.push(`/service/details/${id}`);
-    }
-
-    const handleUpdate = (id: string) => {
-        history.push(`/service/update/${id}`);
-    }
-
-    const handleDelete = (id: string) => {
-        history.push(`/service/delete/${id}`);
     }
 
     useEffect(() => {
@@ -42,7 +32,6 @@ const Service: React.FC = () => {
         return <div>ERROR</div>;
     }
 
-
     return (
         <div>
             <Typography variant='h3'>Services</Typography>
@@ -54,19 +43,6 @@ const Service: React.FC = () => {
                         text: 'Details',
                         color: 'primary',
                         onClick: handleDetails
-
-                    },
-                    {
-                        text: 'Edit',
-                        color: 'primary',
-                        onClick: handleUpdate
-
-                    },
-                    {
-                        text: 'Delete',
-                        color: 'secondary',
-                        onClick: handleDelete
-
                     }
                 ]}
             />

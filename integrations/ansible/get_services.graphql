@@ -1,0 +1,9 @@
+query {
+  services {
+    _id
+    owner
+    state
+    dataClassification
+    description
+  }
+}

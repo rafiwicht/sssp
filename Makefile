@@ -23,8 +23,9 @@ GITLAB ?= sssp-gitlab
 MONGO_USER ?= root
 KEYCLOAK_USER ?= root
 PASSWORD ?= Welcome.2020
-VERSION ?= 0.1.1
+VERSION ?= 0.2.0
 GITLAB_TOKEN ?= token-for-automation
+DEV_TOKEN = development-token
 
 ############## Podman development/test support applications ##############
 
@@ -134,6 +135,7 @@ dev-server:
 		--env MONGO_SECRET=${PASSWORD} \
 		--env MONGO=127.0.0.1 \
 		--env GITLAB_TOKEN=${GITLAB_TOKEN} \
+		--env DEV_TOKEN=${DEV_TOKEN} \
 		-v "./sssp-server:/sssp-server:Z" \
 		-w "/sssp-server" \
 		--name ${SERVER} \

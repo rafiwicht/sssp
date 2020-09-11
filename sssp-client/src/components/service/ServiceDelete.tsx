@@ -18,6 +18,10 @@ type ServiceDeleteParams = {
     id: string
 }
 
+/**
+ * Simply delete page to confirm the request
+ * @param AppProps 
+ */
 const ServiceDelete: React.FC = () => {
     const { id }: ServiceDeleteParams = useParams();
     const classes = useStyles();
@@ -30,15 +34,15 @@ const ServiceDelete: React.FC = () => {
 
     const handleCancel = () => {
         history.push('/service')
-    }
+    };
 
     const handleSubmit = () => {
         deleteService({variables: {
             serviceId: id
             }}).then(() => {
-                history.push('/service')
+                history.push(`/service/details/${id}`)
         });
-    }
+    };
 
     return (
         <div>

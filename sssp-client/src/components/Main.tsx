@@ -9,8 +9,8 @@ import Menu from "./Menu";
 import ServiceRouter from "./service/ServiceRouter";
 import {useKeycloak} from "@react-keycloak/web";
 import {KeycloakTokenParsed} from "keycloak-js";
-import WorkflowRouter from "./workflow/WorkflowRouter";
 import config from '../config';
+import Admin from "./admin/Admin";
 
 type TokenParsed = KeycloakTokenParsed & {
     preferred_username: string
@@ -29,7 +29,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-
+/**
+ * Component holding all the site content
+ * ALso initializes the react router
+ */
 const Main: React.FC = () => {
     const [keycloak] = useKeycloak();
     const classes = useStyles();
@@ -44,15 +47,17 @@ const Main: React.FC = () => {
         if(parsed.realm_access?.roles.includes(config.adminRole) !== isAdmin) setIsAdmin(parsed.realm_access?.roles.includes(config.adminRole) || false);
     }
 
+    // Set variables to localStorage, which are used on the hole site
     localStorage.setItem('userId', userId);
     localStorage.setItem('isAdmin', JSON.stringify(userId));
 
+    // Display the message on redirction to keycloak login
     if(userId === '') {
         return (
             <div>You have to be logged in!</div>
         );
     }
-
+ 
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -66,6 +71,7 @@ const Main: React.FC = () => {
                 <Bar
                     open={open}
                     handleDrawerOpen={handleDrawerOpen}
+                    userId={userId}
                 />
                 <Menu
                     open={open}
@@ -80,8 +86,8 @@ const Main: React.FC = () => {
                             <ServiceRouter />
                         </Route>
                         { isAdmin &&
-                            <Route path='/workflow'>
-                                <WorkflowRouter />
+                            <Route path='/admin'>
+                                <Admin />
                             </Route>
                         }
                         <Route path='/' exact>

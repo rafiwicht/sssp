@@ -1,6 +1,6 @@
 {
   "name": "sssp-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
@@ -30,7 +30,8 @@
     "react-hot-loader": "^4.12.13",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "uuid": "^8.3.0"
   },
   "scripts": {
     "start": "webpack-dev-server --env.WDS_SOCKET_PORT=8000 --hot",
@@ -83,6 +84,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-syntax-highlighter": "^11.0.4",
+    "@types/uuid": "^8.3.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.6.0",
     "dotenv": "^8.2.0",

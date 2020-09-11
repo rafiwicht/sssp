@@ -8,7 +8,7 @@ import {IconButton, Theme, Drawer, Divider} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HomeIcon from '@material-ui/icons/Home';
 import RoomServiceIcon from '@material-ui/icons/RoomService';
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 import MenuListItem from "./MenuListItem";
 import visualization from "../config/visualization";
@@ -49,8 +49,8 @@ type MenuProps = {
     handleDrawerClose: () => void
 }
 
-
-const test = [
+// Items display in the menu
+const menuItems = [
     {
         text: 'Home',
         subpage: '/home',
@@ -64,12 +64,16 @@ const test = [
         icon: (<RoomServiceIcon />)
     },
     {
-        text: 'Workflow',
-        subpage: '/workflow',
+        text: 'Admin',
+        subpage: '/admin',
         adminOnly: true,
-        icon: (<DoubleArrowIcon />)
+        icon: (<SupervisorAccountIcon />)
     }]
 
+/**
+ * Menu component, left side of gui
+ * @param MenuProps 
+ */
 const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: MenuProps) => {
     const classes = useStyles();
 
@@ -92,7 +96,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({open, handleDrawerClose}: Men
                 </IconButton>
             </div>
             <Divider/>
-            {test.map((value, index) => {
+            {menuItems.map((value, index) => {
                 if(admin || !value.adminOnly) {
                     return (<MenuListItem {...value} key={index}/>);
                 }

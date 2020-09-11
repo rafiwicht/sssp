@@ -14,7 +14,8 @@ export default (db: string) => {
         mongoose
             .connect(db, {
                 useNewUrlParser: true,
-                useUnifiedTopology: true
+                useUnifiedTopology: true,
+                useCreateIndex: true
             })
             .then(() => {
                 return console.log(`Successfully connected to ${db}`);

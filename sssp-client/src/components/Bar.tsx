@@ -1,11 +1,8 @@
-/**
- *  Bar for react
- */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
-import {AppBar, IconButton, Theme, Toolbar, Typography} from '@material-ui/core';
+import { AppBar, Grid, IconButton, Theme, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import visualization from "../config/visualization";
 
@@ -38,11 +35,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type BarProps = {
     open: boolean,
-    handleDrawerOpen: () => void
+    handleDrawerOpen: () => void,
+    userId: string
 }
 
-
-const Bar: React.FunctionComponent<BarProps> = ({open, handleDrawerOpen}: BarProps) => {
+/**
+ * AppBar with username and drawer opener
+ * @param BarProps 
+ */
+const Bar: React.FunctionComponent<BarProps> = ({ open, handleDrawerOpen, userId }: BarProps) => {
     const classes = useStyles();
     return (
         <div>
@@ -54,11 +55,21 @@ const Bar: React.FunctionComponent<BarProps> = ({open, handleDrawerOpen}: BarPro
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         className={clsx(classes.menuButton, open && classes.menuButtonHidden)}>
-                        <MenuIcon/>
+                        <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        Splunk Self Service Portal
-                    </Typography>
+                    <Grid justify="space-between" container >
+                        <Grid item>
+                            <Typography variant="h6" className={classes.title}>
+                                Splunk Self Service Portal
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography className={classes.title}>
+                                Welcome, {userId}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+
                 </Toolbar>
             </AppBar>
         </div>

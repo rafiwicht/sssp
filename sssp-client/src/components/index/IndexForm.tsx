@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
-import {Button, FormControl, Input, InputLabel} from "@material-ui/core";
-import {IndexInput} from "../../generated/graphql";
+import {Button, TableCell, TableRow, TextField} from "@material-ui/core";
+import {Index, IndexInput, MutationPutIndexArgs, usePutIndexMutation, GetIndexesDocument} from "../../generated/graphql";
 import {createStyles, makeStyles} from "@material-ui/styles";
+import EnvironmentInput from '../helper/EnvironmentInput';
 
 
 type IndexFormProps = {
-    submitIndex: (indexInput: IndexInput) => void
+    serviceId: string,
+    resetInput: () => void,
+    indexMod?: Index
 }
 
 const useStyles = makeStyles(() =>
@@ -18,93 +21,121 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const IndexForm: React.FunctionComponent<IndexFormProps> = ({submitIndex}: IndexFormProps) => {
-    const [indexInput, setIndexInput] = useState<IndexInput>({
-        name: '',
-        maxTotalDataSizeMB: 100000000,
-        frozenTimePeriodInSecs: 7776000
+/**
+ * Form used to create and edit indexes
+ * @param IndexFormProps 
+ */
+const IndexForm: React.FunctionComponent<IndexFormProps> = ({serviceId, resetInput, indexMod}: IndexFormProps) => {
+    const [state, setState] = useState<MutationPutIndexArgs>({
+        indexId: indexMod?._id || '',
+        indexInput: {
+            serviceId: indexMod?.serviceId || serviceId,
+            maxTotalDataSizeMB: indexMod?.maxTotalDataSizeMB || 100000000,
+            frozenTimePeriodInSecs: indexMod?.frozenTimePeriodInSecs || 7776000,
+            environmentIds: indexMod?.environmentIds || []
+        }
     });
-    const [hidden, setHidden] = useState<boolean>(true);
     const classes = useStyles();
 
-    const handleOpen = () =>  {
-        setHidden(false);
-    }
+    const [putIndex] = usePutIndexMutation({
+        refetchQueries: [{query: GetIndexesDocument, variables: {serviceId: serviceId}}]
+    })
 
-    const handleChange = (prop: keyof IndexInput) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIndexInput({ ...indexInput, [prop]: event.target.value });
+    const handleIdChange = (event: any) => {
+        setState({
+            ...state,
+            indexId: event.target.value
+        });
+    };
+
+    const handleChange = (prop: keyof IndexInput) => (event: any) => {
+        // Value returns always string
+        let value;
+        if(event.target.type === 'number') {
+            value = Number(event.target.value);
+        }
+        else {
+            value = event.target.value;
+        }
+        setState({
+            ...state,
+            indexInput: {
+                ...state.indexInput, 
+                [prop]: value
+            }
+        });
+    };
+
+    const handleSumbit = () => {
+        reset();
+        putIndex({
+            variables: state
+        });
     };
 
     const reset = () => {
-        setHidden(true);
-        setIndexInput({
-            name: '',
-            maxTotalDataSizeMB: 100000000,
-            frozenTimePeriodInSecs: 7776000
+        resetInput();
+        setState({
+            indexId: '',
+            indexInput: {
+                serviceId: serviceId,
+                maxTotalDataSizeMB: 100000000,
+                frozenTimePeriodInSecs: 7776000,
+                environmentIds: []
+            }
         });
     }
 
-    const handleSubmit = () => {
-        submitIndex(indexInput);
-        reset();
-    }
-
-    if(hidden) {
-        return (
-            <Button
-                variant='contained'
-                color='primary'
-                onClick={() => handleOpen()}
-            >Add index</Button>
-        );
-    }
-
     return (
-        <div>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <Input
-                    id='name'
+        <TableRow>
+            <TableCell>
+                <TextField
+                    id='_id'
                     type='text'
                     required
-                    value={indexInput.name}
-                    onChange={handleChange('name')}
+                    fullWidth
+                    value={state.indexId}
+                    disabled={indexMod !== undefined}
+                    onChange={handleIdChange}
                 />
-            </FormControl>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>maxTotalDataSizeMB</InputLabel>
-                <Input
-                    id='name'
+            </TableCell>
+            <TableCell align='right'>{indexMod === undefined ? '' : indexMod.state}</TableCell>
+            <TableCell align='right'>
+                <TextField
+                    id='maxTotalDataSizeMB'
                     type='number'
                     required
-                    value={indexInput.maxTotalDataSizeMB}
-                    onChange={handleChange('name')}
+                    fullWidth
+                    value={state.indexInput.maxTotalDataSizeMB}
+                    onChange={handleChange('maxTotalDataSizeMB')}
                 />
-            </FormControl>
-            <FormControl className={classes.margin} required>
-                <InputLabel htmlFor='name'>Name</InputLabel>
-                <Input
+            </TableCell>
+            <TableCell align='right'>
+                <TextField
                     id='frozenTimePeriodInSecs'
-                    type='text'
+                    type='number'
                     required
-                    value={indexInput.frozenTimePeriodInSecs}
+                    fullWidth
+                    value={state.indexInput.frozenTimePeriodInSecs}
                     onChange={handleChange('frozenTimePeriodInSecs')}
                 />
-            </FormControl>
-
-            <Button
-                variant='contained'
-                className={classes.margin}
-                onClick={() => reset()}
-            >Cancel</Button>
-            <Button
-                variant='contained'
-                color='primary'
-                className={classes.margin}
-                onClick={() => handleSubmit()}
-                disabled={indexInput.name === ''}
-            >Submit</Button>
-        </div>
+            </TableCell>
+            <EnvironmentInput handleChange={handleChange} environmentIds={state.indexInput.environmentIds || []} />
+            <TableCell align='right'>
+                <Button
+                    variant='contained'
+                    className={classes.margin}
+                    onClick={() => reset()}
+                >Cancel</Button>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    className={classes.margin}
+                    onClick={() => handleSumbit()}
+                    disabled={state.indexId === ''}
+                >Submit</Button>
+            </TableCell>
+        </TableRow>
     );
 }
 

@@ -1,13 +1,12 @@
 /**
- * File containing all service queries, mutations and subscriptions
+ * Resolver for the service queries and mutations
  * @author Rafael Wicht <rafi.wicht139@gmail.com>
  */
 
-import mongoose from 'mongoose';
-import {FutureService, Service, State} from '../../models/service';
+import Service from '../../models/service';
+import {State} from '../../models';
 import {ApolloError} from 'apollo-server';
-import {deepEqual} from '../../helper/equality';
-import {AppInterface} from '../../models/service'
+import {deleteElement, putElement} from "./generator";
 
 
 export enum Kind {
@@ -17,178 +16,37 @@ export enum Kind {
 }
 
 const ServiceQueries = {
-    services: async (parent: any, {kind}: any) => {
-        let resultServices;
-
-        if (kind === Kind.FUTURE) resultServices = await FutureService.find();
-        else if(kind === Kind.CURRENT) resultServices = await Service.find();
-        else {
-            const futureServices = await FutureService.find();
-            const resultServicesIds = futureServices.map((service) => {
-                return service._id;
-            })
-            const services = await Service.find({
-                _id: { $nin: resultServicesIds}
-            });
-            resultServices = futureServices.concat(services);
+    services: async (parent: any, {onlyModifications = false}: any, context: any) => {
+        let searchQuery: any = {}
+    
+        // Restrict access for multi tenancy
+        if(!context.admin) {
+            searchQuery._id = { $in: context.read };
         }
 
-        return resultServices.map((service) => {
-            return service;
+        if(onlyModifications) {
+            searchQuery.state = { $ne: State.ACTIVE };
+        }
+
+        const results = await Service.find(searchQuery);
+    
+        return results.map((e) => {
+            return e._doc; 
         });
     },
-    service: async (parent: any, {serviceId, kind}: any) => {
-
-        const futureService = await FutureService.findById(serviceId);
+    service: async (parent: any, {serviceId}: any, context: any) => {
         const service = await Service.findById(serviceId);
 
-        if((kind === Kind.FUTURE || kind === Kind.NEWEST) && futureService) {
-            return futureService;
+        if(service && (context.admin || context.read.includes(serviceId))) {
+            return service._doc;
         }
-        else if((kind === Kind.CURRENT || kind === Kind.NEWEST) && service) {
-            return service;
-        }
-        else throw new ApolloError('Service not found', 'NOT_FOUND');
+        else return new ApolloError('Service not found', 'NOT_FOUND');
     }
 };
 
 const ServiceMutations = {
-    createService: async (parent: any, {serviceInput}: any) => {
-        const service = await Service.findOne({
-            name: serviceInput.name
-        });
-        const futureService = await FutureService.findOne({
-            name: serviceInput.name
-        });
-
-        if (service || futureService) {
-            throw new ApolloError('Service already Exists');
-        } else {
-            const newService = new FutureService({
-                ...serviceInput,
-                _id: new mongoose.Types.ObjectId(),
-                state: State.IN_CREATION
-            });
-            return newService.save();
-        }
-    },
-    updateService: async (parent: any, {serviceId, serviceInput}: any) => {
-        const service = await Service.findById(serviceId);
-        const futureService = await FutureService.findById(serviceId);
-
-        if(!service && !futureService) {
-            throw new ApolloError('Service not found', 'NOT_FOUND');
-        }
-
-        if(futureService && (futureService.state === State.IN_CREATION || futureService.state === State.IN_DELETION)) {
-            return await FutureService.findByIdAndUpdate(serviceId, {
-                ...serviceInput,
-                apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
-                    const currentApp = futureService.apps.filter((f: AppInterface) => f.name === e.name);
-                    if(currentApp.length > 0) {
-                        return {
-                            ...e,
-                            url: currentApp[0].url
-                        }
-                    }
-                    else {
-                        return e;
-                    }
-                })
-            })
-        }
-        else {
-            let futureServiceSaved;
-            let serviceSaved = service;
-
-            if(futureService) {
-                futureServiceSaved = await FutureService.findByIdAndUpdate(serviceId, {
-                    ...serviceInput,
-                    apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
-                        const currentApp = futureService.apps.filter((f: AppInterface) => f.name === e.name);
-                        if(currentApp.length > 0) {
-                            return {
-                                ...e,
-                                url: currentApp[0].url
-                            }
-                        }
-                        else {
-                            return e;
-                        }
-                    })
-                },{
-                    new: true
-                });
-            }
-            else {
-                serviceSaved = await Service.findByIdAndUpdate(serviceId, {
-                    state: State.IN_MODIFICATION
-                },{
-                    new: true
-                });
-                const newFutureService = new FutureService({
-                    ...serviceInput,
-                    _id: service._id,
-                    state: State.IN_MODIFICATION,
-                    revision: serviceSaved.revision,
-                    apps: serviceInput.apps.map((e: AppInterface): AppInterface => {
-                        const currentApp = service.apps.filter((f: AppInterface) => f.name === e.name);
-                        if(currentApp.length > 0) {
-                            return {
-                                ...e,
-                                url: currentApp[0].url
-                            }
-                        }
-                        else {
-                            return e;
-                        }
-                    })
-                });
-                futureServiceSaved = await newFutureService.save();
-            }
-
-            // Verify if future state is same as active state, if true it resets the future state
-            if(deepEqual(serviceSaved._doc, futureServiceSaved._doc)) {
-                await FutureService.findByIdAndDelete(serviceId);
-                return await Service.findByIdAndUpdate(serviceId, {
-                    state: State.ACTIVE
-                });
-            }
-            else {
-                return futureServiceSaved;
-            }
-        }
-    },
-    deleteService: async (parent: any, {serviceId}: any) => {
-        const service = await Service.findById(serviceId);
-        const futureService = await FutureService.findById(serviceId);
-        if(!service && !futureService) {
-            throw new ApolloError('Service not found', 'NOT_FOUND');
-        }
-        if(!service) {
-            return FutureService.findByIdAndDelete(serviceId);
-        }
-        else {
-            await Service.findByIdAndUpdate(serviceId, {
-                state: State.IN_DELETION
-            });
-            if(!futureService) {
-                const newFutureService = new FutureService({
-                    ...service._doc,
-                    state: State.IN_DELETION
-                })
-                return newFutureService.save();
-            }
-            else {
-                return await FutureService.findByIdAndUpdate(serviceId, {
-                    ...service._doc,
-                    state: State.IN_DELETION
-                },{
-                    new: true
-                });
-            }
-        }
-    }
+    putService: async (parent: any, {serviceId, serviceInput}: any, context: any) => putElement(Service, serviceId, serviceInput, context),
+    deleteService: async (parent: any, {serviceId}: any, context: any) => deleteElement(Service, serviceId, context)
 };
 
 export {ServiceQueries, ServiceMutations};

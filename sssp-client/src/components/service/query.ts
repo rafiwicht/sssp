@@ -1,50 +1,35 @@
 import gql from "graphql-tag";
 
+/**
+ * Contains the queries for the service pages
+ * Used for code generation
+ */
 export default gql`
-    query GetServices($kind: Kind) {
-        services(kind: $kind) {
+    query GetServices {
+        services {
             _id
-            name
             owner
             dataClassification
             state
         }
     }
-    query GetService($serviceId: ID!, $kind: Kind) {
-        service(serviceId: $serviceId, kind: $kind) {
+    query GetService($serviceId: String!) {
+        service(serviceId: $serviceId) {
             _id
-            name
             owner
-            state
             dataClassification
             description
-            indexes {
-                name
-                maxTotalDataSizeMB
-                frozenTimePeriodInSecs
-            }
-            apps {
-                name
-                type
-                url
-            }
-            read
-            write
+            state
         }
     }
-    mutation CreateService($serviceInput: ServiceInput!)  {
-        createService(serviceInput: $serviceInput) {
-            name
+    mutation PutService($serviceId: String!, $serviceInput: ServiceInput!)  {
+        putService(serviceId: $serviceId, serviceInput: $serviceInput) {
+            _id
         }
     }
-    mutation UpdateService($serviceId: ID!, $serviceInput: ServiceInput!)  {
-        updateService(serviceId: $serviceId, serviceInput: $serviceInput) {
-            name
-        }
-    }
-    mutation DeleteService($serviceId: ID!)  {
+    mutation DeleteService($serviceId: String!)  {
         deleteService(serviceId: $serviceId) {
-            name
+            _id
         }
     }
 `;

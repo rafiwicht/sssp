@@ -1,61 +1,134 @@
-import React, {useEffect} from 'react';
-import {Kind, useGetServicesLazyQuery} from '../../generated/graphql';
-import {useHistory} from 'react-router-dom';
-import {Typography} from '@material-ui/core';
-import ServiceList, {ServiceSimple} from '../service/ServiceList';
+import React from 'react';
+import {
+    GetChangedAppsDocument,
+    GetChangedHttpsDocument,
+    GetChangedIndexesDocument,
+    GetChangedServersDocument,
+    GetChangedServicesDocument,
+    GetChangedSyslogsDocument,
+    Resource,
+    useGetChangedAppsLazyQuery,
+    useGetChangedHttpsLazyQuery,
+    useGetChangedIndexesLazyQuery,
+    useGetChangedServersLazyQuery,
+    useGetChangedServicesLazyQuery,
+    useGetChangedSyslogsLazyQuery
+} from '../../generated/graphql';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell } from '@material-ui/core';
+import WorkflowPart from './WorkflowPart';
 
+export const args = {
+    variables: {
+        onlyModifications: true
+    }
+};
 
+/**
+ * Queries used to fetch the modified entries
+ */
+const queries = [
+    {
+        query: useGetChangedAppsLazyQuery,
+        name: 'apps',
+        resource: Resource.App,
+        refetchQueries: [
+            {
+                query: GetChangedAppsDocument, 
+                variables: {
+                    onlyModifications: true
+                }
+            }
+        ]
+    },
+    {
+        query: useGetChangedHttpsLazyQuery,
+        name: 'https',
+        resource: Resource.Http,
+        refetchQueries: [
+            {
+                query: GetChangedHttpsDocument, 
+                variables: {
+                    onlyModifications: true
+                }
+            }
+        ]
+    },
+    {
+        query: useGetChangedIndexesLazyQuery,
+        name: 'indexes',
+        resource: Resource.Index,
+        refetchQueries: [
+            {
+                query: GetChangedIndexesDocument, 
+                variables: {
+                    onlyModifications: true
+                }
+            }
+        ]
+    },
+    {
+        query: useGetChangedServersLazyQuery,
+        name: 'servers',
+        resource: Resource.Server,
+        refetchQueries: [
+            {
+                query: GetChangedServersDocument, 
+                variables: {
+                    onlyModifications: true
+                }
+            }
+        ]
+    },
+    {
+        query: useGetChangedServicesLazyQuery,
+        name: 'services',
+        resource: Resource.Service,
+        refetchQueries: [
+            {
+                query: GetChangedServicesDocument, 
+                variables: {
+                    onlyModifications: true
+                }
+            }
+        ]
+    },
+    {
+        query: useGetChangedSyslogsLazyQuery,
+        name: 'syslogs',
+        resource: Resource.Syslog,
+        refetchQueries: [
+            {
+                query: GetChangedSyslogsDocument, 
+                variables: {
+                    onlyModifications: true
+                }
+            }
+        ]
+    }
+];
+
+/**
+ * Concat all queries in to collapsible table
+ */
 const Workflow: React.FC = () => {
 
-    const [getServices, {data, loading, error}] = useGetServicesLazyQuery({
-        variables: {
-            kind: Kind.Future
-        }
-    });
-
-    let history = useHistory();
-
-    const handleDetails = (id: string) => {
-        history.push( `/workflow/details/${id}`);
-    }
-
-    useEffect(() => {
-        getServices();
-    },[]);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error || !data) {
-        return <div>ERROR</div>;
-    }
-
-    const services: Array<ServiceSimple> = data.services.map((e) => {
-        return {
-            _id: e._id,
-            name: e.name,
-            owner: e.owner,
-            state: e.state,
-            dataClassification: e.dataClassification
-        };
-    })
-
     return (
-        <div>
-            <Typography variant="h3">Pending approval</Typography>
-            <ServiceList
-                data={services}
-                buttons={[
-                    {
-                        text: 'Details',
-                        color: 'primary',
-                        onClick: handleDetails
-
-                    }
-                ]}
-            />
-        </div>
+        <TableContainer component={Paper}>
+            <Table aria-label="collapsible table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell />
+                        <TableCell>Name</TableCell>
+                        <TableCell align="right">State</TableCell>
+                        <TableCell align="right">Type</TableCell>
+                        <TableCell align="right">Action</TableCell>
+                    </TableRow>
+                </TableHead>
+                {queries.map((query: any, index: number) => (
+                    <WorkflowPart key={index} {...query} />
+                ))}
+            </Table>
+        </TableContainer>
     );
 }
 

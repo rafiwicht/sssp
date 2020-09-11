@@ -7,7 +7,6 @@
 
 import axios, {AxiosPromise, AxiosResponse, Method} from 'axios';
 
-import {AppType} from "../models/service";
 import config from "../config";
 import {templates, uiTemplates} from "./templates";
 import GitConnectorInterface from "./index";
@@ -18,7 +17,7 @@ const message: string = 'Add template files by SSSP automator';
 
 
 class GithubConnector implements GitConnectorInterface {
-    createRepo(name: string, read: Array<string>, write: Array<string>, type: AppType) {
+    createRepo(name: string, serviceId: string, visible: boolean) {
         axiosRequest(
             `/orgs/${organisation}/repos`
         ).then((r: AxiosResponse) => {
@@ -33,7 +32,7 @@ class GithubConnector implements GitConnectorInterface {
                     'POST'
                 )
                 .then(() => {
-                    template(name, type);
+                    template(name, visible);
                 })
                 .catch(r => {
                     console.log(r);
@@ -62,7 +61,7 @@ class GithubConnector implements GitConnectorInterface {
     }
 }
 
-const template = async(name: string, type: AppType) => {
+const template = async(name: string, visible: boolean) => {
     await axiosRequest(
         `/repos/${organisation}/${name}/contents/README.md`,
         {
@@ -79,7 +78,7 @@ const template = async(name: string, type: AppType) => {
     let treeItems = [];
 
     for (const e of templates) {
-        const {path, content} = e(name, type)
+        const {path, content} = e(name, visible)
         const blobResponse = await axiosRequest(
             `/repos/${organisation}/${name}/git/blobs`,
             {
@@ -96,7 +95,7 @@ const template = async(name: string, type: AppType) => {
         });
 
     }
-    if(type === AppType.UI) {
+    if(visible) {
         for (const e of uiTemplates) {
             const {path, content} = e();
             const blobResponse = await axiosRequest(
