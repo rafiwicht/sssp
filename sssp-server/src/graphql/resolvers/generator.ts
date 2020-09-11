@@ -45,8 +45,6 @@ export const getElement = async (model: any, id: any, context: any) => {
 export const putElement = async (model: any, id: string, input: any, context: any) => {
     const result = await model.findById(id);
 
-    console.log(input);
-
     // If the element does not exists
     if (!result) {
         const resultNew = new model({
@@ -86,6 +84,11 @@ export const putElement = async (model: any, id: string, input: any, context: an
             },{
                 new: true
             });
+
+            console.log(input);
+            console.log(serviceSaved);
+
+            console.log(subsetEqual(serviceSaved._doc.changes, serviceSaved._doc));
 
 
             // Verify if future state is same as active state, if true it resets the future state

@@ -50,7 +50,6 @@ const AppForm: React.FunctionComponent<AppFormProps> = ({serviceId, resetInput, 
         let value;
         if(event.target.type === 'checkbox') {
             value = Boolean(event.target.checked);
-            console.log(event.target.checked);
         }
         else {
             value = event.target.value;

@@ -15,6 +15,9 @@ export const subsetEqual = (a: object, b: object): boolean => {
 
     let aProps = Object.keys(a);
 
+    console.log('----Props-----');
+    console.log(aProps);
+
     for(let prop in aProps) {
         const aVal = a[prop];
         const bVal = b[prop];
@@ -23,6 +26,9 @@ export const subsetEqual = (a: object, b: object): boolean => {
             areObjects && !deepEqual(aVal, bVal) || !areObjects && aVal !== bVal
         ) {
             return false;
+        }
+        else {
+            return bVal !== aVal;
         }
     }
     return true

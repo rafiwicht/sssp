@@ -66,6 +66,7 @@ const ServiceMod: React.FunctionComponent<ServiceModProps> = ({handleCancel, ser
     };
 
     const handleSubmit = () => {
+        console.log(state);
         putService({
             variables: state
         }).then(() => {

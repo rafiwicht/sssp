@@ -8,11 +8,10 @@ type WorkflowPartProps = {
     query: (baseOptions: any) => any,
     name: string,
     resource: Resource,
-    document: any
+    refetchQueries: any
 }
 
-const WorkflowPart: React.FunctionComponent<WorkflowPartProps> = ({ query, name, resource }: WorkflowPartProps) => {
-    console.log(args);
+const WorkflowPart: React.FunctionComponent<WorkflowPartProps> = ({ query, name, resource, refetchQueries }: WorkflowPartProps) => {
     const [getChanges, { data, loading, error }] = query(args);
 
     useEffect(() => {
@@ -30,7 +29,7 @@ const WorkflowPart: React.FunctionComponent<WorkflowPartProps> = ({ query, name,
     return (
         <TableBody>
             {data[name].map((row: any) => (
-                <WorkflowRow key={row._id} row={row} resource={resource} document={document} />
+                <WorkflowRow key={row._id} row={row} resource={resource} refetchQueries={refetchQueries} />
             ))}
         </TableBody>
     );

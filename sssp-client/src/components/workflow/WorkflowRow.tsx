@@ -2,8 +2,7 @@ import { makeStyles, TableRow, TableCell, IconButton, Collapse, Box, Typography,
 import React from 'react';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import {Resource, State, useAcceptChangeMutation, useRejectChangeMutation} from '../../generated/graphql';
-import { DocumentNode } from 'graphql';
+import {Resource, State, useAcceptChangeMutation, useRejectChangeMutation, GetChangedServicesDocument} from '../../generated/graphql';
 
 const useStyles = makeStyles({
     root: {
@@ -21,19 +20,19 @@ const useStyles = makeStyles({
 type WorkflowRowProps = {
     row: any,
     resource: Resource,
-    document: any
+    refetchQueries: any
 }
 
-const WorkflowRow: React.FunctionComponent<WorkflowRowProps> = ({ row, resource, document }: WorkflowRowProps) => {
+const WorkflowRow: React.FunctionComponent<WorkflowRowProps> = ({ row, resource, refetchQueries }: WorkflowRowProps) => {
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
 
     const [acceptChange] = useAcceptChangeMutation({
-        refetchQueries: [{query: document}]
+        refetchQueries: refetchQueries
     });
 
     const [rejectChange] = useRejectChangeMutation({
-        refetchQueries: [{query: document}]
+        refetchQueries: refetchQueries
     });
 
     return (
@@ -44,7 +43,7 @@ const WorkflowRow: React.FunctionComponent<WorkflowRowProps> = ({ row, resource,
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell align="right">{row._id}</TableCell>
+                <TableCell>{row._id}</TableCell>
                 <TableCell align="right">{row.state}</TableCell>
                 <TableCell align="right">{row.__typename}</TableCell>
                 <TableCell align='right'>
@@ -101,7 +100,7 @@ const WorkflowRow: React.FunctionComponent<WorkflowRowProps> = ({ row, resource,
                                                     {e}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {(typeof row[e] === "object") ? row[e].join(', ') + ' - ' + row.changes[e].join(', ') : row[e] + ' - ' + row.changes[e]}
+                                                    {(typeof row[e] === "object") ? row[e].join(', ') : row[e]} &rarr; {(typeof row[e] === "object") ? row.changes[e].join(', ') : row.changes[e]}
                                                 </TableCell>
                                                 <TableCell>
                                                     
