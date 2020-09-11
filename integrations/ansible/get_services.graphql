@@ -1,7 +1,6 @@
 query {
   services {
     _id
-    name
     owner
     state
     dataClassification
