@@ -223,3 +223,12 @@ build-client:
 	podman build -f Dockerfile -t ${CLIENT_IMG}:${VERSION} . ; \
 	podman tag ${CLIENT_IMG}:${VERSION} ${CLIENT_IMG}:latest ; \
 	rm .envProd
+
+
+unit-test: unit-test-server unit-test-client
+
+unit-test-server:
+	cd sssp-server ; \
+	yarn test
+
+unit-test-client:
