@@ -6,8 +6,8 @@
   "dependencies": {
     "@octokit/rest": "^18.0.3",
     "apollo-error": "^1.0.2",
-    "apollo-server": "^2.15.0",
-    "apollo-server-express": "^2.15.0",
+    "apollo-server": "2.15.0",
+    "apollo-server-express": "2.15.0",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
     "cross-env": "^7.0.2",
@@ -19,16 +19,24 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-typescript": "^7.10.4",
     "@octokit/types": "^5.4.0",
     "@types/express": "^4.17.6",
+    "@types/jest": "^26.0.13",
     "@types/node": "^14.0.22",
+    "apollo-server-testing": "2.15.0",
+    "jest": "^26.4.2",
+    "mongodb-memory-server": "^6.7.5",
     "nodemon": "^2.0.4",
+    "ts-jest": "^26.3.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
   "scripts": {
     "start": "tsc && node dist/server.js",
     "dev": "nodemon src/server.ts",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "test": "/usr/local/bin/jest"
   }
 }

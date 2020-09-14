@@ -8,7 +8,7 @@ import {ApolloServerExpressConfig} from 'apollo-server-express';
 import resolvers from '../resolvers';
 import {AuthenticationError} from 'apollo-server';
 
-const typeDefs = gql`
+export const typeDefs = gql`
     type Query {
 
         ##### App #####
@@ -250,7 +250,6 @@ const schema: ApolloServerExpressConfig = {
     context: ({req}: any) => {
         // Add authentication to the graphql context
         if (!req.userId) throw new AuthenticationError('Unauthenticated!');
-        
         return {
             userId: req.userId,
             admin: req.admin,

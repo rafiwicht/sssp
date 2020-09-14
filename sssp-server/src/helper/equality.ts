@@ -14,10 +14,7 @@ export const subsetEqual = (a: object, b: object): boolean => {
     if(a === null || b === null) return false;
 
     let aProps = Object.keys(a);
-
-    console.log('----Props-----');
-    console.log(aProps);
-
+    
     for(let prop in aProps) {
         const aVal = a[prop];
         const bVal = b[prop];
