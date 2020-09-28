@@ -17,3 +17,4 @@ ssh_host_ed*
 ssh_host_rsa*
 dist/
 venv/
+yarn.lock
