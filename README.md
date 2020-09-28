@@ -1,5 +1,6 @@
 # Splunk Self Service Portal
 
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=rafiwicht_sssp)](https://sonarcloud.io/dashboard?id=rafiwicht_sssp)
 [![Generic badge](https://img.shields.io/badge/status-alpha-red.svg)](https://github.com/rafiwicht/sssp/)
 [![Generic badge](https://img.shields.io/badge/documentation-yes-green.svg)](https://rafiwicht.github.io/sssp/)
 [![Generic badge](https://img.shields.io/badge/maintened-yes-green.svg)](https://github.com/rafiwicht/)
