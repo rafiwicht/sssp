@@ -13,8 +13,8 @@ import Syslog from '../../models/syslog';
 import App from "../../models/app";
 import config from '../../config';
 import GitConnectorInterface from '../../git-connector';
-import GithubConnector from '../../git-connector/github';
-import GitlabConnector from '../../git-connector/gitlab';
+import GithubConnector from '../../git-connector/GithubConnector';
+import GitlabConnector from '../../git-connector/GitlabConnector';
 
 let gitConnector: GitConnectorInterface;
 if(config.githubToken) {

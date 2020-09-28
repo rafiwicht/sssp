@@ -2,7 +2,7 @@ import { makeStyles, TableRow, TableCell, IconButton, Collapse, Box, Typography,
 import React from 'react';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import {Resource, State, useAcceptChangeMutation, useRejectChangeMutation, GetChangedServicesDocument} from '../../generated/graphql';
+import {Resource, State, useAcceptChangeMutation, useRejectChangeMutation} from '../../generated/graphql';
 
 const useStyles = makeStyles({
     root: {

@@ -26,12 +26,12 @@ class GitlabConnector implements GitConnectorInterface {
                     },
                     'POST'
                 )
-                .then((r) =>
+                .then((result) =>
                 {
-                    template(name, r.data.id, visible);
+                    template(name, result.data.id, visible);
                 })
-                .catch(r => {
-                    console.log(r);
+                .catch(error => {
+                    console.log(error);
                 });
             }
         }).catch(r => {

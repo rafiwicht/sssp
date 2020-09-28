@@ -8,7 +8,6 @@ import Main from "./components/Main";
 import client from "./config/apollo";
 import {Snackbar} from "@material-ui/core";
 import Alert from "./components/Alert";
-import config from './config';
 
 /**
  * Main Gui Component, initializes Keycloak and Apollo

@@ -1,5 +1,10 @@
 # Release
 
+## v0.3.0
+- End-2-End tests for backend
+- Sonarqube static code analysis
+- Remove of bad smells and bugs
+
 ## v0.2.0
 - Redesign graphql interface to use operations for each configuration type
 - Redesign frontend to match backend

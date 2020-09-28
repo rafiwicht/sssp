@@ -68,7 +68,7 @@ let config = {
         disableHostCheck: true,
         historyApiFallback: true,
         headers: {
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "https://test.sssp.local:8000"
         },
     }
 };

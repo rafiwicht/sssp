@@ -12,7 +12,7 @@ The test environment is using [Podman](https://podman.io/), because on the newer
 Addionally to the software, you also have to make an entry in your `/tec/hosts` file. The test environment is using self signed certificates for the URL `test.sssp.local`. If you run Podman on your local machine you have to add the URL to your locahost entry.
 
 ```
-127.0.0.1   localhost localhost.localdomain test.sssp.local
+127.0.0.1   localhost localhost.localdomain test.sssp.local gitlab.sssp.local
 ```
 
 After that, just run the following command:

@@ -34,12 +34,12 @@ class GithubConnector implements GitConnectorInterface {
                 .then(() => {
                     template(name, visible);
                 })
-                .catch(r => {
-                    console.log(r);
+                .catch(error => {
+                    console.log(error);
                 });
             }
-        }).catch(r => {
-            console.log(r);
+        }).catch(getResult => {
+            console.log(getResult);
         });
 
         return `https://github.com/${organisation}/${name}`;

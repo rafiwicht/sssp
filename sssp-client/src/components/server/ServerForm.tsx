@@ -37,8 +37,6 @@ const ServerForm: React.FunctionComponent<ServerFormProps> = ({serviceId, resetI
         }
     });
 
-    const [hosts, setHosts] = useState<string>((serverMod?.hosts || []).join(', '));
-
     const classes = useStyles();
 
     const [putServer] = usePutServerMutation({

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Route, BrowserRouter, Redirect, Switch} from "react-router-dom";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import 'fontsource-roboto';
