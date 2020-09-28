@@ -30,8 +30,8 @@ class GitlabConnector implements GitConnectorInterface {
                 {
                     template(name, r.data.id, visible);
                 })
-                .catch(r => {
-                    console.log(r);
+                .catch(error => {
+                    console.log(error);
                 });
             }
         }).catch(r => {

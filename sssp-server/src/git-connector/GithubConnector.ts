@@ -34,8 +34,8 @@ class GithubConnector implements GitConnectorInterface {
                 .then(() => {
                     template(name, visible);
                 })
-                .catch(postResult => {
-                    console.log(postResult);
+                .catch(error => {
+                    console.log(error);
                 });
             }
         }).catch(getResult => {
