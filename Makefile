@@ -23,7 +23,7 @@ GITLAB ?= sssp-gitlab
 MONGO_USER ?= root
 KEYCLOAK_USER ?= root
 PASSWORD ?= Welcome.2020
-VERSION ?= 0.2.0
+VERSION ?= 0.3.0
 GITLAB_TOKEN ?= token-for-automation
 DEV_TOKEN = development-token
 
