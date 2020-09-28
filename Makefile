@@ -30,7 +30,7 @@ DEV_TOKEN = development-token
 ############## Podman development/test support applications ##############
 
 pod:
-	podman pod create -p 8000 -p 27017 -p 7080:80 -p 7443:443 -p 7022:22 --name sssp
+	podman pod create -p 8000 -p 27017 -p 7022:22 -p 7080:80 --name sssp
 
 rm-pod:
 	-podman pod rm sssp -f
@@ -64,7 +64,8 @@ rm-mongo:
 refresh-mongo: rm-mongo mongo
 
 proxy:
-	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout sssp-proxy/nginx-selfsigned.key -out sssp-proxy/nginx-selfsigned.crt -subj '/CN=test.sssp.local'
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout sssp-proxy/test-selfsigned.key -out sssp-proxy/test-selfsigned.crt -subj '/CN=test.sssp.local'
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout sssp-proxy/gitlab-selfsigned.key -out sssp-proxy/gitlab-selfsigned.crt -subj '/CN=gitlab.sssp.local'
 	podman run -dt \
 		--pod sssp \
 		--env DEV_MODE=true \
@@ -76,6 +77,7 @@ proxy:
 rm-proxy:
 	-podman kill ${PROXY}
 	-podman rm ${PROXY}
+	-rm -rf sssp-proxy/*-selfsigned*
 
 refresh-proxy: rm-proxy proxy
 
@@ -107,7 +109,7 @@ gitlab:
   		-v "./sssp-gitlab/data:/var/opt/gitlab:Z" \
 		${GITLAB_IMG}
 	sleep 300
-	podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
+	-podman exec -it sssp-gitlab gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api, :read_repository, :write_repository, :read_user], name: 'sssp'); token.set_token('token-for-automation'); token.save!"
 
 rm-gitlab:
 	-podman kill ${GITLAB}
