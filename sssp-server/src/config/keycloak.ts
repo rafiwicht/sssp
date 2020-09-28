@@ -19,8 +19,8 @@ class KeycloakValidate {
             .then(response => {
                 this.publicKey = response.data.keys[0].x5c[0];
             })
-            .catch(error => {
-                new Error('Key could not get loaded!')
+            .catch(() => {
+                throw new Error('Key could not get loaded!');
             });
     }
 
