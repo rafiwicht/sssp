@@ -18,3 +18,4 @@ ssh_host_rsa*
 dist/
 venv/
 yarn.lock
+.idea/
