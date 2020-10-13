@@ -54,9 +54,9 @@ export default async (req: any, res: any, next: any) => {
     decodedToken.realm_access.roles.forEach((e: string) => {
         const res = e.match(re);
         if(res) {
-            req.read.push(res[1]);
+            req.readAccess.push(res[1]);
             if(res[2] === 'power') {
-                req.write.push(res[1]);
+                req.writeAccess.push(res[1]);
             }
         }
     });
